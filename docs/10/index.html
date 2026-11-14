@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>10강 집단지성과 별점의 해법</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="../assets/deck.css">
+<style>
+  .cover { flex-direction: row !important; align-items: center; justify-content: space-between; padding: 128px !important; }
+  .cover::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 24px; background: var(--red); }
+  .toc-item { display: flex; align-items: center; gap: 40px; padding: 30px 0; border-bottom: 2px solid var(--red-l); }
+  .toc-item:last-child { border-bottom: none; }
+  .toc-item b { font-size: 56px; font-weight: 900; color: var(--red); width: 100px; }
+  .toc-item span { font-size: 44px; font-weight: 500; }
+  .tri { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; flex: 1; align-items: stretch; }
+  .tri .card h3 { font-size: 40px; }
+  .tri .card .k { font-size: 26px; font-weight: 700; color: var(--gray); letter-spacing: 2px; }
+  .tri .card { justify-content: center; gap: 20px; }
+  .tri .card ul.b { font-size: 32px; line-height: 1.6; }
+  .quad { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; flex: 1; }
+  .quad .card { justify-content: center; }
+  .quad .card h3 { font-size: 38px; }
+  .quad .card p { font-size: 30px; line-height: 1.5; }
+  .six { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; flex: 1; }
+  .six .card { justify-content: center; padding: 24px 32px; }
+  .six .card b { font-size: 26px; color: var(--red); }
+  .six .card p { font-size: 30px; font-weight: 500; line-height: 1.45; }
+</style>
+</head>
+<body>
+<div class="progress"></div>
+<div class="stage">
+
+<!-- 1 표지 -->
+<section class="slide cover">
+  <div style="display:flex;flex-direction:column;gap:32px;width:1000px">
+    <p style="font-size:120px;font-weight:900;color:var(--red);line-height:1">10</p>
+    <p style="font-size:36px;font-weight:500;color:var(--gray)">데이톨로지 — 데이터로 읽는 인간과 사회</p>
+    <h1 style="font-size:96px;font-weight:900;line-height:1.15">집단지성과<br>별점의 해법</h1>
+    <hr style="width:160px;border:none;border-top:6px solid var(--red)">
+    <p style="font-size:32px;color:var(--gray)">주교재: 김성태, 『데이톨로지』 2부 · 연재 ④ · 강사 : ○○○</p>
+  </div>
+  <img class="fig" src="assets/cover.png" alt="787개의 추정값 점 분포와 실제 무게를 표시한 빨간 선" style="width:600px;height:796px">
+  <aside class="note">10주차. 원전: 지디넷 연재 ④ 「'별점'의 해결책 "집단지성 메커니즘 제대로 작동해야"」(2021.05.31). 지난주(9주) 별점의 함정에 이은 해법 편.</aside>
+</section>
+
+<!-- 2 목차 -->
+<section class="slide" style="flex-direction:row;align-items:center;gap:96px;padding:128px">
+  <div style="display:flex;flex-direction:column;gap:24px;width:520px">
+    <p style="font-size:32px;font-weight:700;color:var(--red);letter-spacing:4px">CONTENTS</p>
+    <h2 style="font-size:72px;font-weight:900;line-height:1.15">집단지성과<br>별점의 해법</h2>
+    <hr style="width:120px;border:none;border-top:6px solid var(--red)">
+  </div>
+  <div style="flex:1">
+    <div class="toc-item"><b>01</b><span>집단지성의 증거</span></div>
+    <div class="toc-item"><b>02</b><span>집단지성의 4가지 조건</span></div>
+    <div class="toc-item"><b>03</b><span>별점을 대하는 우리의 모습</span></div>
+    <div class="toc-item"><b>04</b><span>데이톨로지의 6대 제안</span></div>
+    <div class="toc-item"><b>05</b><span>정리 및 확인 문제</span></div>
+  </div>
+</section>
+
+<!-- 3 학습 목표 -->
+<section class="slide" style="flex-direction:row;align-items:center;gap:80px;padding:128px">
+  <img class="fig" src="assets/goal.png" alt="같은 평균의 정상형 분포와 U자형 별점 분포" style="width:760px;height:568px">
+  <div class="col" style="gap:40px">
+    <h2 style="font-size:72px;font-weight:900">학습 목표</h2>
+    <div class="card"><p style="font-size:28px;font-weight:700;color:var(--red)">목표 1</p><p style="font-size:36px;font-weight:500">서로위키의 집단지성 4조건으로 별점 시스템의 실패 설명</p></div>
+    <div class="card"><p style="font-size:28px;font-weight:700;color:var(--red)">목표 2</p><p style="font-size:36px;font-weight:500">데이터 수집·분석 단계의 별점 개선안 설계</p></div>
+  </div>
+</section>
+
+<!-- 4 오늘의 질문 -->
+<section class="slide" style="justify-content:center;align-items:center;gap:56px">
+  <p style="font-size:36px;font-weight:700;color:var(--red);letter-spacing:4px">오늘의 질문</p>
+  <p style="font-size:60px;font-weight:900;line-height:1.4;text-align:center">1907년 시골 장터, 787명이 황소 무게를 추측<br>정확히 맞힌 사람은 0명, 평균은 1,197파운드<br><span style="color:var(--red)">실제 무게는?</span></p>
+  <aside class="note">정답: 1,198파운드. 손을 들어 예상(평균이 멀다 / 가깝다) 투표 후 다음 슬라이드로.</aside>
+</section>
+
+<!-- 5 10-1 비유: 장터의 소 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">10-1</span><h2>집단지성의 증거</h2></div><p class="sub">[비유] 장터의 소 떼</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/steers.jpg" alt="풀밭에 선 소 떼" style="width:760px;height:570px"><p class="credit">사진: Bernard Spragg / Public Domain Mark</p></div>
+    <div class="col">
+      <h3>황소 무게 맞히기 = 집단지성</h3>
+      <ul class="b">
+        <li>1907년 영국 시골 장터, 참가자 787명</li>
+        <li>개인 추정은 제각각, 정확히 맞힌 사람 0명</li>
+        <li>추정값 평균 1,197 vs 실제 1,198파운드</li>
+        <li>제각각의 오차가 서로 상쇄되는 구조</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="note">원전: 연재 ④(2021.05.31) — 프랜시스 갈턴(1907). [검증 노트] 갈턴의 원 논문(Nature, 1907 「Vox Populi」)은 중앙값 중심으로 보고했고 평균 1,197은 이후 언급된 값. 사진은 비유용(실제 장터 사진 아님).</aside>
+</section>
+
+<!-- 6 10-1 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">10-1</span><h2>집단지성의 증거</h2></div><p class="sub">추정이 쌓일수록 평균이 실제 무게에 근접</p></div>
+  <video class="anim" src="assets/anim/GaltonOx.mp4" poster="assets/anim/GaltonOx_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">manim: 160개 추정값을 차례로 쌓고 군중 평균 갱신. 분포는 시뮬레이션(원전은 평균 1,197·실제 1,198만 제시).</aside>
+</section>
+
+<!-- 7 10-1 더 많은 증거 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">10-1</span><h2>집단지성의 증거</h2></div><p class="sub">퀴즈쇼, 개미, 온라인</p></div>
+  <div class="tri">
+    <div class="card"><p class="k">서로위키 · 2004</p><h3>퀴즈쇼 찬스</h3>
+      <ul class="b"><li>전문가 한 명: 정답률 약 65%</li><li>청중 다수결: 정답률 91%</li><li>『대중의 지혜』</li></ul></div>
+    <div class="card"><p class="k">휠러 · 1910</p><h3>개미 군집</h3>
+      <ul class="b"><li>개체는 미미</li><li>군집은 높은 지능 체계</li><li>『개미』</li></ul></div>
+    <div class="card"><p class="k">피에르 레비</p><h3>온라인 집단지성</h3>
+      <ul class="b"><li>어디에나 분포</li><li>실시간으로 조정</li><li>역량으로 동원되는 지성</li></ul></div>
+  </div>
+  <aside class="note">원전: 연재 ④. 퀴즈쇼는 「누가 백만장자가 되고 싶은가」(칼럼 표기: 백만장자 퀴즈쇼). 칼럼은 "90%를 넘었다"로 표기.</aside>
+</section>
+
+<!-- 8 10-2 비유: 개미 언덕 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">10-2</span><h2>집단지성의 4가지 조건</h2></div><p class="sub">[비유] 개미 언덕</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/anthill.jpg" alt="흙으로 쌓인 개미 언덕" style="width:760px;height:570px"><p class="credit">사진: Klearchos Kapoutsis / CC BY 2.0</p></div>
+    <div class="col">
+      <h3>개미 언덕 = 집단지성</h3>
+      <ul class="b">
+        <li>설계도 없이 수많은 개미가 쌓은 구조물</li>
+        <li>각자 주변 정보로 독립적인 판단</li>
+        <li>중앙 지휘자 없는 분산 구조</li>
+        <li>조건이 맞을 때만 작동하는 지혜</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="note">휠러(1910)의 개미 군집 관찰은 원전(연재 ④). 개미 언덕 비유의 세부(설계도 없음, 분산)는 강의자 구성.</aside>
+</section>
+
+<!-- 9 10-2 4조건 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">10-2</span><h2>집단지성의 4가지 조건</h2></div><p class="sub">제임스 서로위키, 『대중의 지혜』(2004)</p></div>
+  <div class="quad">
+    <div class="card"><h3>① 다양성·개방성</h3><p>참가자 범위의 제한 없음</p></div>
+    <div class="card"><h3>② 독립성</h3><p>타인·주변의 영향 없는 개인 판단</p></div>
+    <div class="card"><h3>③ 분산화</h3><p>중앙집권적이지 않은 의견 조율</p></div>
+    <div class="card"><h3>④ 통합 체제</h3><p>다양한 의견을 모으는 기술적·제도적 장치</p></div>
+  </div>
+  <p style="font-size:32px;font-weight:700;color:var(--red);text-align:center">현실에서 4조건 완벽 충족은 거의 불가 → 보완책 필요</p>
+  <aside class="note">원전: 연재 ④. 학자들에 따르면 완벽한 집단지성은 불가능에 가까움.</aside>
+</section>
+
+<!-- 10 10-2 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">10-2</span><h2>집단지성의 4가지 조건</h2></div><p class="sub">독립성이 깨지면: 앞사람의 별점을 보고 매기는 별점</p></div>
+  <video class="anim" src="assets/anim/Herding.mp4" poster="assets/anim/Herding_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">manim: 같은 사람들이 독립적으로 추정 vs 앞사람들의 평균을 보고 따라 추정(첫 사람이 1,360으로 크게 틀린 경우). 동조 규칙(자기 판단 25% + 앞 평균 75%)은 설명용 가정. 별점 화면에서 기존 평균이 먼저 보이는 구조와 연결.</aside>
+</section>
+
+<!-- 11 10-2 별점은 집단지성인가 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">10-2</span><h2>집단지성의 4가지 조건</h2></div><p class="sub">별점에 대입하면</p></div>
+  <div class="row" style="gap:64px">
+    <div class="col">
+      <div class="card"><h3 style="font-size:36px">다양성 붕괴</h3><p style="font-size:30px">아주 만족했거나 아주 화난 사람 위주의 참여</p></div>
+      <div class="card"><h3 style="font-size:36px">독립성 붕괴</h3><p style="font-size:30px">기존 평균·리뷰를 본 뒤의 평가, 이벤트·별점 거래</p></div>
+    </div>
+    <div class="col">
+      <p class="quote" style="font-size:44px;font-weight:700;line-height:1.5">별점 = 집단지성이 아닌<br><span style="color:var(--red)">하나의 “권력”</span></p>
+      <ul class="b" style="font-size:30px"><li>매출·폐업을 좌우하는 숫자</li><li>“집단감정”·“집단야성”으로 흐를 위험</li></ul>
+    </div>
+  </div>
+  <aside class="note">원전: 연재 ④ — 별점이 시장에서 하나의 '권력'으로 기능, '집단감정'·'집단야성' 표현. 다양성·독립성 붕괴의 구체 예는 9주(연재 ③) 내용과 연결한 강의자 정리.</aside>
+</section>
+
+<!-- 12 10-3 설문 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">10-3</span><h2>별점을 대하는 우리의 모습</h2></div><p class="sub">저자 설문: 20~30대 대학(원)생 121명, 7점 척도</p></div>
+  <img class="fig" src="assets/survey.png" alt="별점 의존도, 알고리즘 이해도, 지속 이용 의향 등 10개 항목 막대그래프" style="width:1420px;height:800px;align-self:center">
+  <aside class="note">원전: 연재 ④ 설문. 구매 시 별점(5.8)이 가족·친구 의견(5.6)보다 약간 높음 → 닐슨 2016 조사와 유사.</aside>
+</section>
+
+<!-- 13 10-3 해석 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">10-3</span><h2>별점을 대하는 우리의 모습</h2></div><p class="sub">“크게 의존, 계속 사용, 원리는 모름”</p></div>
+  <div class="tri">
+    <div class="card"><p class="k">의존</p><h3>6점대</h3><ul class="b"><li>배달 6.08</li><li>맛집 6.07</li><li>지속 이용 의향 6.1</li></ul></div>
+    <div class="card"><p class="k">이해</p><h3>3.6점</h3><ul class="b"><li>별점 알고리즘 이해도</li><li>척도 중간(4)보다 낮음</li></ul></div>
+    <div class="card"><p class="k">결론</p><h3>리터러시 필요</h3><ul class="b"><li>폐지보다 개선</li><li>문제 최소화 방향</li></ul></div>
+  </div>
+  <aside class="note">원전: 연재 ④의 해석 — 젊은 층은 별점에 크게 의존하면서도 작동 원리·부작용을 깊이 고민하지 않으며, 지속 이용 의향이 높으므로 없애기보다 개선이 낫다는 결론.</aside>
+</section>
+
+<!-- 14 10-4 비유: 심사위원 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">10-4</span><h2>데이톨로지의 6대 제안</h2></div><p class="sub">[비유] 심사위원 점수표</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/judge.jpg" alt="점수표에 기록하는 체조 심사위원" style="width:760px;height:570px"><p class="credit">사진: Rick McCharles / CC BY 2.0</p></div>
+    <div class="col">
+      <h3>심사위원 점수표 = 별점 보정</h3>
+      <ul class="b">
+        <li>여러 심사위원의 점수 합산</li>
+        <li>최고·최저 점수 제외 규칙</li>
+        <li>한 명의 극단적 점수로 순위가 뒤집히지 않는 장치</li>
+        <li>별점에도 같은 원리: 아웃라이어 보정</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="note">원전: 연재 ④ — "오디션 프로그램의 최고·최저 점수 제외처럼". 체조 심사 사진은 비유용.</aside>
+</section>
+
+<!-- 15 10-4 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">10-4</span><h2>데이톨로지의 6대 제안</h2></div><p class="sub">별점 테러 3개: 평균 하나 vs 참여자 수·분포·보정</p></div>
+  <video class="anim" src="assets/anim/OutlierTrim.mp4" poster="assets/anim/OutlierTrim_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">manim: 진짜 이용자 8명(5,4,5,4,5,4,5,4 → 평균 4.50)에 1점 3개 추가 → 3.55, 양끝 2개씩 제외 → 3.86. 수치는 강의자 예시.</aside>
+</section>
+
+<!-- 16 10-4 6대 제안 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">10-4</span><h2>데이톨로지의 6대 제안</h2></div><p class="sub">데이터 수집·분석 단계의 보완책</p></div>
+  <div class="six">
+    <div class="card"><b>①</b><p>최소 참여자 수 기준 충족 시에만 공개</p></div>
+    <div class="card"><b>②</b><p>참여자 수 공개 (여론조사의 표본 크기 공개처럼)</p></div>
+    <div class="card"><b>③</b><p>같은 업종 안의 상대 랭킹 제공</p></div>
+    <div class="card"><b>④</b><p>아웃라이어 보정 (최고·최저 제외)</p></div>
+    <div class="card"><b>⑤</b><p>작성자 정보 시각화 (이용 횟수·과거 리뷰·키워드)</p></div>
+    <div class="card"><b>⑥</b><p>작성 자격 명확화, 별점 거래 금지 등 제도 장치</p></div>
+  </div>
+  <aside class="note">원전: 연재 ④. 한계: AI는 중의적 표현·신조어·은어 분석에 약함, 허위 리뷰도 저작물이라 플랫폼 임의 삭제 곤란(칼럼 기준).</aside>
+</section>
+
+<!-- 17 10-4 기업·해외 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">10-4</span><h2>데이톨로지의 6대 제안</h2></div><p class="sub">이미 시작된 변화</p></div>
+  <div class="quad">
+    <div class="card"><h3>넷플릭스</h3><p>5점 별점 → ‘좋아요/별로예요’ + ‘% 일치’<br>평가 참여율 200% 증가로 평가</p></div>
+    <div class="card"><h3>네이버 (2021.4.23 발표)</h3><p>AI로 허위·악의 별점 필터링<br>별점 대신 키워드 ‘태그 구름’, 영수증 리뷰</p></div>
+    <div class="card"><h3>미국</h3><p>소비자 리뷰 공정화 법 (2016)<br>악의적 리뷰 = 시장 교란 행위</p></div>
+    <div class="card"><h3>영국</h3><p>별점·리뷰 모니터링·관리<br>플랫폼 가이드라인</p></div>
+  </div>
+  <aside class="note">원전: 연재 ④. 미국 법은 Consumer Review Fairness Act(2016). 한국은 별점을 가장 많이 쓰면서도 논의가 늦었다는 평가.</aside>
+</section>
+
+<!-- 18 활동 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">10-5</span><h2>활동: 별점 시스템 재설계 해커톤</h2></div><p class="sub">팀별 60분 · 배달 / 강의평가 / 병원 / 숙박 중 하나</p></div>
+  <div class="tri">
+    <div class="card"><p class="k">STEP 1 · 20분</p><h3>진단</h3><ul class="b"><li>4조건 중 깨진 조건 찾기</li><li>피해자는 누구인가</li></ul></div>
+    <div class="card"><p class="k">STEP 2 · 25분</p><h3>설계</h3><ul class="b"><li>6대 제안 중 3개 이상 반영</li><li>평가 화면 종이 와이어프레임</li></ul></div>
+    <div class="card"><p class="k">STEP 3 · 15분</p><h3>피치</h3><ul class="b"><li>팀당 3분 발표</li><li>새 부작용도 함께</li><li>투표는 동시 공개(독립성)</li></ul></div>
+  </div>
+  <aside class="note">강의안 10주차 활동. 투표를 동시 공개로 하는 것 자체가 독립성 조건의 실습.</aside>
+</section>
+
+<!-- 19 정리 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">10-6</span><h2>정리 및 확인 문제</h2></div><p class="sub">오늘의 핵심 4줄</p></div>
+  <div class="col" style="gap:24px">
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">집단지성</b> = 제각각의 오차가 상쇄되는 군중의 지혜 (갈턴의 황소)</p></div>
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">4조건</b> = 다양성 · 독립성 · 분산화 · 통합</p></div>
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">별점</b> = 조건이 깨진 채 “권력”이 된 숫자</p></div>
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">해법</b> = 폐지가 아닌 보완: 참여자 수 · 분포 · 보정 · 제도</p></div>
+  </div>
+</section>
+
+<!-- 20 확인 문제 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">10-6</span><h2>정리 및 확인 문제</h2></div><p class="sub">확인 문제</p></div>
+  <div class="row" style="gap:64px;align-items:stretch">
+    <div class="col" style="gap:18px">
+      <h3 style="font-size:36px">문제 1</h3>
+      <p style="font-size:32px;line-height:1.45">식당 화면에 기존 평균 별점이 먼저 보인 뒤 내 별점을 매기는 구조에서 깨지는 집단지성 조건</p>
+      <h3 style="font-size:36px;padding-top:20px">문제 2</h3>
+      <p style="font-size:32px;line-height:1.45">별점 5, 5, 5, 5에 별점 테러 1점 하나 추가 시 평균, 그리고 최고·최저 하나씩 뺀 평균</p>
+      <h3 style="font-size:36px;padding-top:20px">문제 3</h3>
+      <p style="font-size:32px;line-height:1.45">6대 제안 중 여론조사의 공개 세칙에서 빌려 온 제안</p>
+      <button class="reveal">정답 보기</button>
+      <div class="answer">문제 1: 독립성 (타인의 영향 없이 판단해야 함)<br>문제 2: (5+5+5+5+1)/5 = 4.2 → 최고 5·최저 1 제외 (5+5+5)/3 = 5.0<br>문제 3: ② 참여자 수 공개 (표본 크기·표본오차 공개처럼)</div>
+    </div>
+    <img class="fig" src="assets/goal.png" alt="정상형과 U자형 별점 분포" style="width:520px;height:390px;align-self:center">
+  </div>
+  <aside class="note">정답 — 1: 독립성. 2: 4.2 → 5.0. 3: 참여자 수 공개.</aside>
+</section>
+
+<!-- 21 마무리 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">10-6</span><h2>정리 및 확인 문제</h2></div><p class="sub">마무리</p></div>
+  <div class="row" style="gap:80px">
+    <div class="col" style="gap:20px">
+      <h3 style="font-size:36px">이번 주 과제</h3>
+      <ul class="b" style="font-size:30px">
+        <li>연재 ⑦ 「AI 알고리즘의 딜레마」 읽기 + 사전 질문 1개</li>
+        <li>유튜브(또는 인스타) 첫 화면 캡처 준비</li>
+        <li>데이톨로지 저널: 우리 학교 강의평가는 4조건을 충족하는가</li>
+      </ul>
+      <h3 style="font-size:36px;padding-top:24px">다음 시간</h3>
+      <p style="font-size:30px">알고리즘 큐레이션의 양면성 — 선택의 역설 vs 필터버블</p>
+      <p style="font-size:26px;padding-top:24px"><a href="quiz.html" style="color:var(--red);font-weight:700">▶ 웹 퀴즈</a>&nbsp;&nbsp;&nbsp;<a href="playground.html" style="color:var(--red);font-weight:700">▶ 황소 무게 놀이터</a></p>
+    </div>
+    <img class="fig" src="assets/cover.png" alt="추정값 분포 그림" style="width:450px;height:597px">
+  </div>
+</section>
+
+<!-- 22 이미지 출처 -->
+<section class="slide">
+  <div class="head"><h2>이미지 출처</h2><p class="sub">사진 (Openverse 검색, CC 라이선스·퍼블릭 도메인)</p></div>
+  <ul class="b" style="font-size:24px;line-height:1.7">
+    <li>Staring steers. — Bernard Spragg, Public Domain Mark 1.0, <a href="https://www.flickr.com/photos/88123769@N02/51857282513">flickr</a></li>
+    <li>Ant colony — Klearchos Kapoutsis, CC BY 2.0, <a href="https://www.flickr.com/photos/8383084@N06/2821230516">flickr</a></li>
+    <li>Gymnastics Judging Course — Rick McCharles, CC BY 2.0, <a href="https://www.flickr.com/photos/71035721@N00/8378099583">flickr</a></li>
+    <li>애니메이션·그림 — manim, matplotlib으로 직접 제작</li>
+    <li>인용 — 김성태, 『데이톨로지』(이른비, 2022); 지디넷코리아 연재 ④(2021.05.31)</li>
+  </ul>
+</section>
+
+</div>
+<div class="notes"></div>
+<div class="bar">
+  <a href="../index.html">← 목록</a>
+  <button data-act="prev">◀</button><span class="count"></span><button data-act="next">▶</button>
+  <span class="grow">← → 이동 · F 전체 화면 · N 노트</span>
+  <a href="quiz.html">퀴즈</a><a href="playground.html">놀이터</a>
+  <button data-act="notes">노트</button><button data-act="full">전체 화면</button>
+</div>
+<script src="../assets/deck.js"></script>
+</body>
+</html>

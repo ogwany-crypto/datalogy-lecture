@@ -1,0 +1,38 @@
+{
+  "binoculars": {
+    "title": "Binoculars",
+    "creator": "Dana Beveridge",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/21832592@N05/4857071188",
+    "provider": "flickr"
+  },
+  "refinery": {
+    "title": "refinery",
+    "creator": "ljmacphee",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/60515798@N00/485890036",
+    "provider": "flickr"
+  },
+  "footprints": {
+    "title": "Footprints-in-Sand-Beach__1072912",
+    "creator": "Public Domain Photos",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/28958738@N06/7539156392",
+    "provider": "flickr"
+  },
+  "seesaw": {
+    "title": "Seesaw",
+    "creator": "nzgabriel",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/61181002@N00/2607065194",
+    "provider": "flickr"
+  }
+}

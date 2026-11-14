@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>11강 필터버블 놀이터</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="../assets/page.css">
+<style>
+  .legend { display: flex; gap: 18px; font-size: 14px; color: #666; margin-top: 8px; flex-wrap: wrap; }
+  .legend i { display: inline-block; width: 14px; height: 14px; vertical-align: -2px; margin-right: 6px; border-radius: 3px; }
+  #f-cv { cursor: pointer; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="badge">11강</span><h1>필터버블 놀이터</h1>
+    <nav><a href="index.html#1">슬라이드</a><a href="quiz.html">퀴즈</a><a href="../index.html">목록</a></nav>
+  </header>
+  <p class="lede">슬라이드의 manim 장면(FilterBubble)을 직접 조작하는 공간 · 원본 장면 코드: scripts/11_animations.py · 추천 규칙은 수업용 단순 모형(실제 서비스의 알고리즘 아님)</p>
+
+  <section class="card" id="s1">
+    <h2><span class="n">01</span>클릭할수록 좁아지는 피드</h2>
+    <p class="muted">피드의 카드를 클릭 → 그 주제의 추천 가중치 상승 → 새 피드 · 아래 막대 = 주제별 추천 비율 · “탐색 비율”은 알고리즘이 일부러 섞는 무작위 추천 · 관련 장면: FilterBubble</p>
+    <div class="controls">
+      <label>클릭 반응 강도 <input type="range" id="f-k" min="10" max="100" value="50" step="10"> <b id="f-kv"></b>%</label>
+      <label>탐색 비율 <input type="range" id="f-e" min="0" max="50" value="0" step="5"> <b id="f-ev"></b>%</label>
+    </div>
+    <div class="controls">
+      <button class="solid" id="f-auto">같은 주제 10번 자동 클릭</button>
+      <button id="f-pop">버블 터뜨리기 (탐색 30%)</button>
+      <button id="f-reset">처음으로</button>
+    </div>
+    <canvas id="f-cv" aria-label="주제별 색 카드 12장의 피드와 주제별 추천 비율 막대. 카드를 클릭하면 그 주제 추천이 늘어남"></canvas>
+    <div class="legend" id="f-leg"></div>
+    <p class="stat" id="f-stat" aria-live="polite"></p>
+  </section>
+</div>
+
+<script>
+const TOPICS = [['게임', '#E22B2D'], ['스포츠', '#3F3F3F'], ['과학', '#8C8C8C'], ['요리', '#F6C4C5'], ['음악', '#C9B8A6']];
+const N = 12;
+const $ = id => document.getElementById(id);
+$('f-leg').innerHTML = TOPICS.map(([n, c]) => `<span><i style="background:${c}"></i>${n}</span>`).join('');
+let wts, feed, clicks, cards = [];
+let seed = 3;
+function rand() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
+
+function probs() {   // 추천 비율 = (1-탐색)·가중치 비율 + 탐색·균등
+  const e = +$('f-e').value / 100, s = wts.reduce((a, b) => a + b, 0);
+  return wts.map(w => (1 - e) * w / s + e / TOPICS.length);
+}
+function newFeed() {
+  const p = probs();
+  feed = Array.from({ length: N }, () => { let r = rand(), i = 0; while (i < p.length - 1 && (r -= p[i]) > 0) i++; return i; });
+}
+function reset() { wts = TOPICS.map(() => 1); clicks = 0; newFeed(); render(); }
+function click(t) {
+  const k = +$('f-k').value / 100;
+  wts = wts.map((w, i) => i === t ? w * (1 + 2 * k) : w * (1 - k / 2));   // 클릭 주제 강화, 나머지 약화
+  clicks++; newFeed(); render();
+}
+
+function render() {
+  $('f-kv').textContent = $('f-k').value; $('f-ev').textContent = $('f-e').value;
+  const cv = $('f-cv'), dpr = window.devicePixelRatio || 1, w = cv.clientWidth, h = 340;
+  cv.width = w * dpr; cv.height = h * dpr; cv.style.height = h + 'px';
+  const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.font = '14px "Noto Sans KR", sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  const cols = 6, gap = 10, cw = (w - 40 - gap * (cols - 1)) / cols, ch = 58;
+  cards = [];
+  feed.forEach((t, i) => {
+    const x = 20 + (i % cols) * (cw + gap), y = 16 + Math.floor(i / cols) * (ch + gap);
+    g.fillStyle = TOPICS[t][1]; g.beginPath(); g.roundRect(x, y, cw, ch, 8); g.fill();
+    g.fillStyle = t === 1 || t === 2 || t === 0 ? '#fff' : '#3F3F3F'; g.fillText(TOPICS[t][0], x + cw / 2, y + ch / 2);
+    cards.push([x, y, cw, ch, t]);
+  });
+  const p = probs(), by = 190, bh = 22;
+  console.assert(Math.abs(p.reduce((a, b) => a + b, 0) - 1) < 1e-9, 'probs must sum to 1');
+  g.textAlign = 'left'; g.fillStyle = '#3F3F3F'; g.fillText('주제별 추천 비율', 20, by - 14);
+  p.forEach((v, i) => {
+    const y = by + i * (bh + 6), x0 = 90, bw = (w - x0 - 80) * v;
+    g.fillStyle = '#3F3F3F'; g.textAlign = 'right'; g.fillText(TOPICS[i][0], x0 - 10, y + bh / 2);
+    g.fillStyle = '#EEEAE6'; g.fillRect(x0, y, w - x0 - 80, bh);
+    g.fillStyle = TOPICS[i][1]; g.fillRect(x0, y, bw, bh);
+    g.fillStyle = '#3F3F3F'; g.textAlign = 'left'; g.fillText(`${Math.round(v * 100)}%`, x0 + (w - x0 - 80) + 8, y + bh / 2);
+  });
+  const kinds = new Set(feed).size, H = -p.reduce((a, v) => a + (v > 0 ? v * Math.log(v) : 0), 0), eff = Math.exp(H);
+  $('f-stat').innerHTML = `클릭 <b>${clicks}</b>번 · 피드 속 주제 <b>${kinds}</b>가지 · 실질 주제 수(다양성 지수) <b>${eff.toFixed(1)}</b> / 5 — ` +
+    (eff < 1.8 ? '<span class="bad">필터버블</span>' : eff < 3.5 ? '좁아지는 중' : '<span class="ok">다양한 피드</span>');
+}
+$('f-cv').addEventListener('click', e => {
+  const r = e.target.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+  const hit = cards.find(([cx, cy, cw, ch]) => x >= cx && x <= cx + cw && y >= cy && y <= cy + ch);
+  if (hit) click(hit[4]);
+});
+$('f-k').oninput = render;
+$('f-e').oninput = () => { newFeed(); render(); };
+$('f-auto').onclick = () => { const t = feed[0]; for (let i = 0; i < 10; i++) click(t); };
+$('f-pop').onclick = () => { $('f-e').value = 30; newFeed(); render(); };
+$('f-reset').onclick = () => { $('f-e').value = 0; reset(); };
+addEventListener('resize', render);
+document.fonts.ready.then(render);
+reset();
+</script>
+</body>
+</html>

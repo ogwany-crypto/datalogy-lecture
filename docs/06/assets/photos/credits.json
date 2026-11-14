@@ -1,0 +1,38 @@
+{
+  "cockpit": {
+    "title": "Model airplane cockpit",
+    "creator": "rxb",
+    "license": "by-sa",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0/",
+    "source": "https://www.flickr.com/photos/62303607@N00/4010715354",
+    "provider": "flickr"
+  },
+  "assembly": {
+    "title": "Volkswagen Beetle Assembly Line",
+    "creator": "aldenjewell",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/31411679@N08/32637661426",
+    "provider": "flickr"
+  },
+  "bell": {
+    "title": "Bronze bell (after 1837) with portraits of the King Ferdinand II of Bourbon and his wife, the Queen Maria Teresa - Santa Maria delle Grazie a Toledo Church in Naples",
+    "creator": "Carlo Raso",
+    "license": "pdm",
+    "license_version": "1.0",
+    "license_url": "https://creativecommons.org/publicdomain/mark/1.0/",
+    "source": "https://www.flickr.com/photos/70125105@N06/34656892904",
+    "provider": "flickr"
+  },
+  "chair": {
+    "title": "my new office chair at work",
+    "creator": "SafeTinspector",
+    "license": "by-sa",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0/",
+    "source": "https://www.flickr.com/photos/81981117@N00/6269216038",
+    "provider": "flickr"
+  }
+}

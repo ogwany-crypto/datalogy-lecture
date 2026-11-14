@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>14강 딥필링 놀이터</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="../assets/page.css">
+<style>
+  .rules { font-size: 15px; color: #555; margin: 8px 0; }
+  .rules code { background: #f4f1ee; padding: 1px 6px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="badge">14강</span><h1>딥필링 놀이터</h1>
+    <nav><a href="index.html#1">슬라이드</a><a href="quiz.html">퀴즈</a><a href="../index.html">목록</a></nav>
+  </header>
+  <p class="lede">슬라이드의 manim 장면(ChineseRoom, DeepFeeling)을 직접 조작하는 공간 · 원본 장면 코드: scripts/14_animations.py</p>
+
+  <!-- 1 중국어 방 -->
+  <section class="card" id="s1">
+    <h2><span class="n">01</span>중국어 방 체험</h2>
+    <p class="muted">방 안의 나는 중국어를 모름 · 규칙서(모양 → 모양)만 보고 답 쪽지를 내보내기 · 관련 장면: ChineseRoom</p>
+    <p class="rules">규칙서: <span id="r-list"></span></p>
+    <div class="controls">
+      <label>들어온 쪽지 <select id="r-in"></select></label>
+      <button class="solid" id="r-go">규칙서 찾아 답하기</button>
+      <button id="r-mean">뜻 공개</button>
+    </div>
+    <canvas id="r-cv" aria-label="방 안에서 규칙서로 쪽지를 바꾸어 내보내는 그림"></canvas>
+    <p class="stat" id="r-stat" aria-live="polite"></p>
+  </section>
+
+  <!-- 2 딥필링 결합 -->
+  <section class="card" id="s2">
+    <h2><span class="n">02</span>딥필링: 네 요소의 순간 결합</h2>
+    <p class="muted">상황을 고르고 네 요소의 세기를 조절 → 가운데 원(딥필링)으로 모이는 모습 · 관련 장면: DeepFeeling · 수업용 시각화로, 저자의 계산 모형 아님</p>
+    <div class="controls">
+      <label>상황 <select id="d-case">
+        <option value="love">첫눈에 끌린 순간</option>
+        <option value="grief">오래된 노래에 갑자기 울컥</option>
+        <option value="danger">어두운 골목에서 느낀 불안</option>
+      </select></label>
+    </div>
+    <div class="controls" id="d-sl"></div>
+    <canvas id="d-cv" aria-label="네 요소가 의식·무의식 선 위아래에서 가운데 원으로 모이는 그림"></canvas>
+    <p class="stat" id="d-stat" aria-live="polite"></p>
+  </section>
+</div>
+
+<script>
+const RED = '#E22B2D', RED_L = '#F6C4C5', GRAY = '#8C8C8C', INK = '#3F3F3F', GRAY_L = '#D9D9D9';
+function setup(cv, h) {
+  const dpr = window.devicePixelRatio || 1, w = cv.clientWidth;
+  cv.width = w * dpr; cv.height = h * dpr; cv.style.height = h + 'px';
+  const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.font = '15px "Noto Sans KR", sans-serif'; return [g, w, h];
+}
+
+// ---------- 1 중국어 방 ----------
+const RULES = [['你好吗?', '我很好', '잘 지내?', '잘 지내'], ['你叫什么?', '我叫小明', '이름이 뭐야?', '내 이름은 샤오밍'],
+               ['你难过吗?', '我很难过', '슬프니?', '나는 아주 슬퍼']];
+const rIn = document.getElementById('r-in');
+rIn.innerHTML = RULES.map((r, i) => `<option value="${i}">${r[0]}</option>`).join('');
+document.getElementById('r-list').innerHTML = RULES.map(r => `<code>${r[0]}</code> → <code>${r[1]}</code>`).join(' · ');
+let rOut = null, rShow = false;
+function drawR() {
+  const [g, w, h] = setup(document.getElementById('r-cv'), 220);
+  const i = +rIn.value, rx = w / 2 - 170;
+  g.strokeStyle = INK; g.lineWidth = 3; g.strokeRect(rx, 30, 340, 170);
+  g.fillStyle = GRAY; g.textAlign = 'center'; g.fillText('방 안: 중국어를 모르는 사람', w / 2, 22);
+  g.fillStyle = RED_L; g.fillRect(w / 2 + 10, 80, 130, 80); g.fillStyle = RED; g.font = 'bold 16px "Noto Sans KR"'; g.fillText('규칙서', w / 2 + 75, 125);
+  g.strokeStyle = INK; g.beginPath(); g.arc(w / 2 - 90, 90, 16, 0, 7); g.moveTo(w / 2 - 90, 106); g.lineTo(w / 2 - 90, 160); g.stroke();
+  const card = (x, t, c) => { g.font = '18px "Noto Sans KR"'; g.strokeStyle = c; g.fillStyle = '#fff'; g.fillRect(x - 60, 95, 120, 44); g.strokeRect(x - 60, 95, 120, 44); g.fillStyle = c; g.fillText(t, x, 124); };
+  card(Math.max(70, rx - 80), RULES[i][0], INK);
+  if (rOut !== null) card(Math.min(w - 70, rx + 420), RULES[rOut][1], RED);
+  const st = document.getElementById('r-stat');
+  if (rOut === null) st.innerHTML = '쪽지를 고르고 “규칙서 찾아 답하기”';
+  else st.innerHTML = rShow
+    ? `질문 뜻: <b>${RULES[rOut][2]}</b> → 답 뜻: <b>${RULES[rOut][3]}</b> — 방 안의 사람은 이 뜻을 몰라도 정답을 냄 → 기호 조작 ≠ 이해`
+    : '밖에서 보면 올바른 중국어 대답 → 방 안의 사람은 중국어를 “이해”한 것일까?';
+}
+rIn.onchange = () => { rOut = null; rShow = false; drawR(); };
+document.getElementById('r-go').onclick = () => { rOut = +rIn.value; drawR(); };
+document.getElementById('r-mean').onclick = () => { if (rOut === null) rOut = +rIn.value; rShow = true; drawR(); };
+
+// ---------- 2 딥필링 결합 ----------
+const ELS = [['잠재 기억', GRAY, 1], ['감정', RED, 1], ['지능', INK, 0], ['외부 상황', INK, 0]];  // 마지막 값 1 = 무의식 쪽
+const CASES = { love: [4, 5, 1, 3], grief: [5, 4, 1, 2], danger: [3, 4, 2, 5] };
+const dSl = document.getElementById('d-sl');
+dSl.innerHTML = ELS.map(([n], i) => `<label>${n} <input type="range" min="0" max="5" value="3" data-i="${i}" aria-label="${n} 세기 0~5"></label>`).join('');
+const sliders = [...dSl.querySelectorAll('input')];
+function drawD() {
+  const v = sliders.map(s => +s.value), [g, w, h] = setup(document.getElementById('d-cv'), 350);
+  const lineY = 150, cx = w - 140, cy = 160;
+  g.strokeStyle = GRAY; g.lineWidth = 2; g.beginPath(); g.moveTo(20, lineY); g.lineTo(w - 20, lineY); g.stroke();
+  g.fillStyle = GRAY; g.textAlign = 'left'; g.fillText('의식', 24, lineY - 8); g.fillText('무의식', 24, lineY + 20);
+  const pos = [[w * 0.22, 240], [w * 0.45, 285], [w * 0.22, 60], [w * 0.45, 50]];
+  ELS.forEach(([n, c], i) => {
+    const r = 18 + v[i] * 6, [x, y] = pos[i];
+    g.strokeStyle = c; g.globalAlpha = 0.25 + v[i] * 0.15; g.lineWidth = 1 + v[i] * 1.5;
+    g.beginPath(); g.moveTo(x, y); g.lineTo(cx, cy); g.stroke(); g.globalAlpha = 1;
+    g.lineWidth = 3; g.fillStyle = '#fff'; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); g.stroke();
+    g.fillStyle = c; g.textAlign = 'center'; g.font = 'bold 14px "Noto Sans KR"'; g.fillText(n, x, y + 5);
+  });
+  const total = v.reduce((a, b) => a + b, 0), R = 20 + total * 3;
+  g.fillStyle = RED; g.globalAlpha = 0.85; g.beginPath(); g.arc(cx, cy, R, 0, 7); g.fill(); g.globalAlpha = 1;
+  g.fillStyle = '#fff'; g.font = 'bold 18px "Noto Sans KR"'; g.fillText('딥필링', cx, cy + 6);
+  const below = v[0] + v[1], above = v[2] + v[3];
+  document.getElementById('d-stat').innerHTML = `무의식 쪽(잠재 기억+감정) <b>${below}</b> · 의식 쪽(지능+외부 상황) <b>${above}</b> — ` +
+    (below > above ? '물 아래가 먼저 움직인 감정 → 설문으로 “왜?”를 물으면 답하기 어려운 촉'
+                   : '의식 쪽 비중이 큼 → 그래도 감정은 네 요소가 함께 만든 결과');
+}
+document.getElementById('d-case').onchange = e => { CASES[e.target.value].forEach((x, i) => sliders[i].value = x); drawD(); };
+dSl.oninput = drawD;
+addEventListener('resize', () => { drawR(); drawD(); });
+document.fonts.ready.then(() => { drawR(); drawD(); });
+CASES.love.forEach((x, i) => sliders[i].value = x);
+drawR(); drawD();
+</script>
+</body>
+</html>

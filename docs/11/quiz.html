@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>11강 웹 퀴즈 · 알고리즘 큐레이션의 양면성</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="../assets/page.css">
+<style>
+  .q { font-size: 18px; font-weight: 500; margin-bottom: 14px; white-space: pre-line; }
+  .opts { display: grid; gap: 10px; }
+  .opt { display: flex; gap: 12px; align-items: center; text-align: left; border: 2px solid var(--line); border-radius: 12px;
+    padding: 12px 16px; background: #fff; color: var(--ink); font-weight: 500; }
+  .opt:hover:not(:disabled) { border-color: var(--red-l); }
+  .opt:disabled { opacity: 1; }
+  .opt.sel { border-color: var(--red); background: var(--red-bg); }
+  .opt.right { border-color: var(--ok); background: var(--ok-bg); }
+  .opt.wrong { border-color: var(--red); background: var(--red-bg); text-decoration: line-through; }
+  .opt .k { width: 28px; height: 28px; flex: none; border-radius: 50%; border: 2px solid currentColor; display: grid; place-items: center; font-size: 14px; }
+  .fb { margin-top: 14px; padding: 12px 16px; border-radius: 10px; display: none; }
+  .fb.show { display: block; }
+  .fb.good { background: var(--ok-bg); }
+  .fb.no { background: var(--red-bg); }
+  table.dist { border-collapse: collapse; margin: 8px 0 14px; font-size: 17px; }
+  table.dist td, table.dist th { border: 1px solid #ccc; padding: 6px 16px; text-align: center; }
+  table.dist th { background: #f4f1ee; }
+  .progress { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; margin-bottom: 24px; }
+  .progress i { display: block; height: 100%; width: 0; background: var(--red); transition: width .3s; }
+  .result { text-align: center; padding: 40px 24px; }
+  .result .big { font-size: 64px; font-weight: 900; color: var(--red); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="badge">11강</span><h1>웹 퀴즈 · 알고리즘 큐레이션의 양면성</h1>
+    <nav><a href="index.html#1">슬라이드</a><a href="playground.html">놀이터</a><a href="../index.html">목록</a></nav>
+  </header>
+  <p class="lede">10문제 · 고르거나 답을 입력한 뒤 “확인”</p>
+  <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+  <div id="app"></div>
+</div>
+
+<script>
+// type: choice(하나 고르기) | multi(모두 고르기) | num(수 입력, 분수 가능)
+const QUIZ = [
+  { type: 'choice', q: '미시령 터널처럼 목적지엔 빨리 가지만 주변 풍경을 놓치는 현상 (연재 ⑦의 비유)',
+    opts: ['하이웨이 이펙트', '나비 효과', '밴드왜건 효과', '플라시보 효과'], ans: 0,
+    why: '하이웨이 이펙트 = 추천이 원하는 곳에 빨리 데려다주는 대신 우연한 발견을 생략.' },
+  { type: 'choice', q: '“선택지가 일정 수준을 넘으면 만족도가 오히려 떨어진다”를 주장한 심리학자',
+    opts: ['배리 슈워츠', '캐스 선스타인', '엘리 패리저', '어빙 고프만'], ans: 0,
+    why: '배리 슈워츠, 선택의 역설 → 큐레이션 옹호 논리.' },
+  { type: 'choice', q: '알고리즘이 걸러 준 정보가 거품처럼 이용자를 가두는 현상',
+    opts: ['에코챔버', '필터버블', '게이트키핑', '시뮬라시옹'], ans: 1,
+    why: '필터버블 — 엘리 패리저(2011).' },
+  { type: 'choice', q: '비슷한 생각의 정보만 소비하며 같은 목소리가 메아리처럼 편향을 강화하는 현상',
+    opts: ['에코챔버', '필터버블', '롱테일', '프레이밍'], ans: 0,
+    why: '에코챔버 — 캐스 선스타인.' },
+  { type: 'multi', q: '알고리즘 추천의 “편리함의 논리”에 해당하는 것 (모두 고르기)',
+    opts: ['선택의 역설 해소', '원하는 정보의 빠른 제공', '사회 양극화', '정보 편식'], ans: [0, 1],
+    why: '양극화·정보 편식은 위험의 논리.' },
+  { type: 'choice', q: '개인의 특수한 편견에서 오는 오류, 바깥과 소통해 극복해야 한다고 본 베이컨의 개념',
+    opts: ['종족의 우상', '동굴의 우상', '시장의 우상', '극장의 우상'], ans: 1,
+    why: '동굴의 우상 — 필터버블의 오래된 이름.' },
+  { type: 'choice', q: '언론사가 수많은 기사 중 보도할 뉴스를 고르는 선별 과정 (슈메이커)',
+    opts: ['프레이밍', '게이트키핑', '선택적 노출', '시뮬라시옹'], ans: 1,
+    why: '게이트키핑. 오늘날 추천 알고리즘이 새로운 게이트키퍼 역할.' },
+  { type: 'choice', q: '사람들이 기존 신념과 맞는 정보는 받아들이고 모순되는 정보는 피하는 경향',
+    opts: ['선택적 노출', '초두효과', '하인리히 법칙', '수확 가속'], ans: 0,
+    why: '선택적 노출 — 알고리즘이 없어도 생기는 버블의 원인.' },
+  { type: 'choice', q: '트위터 뉴스피드를 반대 성향으로 바꿔 보여 준 MIT 미디어랩의 시도',
+    opts: ['루빅스', '에어스', '플립피드', '태그 구름'], ans: 2,
+    why: '플립피드(FlipFeed). 루빅스·에어스는 카카오·네이버의 뉴스 추천 시스템.' },
+  { type: 'choice', q: '“버블 터뜨리기”의 주체에 대한 저자의 입장',
+    opts: ['기업만의 책임', '정부 규제로 충분', '기업·정부·소비자 모두의 노력', '개인의 문제라 개입 불필요'], ans: 2,
+    why: '기업·정부·소비자 각자의 노력으로 필터버블·에코챔버를 줄여야 함(연재 ⑦).' },
+];
+
+const app = document.getElementById('app');
+const bar = document.getElementById('bar');
+let idx = 0, score = 0, picked = new Set(), done = false;
+
+function parseNum(s) {
+  s = s.trim().replace(/\s/g, '').replace('−', '-');
+  const m = s.match(/^(-?\d*\.?\d+)\/(\d*\.?\d+)$/);
+  if (m) return parseFloat(m[1]) / parseFloat(m[2]);
+  return s === '' ? NaN : Number(s);
+}
+
+function render() {
+  bar.style.width = `${idx / QUIZ.length * 100}%`;
+  if (idx >= QUIZ.length) return renderResult();
+  const it = QUIZ[idx];
+  picked = new Set(); done = false;
+  const table = it.table ? `<table class="dist">${it.table.map((r, i) =>
+    `<tr>${r.map(c => i === 0 ? `<th>${c}</th>` : `<td>${c}</td>`).join('')}</tr>`).join('')}</table>` : '';
+  const body = it.type === 'num'
+    ? `<div class="controls"><label>답 <input type="text" id="num" inputmode="decimal" placeholder="예: 3/8 또는 0.375" autocomplete="off"></label></div>`
+    : `<div class="opts">${it.opts.map((o, i) =>
+        `<button class="opt" data-i="${i}"><span class="k">${it.type === 'multi' ? '✓' : i + 1}</span><span>${o}</span></button>`).join('')}</div>`;
+  app.innerHTML = `<div class="card">
+    <p class="muted">문제 ${idx + 1} / ${QUIZ.length}${it.type === 'multi' ? ' · 모두 고르기' : ''}</p>
+    <p class="q">${it.q}</p>${table}${body}
+    <div class="controls"><button class="solid" id="check">확인</button><button id="next" hidden>${idx + 1 < QUIZ.length ? '다음 문제 →' : '결과 보기'}</button></div>
+    <div class="fb" id="fb" role="status"></div></div>`;
+  app.querySelectorAll('.opt').forEach(b => b.onclick = () => {
+    if (done) return;
+    const i = +b.dataset.i;
+    if (it.type === 'choice') { picked = new Set([i]); app.querySelectorAll('.opt').forEach(x => x.classList.toggle('sel', +x.dataset.i === i)); }
+    else { picked.has(i) ? picked.delete(i) : picked.add(i); b.classList.toggle('sel'); }
+  });
+  const num = document.getElementById('num');
+  if (num) { num.focus(); num.onkeydown = e => { if (e.key === 'Enter') check(); }; }
+  document.getElementById('check').onclick = check;
+  document.getElementById('next').onclick = () => { idx++; render(); };
+}
+
+function check() {
+  if (done) return;
+  const it = QUIZ[idx], fb = document.getElementById('fb');
+  let ok;
+  if (it.type === 'num') {
+    const v = parseNum(document.getElementById('num').value);
+    if (isNaN(v)) { fb.className = 'fb show no'; fb.textContent = '수를 입력 (분수 3/8 또는 소수 0.375)'; return; }
+    ok = Math.abs(v - it.ans) < 1e-3;
+  } else {
+    if (!picked.size) { fb.className = 'fb show no'; fb.textContent = '보기 선택 필요'; return; }
+    const ans = new Set([].concat(it.ans));
+    ok = picked.size === ans.size && [...picked].every(i => ans.has(i));
+    app.querySelectorAll('.opt').forEach(b => {
+      const i = +b.dataset.i; b.disabled = true;
+      if (ans.has(i)) b.classList.add('right'); else if (picked.has(i)) b.classList.add('wrong');
+    });
+  }
+  done = true;
+  if (ok) score++;
+  fb.className = `fb show ${ok ? 'good' : 'no'}`;
+  fb.innerHTML = `<b class="${ok ? 'ok' : 'bad'}">${ok ? '정답' : '오답'}</b>${it.type === 'num' && !ok ? ` · 정답 ${fmt(it.ans)}` : ''}<br>${it.why}`;
+  document.getElementById('check').hidden = true;
+  const next = document.getElementById('next'); next.hidden = false; next.focus();
+}
+
+function fmt(v) {
+  for (let d = 1; d <= 20; d++) { const n = Math.round(v * d); if (Math.abs(n / d - v) < 1e-9) return d === 1 ? `${n}` : `${n}/${d}`; }
+  return v.toFixed(3);
+}
+
+function renderResult() {
+  bar.style.width = '100%';
+  const msg = score === QUIZ.length ? '만점! 11강 핵심 완벽 이해' : score >= 7 ? '거의 완벽. 틀린 문제만 슬라이드로 복습' : '슬라이드와 놀이터로 복습 후 재도전';
+  app.innerHTML = `<div class="card result"><p class="muted">결과</p><p class="big">${score} / ${QUIZ.length}</p><p style="margin:8px 0 24px">${msg}</p>
+    <div class="controls" style="justify-content:center"><button class="solid" id="again">다시 풀기</button><a class="btn" href="playground.html">놀이터 가기</a><a class="btn" href="index.html#1">슬라이드 복습</a></div></div>`;
+  document.getElementById('again').onclick = () => { idx = 0; score = 0; render(); };
+}
+render();
+</script>
+</body>
+</html>

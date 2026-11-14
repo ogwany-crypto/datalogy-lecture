@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>11강 알고리즘 큐레이션의 양면성</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="../assets/deck.css">
+<style>
+  .cover { flex-direction: row !important; align-items: center; justify-content: space-between; padding: 128px !important; }
+  .cover::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 24px; background: var(--red); }
+  .toc-item { display: flex; align-items: center; gap: 40px; padding: 30px 0; border-bottom: 2px solid var(--red-l); }
+  .toc-item:last-child { border-bottom: none; }
+  .toc-item b { font-size: 56px; font-weight: 900; color: var(--red); width: 100px; }
+  .toc-item span { font-size: 44px; font-weight: 500; }
+  .tri { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; flex: 1; align-items: stretch; }
+  .tri .card h3 { font-size: 40px; }
+  .tri .card .k { font-size: 26px; font-weight: 700; color: var(--gray); letter-spacing: 2px; }
+  .tri .card { justify-content: center; gap: 20px; }
+  .tri .card ul.b { font-size: 32px; line-height: 1.6; }
+  .quad { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; flex: 1; }
+  .quad .card { justify-content: center; }
+  .quad .card h3 { font-size: 38px; }
+  .quad .card p { font-size: 30px; line-height: 1.5; }
+  .six { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; flex: 1; }
+  .six .card { justify-content: center; padding: 24px 32px; }
+  .six .card h3 { font-size: 34px; }
+  .six .card p { font-size: 28px; line-height: 1.45; }
+  .vs { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; flex: 1; }
+  .vs .card { justify-content: center; gap: 18px; }
+</style>
+</head>
+<body>
+<div class="progress"></div>
+<div class="stage">
+
+<!-- 1 표지 -->
+<section class="slide cover">
+  <div style="display:flex;flex-direction:column;gap:32px;width:1000px">
+    <p style="font-size:120px;font-weight:900;color:var(--red);line-height:1">11</p>
+    <p style="font-size:36px;font-weight:500;color:var(--gray)">데이톨로지 — 데이터로 읽는 인간과 사회</p>
+    <h1 style="font-size:96px;font-weight:900;line-height:1.15">알고리즘 큐레이션의<br>양면성</h1>
+    <hr style="width:160px;border:none;border-top:6px solid var(--red)">
+    <p style="font-size:32px;color:var(--gray)">주교재: 김성태, 『데이톨로지』 2부 · 연재 ⑦ · 강사 : ○○○</p>
+  </div>
+  <img class="fig" src="assets/cover.png" alt="거품 안은 한 가지 색, 밖은 여러 색인 점 그림" style="width:600px;height:796px">
+  <aside class="note">11주차. 원전: 지디넷 연재 ⑦ 「AI 알고리즘의 딜레마… '선택의 역설' vs '에코챔버'·'필터버블'」(2021.06.21), 부제 "빅데이터시대 큐레이션의 양면성".</aside>
+</section>
+
+<!-- 2 목차 -->
+<section class="slide" style="flex-direction:row;align-items:center;gap:96px;padding:128px">
+  <div style="display:flex;flex-direction:column;gap:24px;width:520px">
+    <p style="font-size:32px;font-weight:700;color:var(--red);letter-spacing:4px">CONTENTS</p>
+    <h2 style="font-size:72px;font-weight:900;line-height:1.15">알고리즘<br>큐레이션의<br>양면성</h2>
+    <hr style="width:120px;border:none;border-top:6px solid var(--red)">
+  </div>
+  <div style="flex:1">
+    <div class="toc-item"><b>01</b><span>추천 알고리즘과 하이웨이 이펙트</span></div>
+    <div class="toc-item"><b>02</b><span>편리함의 논리: 선택의 역설</span></div>
+    <div class="toc-item"><b>03</b><span>위험의 논리: 에코챔버·필터버블</span></div>
+    <div class="toc-item"><b>04</b><span>인문학의 연원과 버블 터뜨리기</span></div>
+    <div class="toc-item"><b>05</b><span>정리 및 확인 문제</span></div>
+  </div>
+</section>
+
+<!-- 3 학습 목표 -->
+<section class="slide" style="flex-direction:row;align-items:center;gap:80px;padding:128px">
+  <img class="fig" src="assets/goal.png" alt="다양한 색의 처음 피드와 빨간색으로 좁아진 클릭 뒤 피드" style="width:760px;height:568px">
+  <div class="col" style="gap:40px">
+    <h2 style="font-size:72px;font-weight:900">학습 목표</h2>
+    <div class="card"><p style="font-size:28px;font-weight:700;color:var(--red)">목표 1</p><p style="font-size:36px;font-weight:500">선택의 역설, 에코챔버, 필터버블의 구분</p></div>
+    <div class="card"><p style="font-size:28px;font-weight:700;color:var(--red)">목표 2</p><p style="font-size:36px;font-weight:500">내 정보 환경 점검과 “버블 터뜨리기” 전략 수립</p></div>
+  </div>
+</section>
+
+<!-- 4 오늘의 질문 -->
+<section class="slide" style="justify-content:center;align-items:center;gap:56px">
+  <p style="font-size:36px;font-weight:700;color:var(--red);letter-spacing:4px">오늘의 질문</p>
+  <p style="font-size:60px;font-weight:900;line-height:1.4;text-align:center">미시령 터널은 고개를 넘는 시간을 크게 단축<br><span style="color:var(--red)">그런데 우리가 잃은 것은?</span></p>
+  <aside class="note">원전: 연재 ⑦ — 미시령 터널과 '하이웨이 이펙트' 비유. 학생 답(풍경, 휴게소, 우연한 만남)을 칠판에 기록 후 추천 알고리즘으로 연결.</aside>
+</section>
+
+<!-- 5 11-1 비유: 터널 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">11-1</span><h2>추천 알고리즘과 하이웨이 이펙트</h2></div><p class="sub">[비유] 터널</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/tunnel.jpg" alt="조명이 켜진 도로 터널 내부" style="width:760px;height:570px"><p class="credit">사진: Kecko / CC BY 2.0</p></div>
+    <div class="col">
+      <h3>터널 = 알고리즘 추천</h3>
+      <ul class="b">
+        <li>원하는 목적지까지 가장 빠른 길</li>
+        <li>고갯길의 풍경·우연한 발견은 생략</li>
+        <li>추천: 내가 좋아할 것만 빠르게 도착</li>
+        <li>편리함의 대가 = 보지 못한 세상</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="note">원전: 연재 ⑦ — 미시령 터널의 '하이웨이 이펙트'. 사진은 스위스 고트하르트 도로 터널(비유용).</aside>
+</section>
+
+<!-- 6 11-1 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">11-1</span><h2>추천 알고리즘과 하이웨이 이펙트</h2></div><p class="sub">고갯길(탐색) vs 터널(추천)</p></div>
+  <video class="anim" src="assets/anim/Highway.mp4" poster="assets/anim/Highway_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">manim: 굽은 길은 풍경 3개를 지나며 느리게, 터널은 풍경 0개로 빠르게. 풍경 이름은 강의자 예시.</aside>
+</section>
+
+<!-- 7 11-1 추천의 확산 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">11-1</span><h2>추천 알고리즘과 하이웨이 이펙트</h2></div><p class="sub">이미 일상이 된 큐레이션</p></div>
+  <div class="quad">
+    <div class="card"><h3>카카오 ‘루빅스’ (2015~)</h3><p>개인 맞춤형 뉴스 추천</p></div>
+    <div class="card"><h3>네이버 ‘에어스’ (2017~)</h3><p>개인 맞춤형 뉴스 추천</p></div>
+    <div class="card"><h3>2021.6 포털 AI 추천 논의</h3><p>AI 뉴스 추천 제거 방안 추진<br>→ 이용자가 언론사를 고르는 방식 예고</p></div>
+    <div class="card"><h3>구글 ‘AI 퍼스트’ (2021.5)</h3><p>순다 피차이, I/O에서 AI 추천 확대<br>맞춤형 광고·넷플릭스 첫 화면도 같은 원리</p></div>
+  </div>
+  <aside class="note">원전: 연재 ⑦ — 2021.6.17 미디어혁신특별위원회 발표, 2021.5.18 구글 I/O. 이후 실제 개편 경과는 원전 범위 밖(최신 상황은 별도 확인).</aside>
+</section>
+
+<!-- 8 11-2 비유: 시리얼 진열대 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">11-2</span><h2>편리함의 논리: 선택의 역설</h2></div><p class="sub">[비유] 시리얼 진열대</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/cereal.jpg" alt="수십 종의 시리얼이 늘어선 마트 진열대" style="width:760px;height:570px"><p class="credit">사진: JeepersMedia / CC BY 2.0</p></div>
+    <div class="col">
+      <h3>시리얼 진열대 = 선택 과잉</h3>
+      <ul class="b">
+        <li>수십 종의 상자 앞에서 망설임</li>
+        <li>고른 뒤에도 “다른 게 나았을까” 후회</li>
+        <li>선택지가 많을수록 만족 하락 가능</li>
+        <li>추천 = 진열대를 대신 골라 주는 점원</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="note">선택의 역설(배리 슈워츠)은 원전(연재 ⑦). 진열대 비유는 강의자 구성. [보충] 유명한 잼 실험(아이엔거·레퍼, 2000: 잼 24종 vs 6종 진열 시 구매율 차이)은 원전에 없는 사례이며, 이후 메타분석에서 효과가 일관되지 않다는 재현성 논쟁 있음.</aside>
+</section>
+
+<!-- 9 11-2 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">11-2</span><h2>편리함의 논리: 선택의 역설</h2></div><p class="sub">선택지가 늘수록 만족도는 오르다 내려감 (개념도)</p></div>
+  <video class="anim" src="assets/anim/ChoiceParadox.mp4" poster="assets/anim/ChoiceParadox_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">manim 개념도(실측 곡선 아님). 슈워츠: 많은 선택권이 오히려 사람을 무력하게 함 → 큐레이션 옹호 논리.</aside>
+</section>
+
+<!-- 10 11-3 비유: 비눗방울 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">11-3</span><h2>위험의 논리: 에코챔버·필터버블</h2></div><p class="sub">[비유] 비눗방울</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/bubble.jpg" alt="파란 하늘에 뜬 비눗방울" style="width:760px;height:570px"><p class="credit">사진: trindade.joao / CC BY 2.0</p></div>
+    <div class="col">
+      <h3>비눗방울 = 필터버블</h3>
+      <ul class="b">
+        <li>투명해서 갇힌 줄 모르는 막</li>
+        <li>안에서 보이는 세상 = 알고리즘이 거른 정보</li>
+        <li>클릭할수록 두꺼워지는 막</li>
+        <li>스스로는 터뜨리기 어려운 구조</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="note">필터버블 = 엘리 패리저, 『The Filter Bubble』(2011, 국내 『생각 조종자들』). 비유 세부는 강의자 구성.</aside>
+</section>
+
+<!-- 11 11-3 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">11-3</span><h2>위험의 논리: 에코챔버·필터버블</h2></div><p class="sub">클릭 → 추천 → 클릭: 피드가 한 가지 색으로</p></div>
+  <video class="anim" src="assets/anim/FilterBubble.mp4" poster="assets/anim/FilterBubble_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">manim: 빨간 주제를 클릭할 때마다 피드의 빨간 비율 20% → 45% → 75% → 100%(설명용 가정). 실제 추천 시스템은 탐색용 다양성 장치를 일부 섞음.</aside>
+</section>
+
+<!-- 12 11-3 두 얼굴 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">11-3</span><h2>위험의 논리: 에코챔버·필터버블</h2></div><p class="sub">같은 추천, 두 얼굴</p></div>
+  <div class="vs">
+    <div class="card"><h3>편리함의 논리</h3>
+      <ul class="b" style="font-size:30px"><li><b>선택의 역설</b> (배리 슈워츠): 큐레이션 = 구원</li><li><b>하이웨이 이펙트</b>: 원하는 곳에 빠르게</li><li>원하는 정보의 편리한 제공</li></ul></div>
+    <div class="card" style="border-left-color:var(--ink)"><h3 style="color:var(--ink)">위험의 논리</h3>
+      <ul class="b" style="font-size:30px"><li><b>에코챔버</b> (캐스 선스타인): 같은 목소리만 메아리, 편향 강화</li><li><b>필터버블</b> (엘리 패리저): 알고리즘이 거른 정보에 갇힘</li><li>상업적 판단의 개입 가능성</li></ul></div>
+  </div>
+  <aside class="note">원전: 연재 ⑦. 에코챔버 = 비슷한 생각의 정보만 소비하며 편향 강화, 필터버블 = 알고리즘이 걸러 준 정보의 거품. 구분 포인트: 에코챔버는 "사람들끼리", 필터버블은 "알고리즘이".</aside>
+</section>
+
+<!-- 13 11-4 비유: 동굴 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">11-4</span><h2>인문학의 연원과 버블 터뜨리기</h2></div><p class="sub">[비유] 동굴과 바깥의 빛</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/cave.jpg" alt="어두운 동굴 입구 너머로 보이는 바다와 바위" style="width:760px;height:570px"><p class="credit">사진: romainguy / CC0</p></div>
+    <div class="col">
+      <h3>동굴 = 동굴의 우상 (베이컨)</h3>
+      <ul class="b">
+        <li>저마다의 경험·성향이 만든 좁은 동굴</li>
+        <li>동굴 안의 세상 = 내가 아는 전부라는 착각</li>
+        <li>필터버블 = 알고리즘이 파 준 디지털 동굴</li>
+        <li>벗어나는 길: 바깥과 소통, 다른 의견 듣기</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="note">원전: 연재 ⑦ — 베이컨의 동굴의 우상(개인의 특수한 편견), 다른 사람의 의견을 듣고 바깥과 소통해 극복. "디지털 동굴" 표현은 강의자 구성.</aside>
+</section>
+
+<!-- 14 11-4 인문학 연원 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">11-4</span><h2>인문학의 연원과 버블 터뜨리기</h2></div><p class="sub">필터버블의 오래된 이름들</p></div>
+  <div class="six">
+    <div class="card"><h3>동굴의 우상</h3><p>베이컨 · 개인의 특수한 편견</p></div>
+    <div class="card"><h3>시뮬라시옹</h3><p>보드리야르 · 가상이 실재보다 더 실재 같음</p></div>
+    <div class="card"><h3>선택적 노출</h3><p>기존 신념과 맞는 정보만 수용</p></div>
+    <div class="card"><h3>프레이밍</h3><p>고프만 · 세상을 해석하는 준거틀</p></div>
+    <div class="card"><h3>게이트키핑</h3><p>슈메이커 · 보도할 뉴스를 고르는 선별</p></div>
+    <div class="card" style="background:#FFF4F4"><h3>알고리즘</h3><p>새로운 게이트키퍼이자 프레임</p></div>
+  </div>
+  <aside class="note">원전: 연재 ⑦. 마지막 카드(알고리즘 = 새 게이트키퍼)는 강의안의 정리.</aside>
+</section>
+
+<!-- 15 11-4 버블 터뜨리기 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">11-4</span><h2>인문학의 연원과 버블 터뜨리기</h2></div><p class="sub">위험: 정보 편식 → 양극화·파편화</p></div>
+  <div class="tri">
+    <div class="card"><p class="k">기업</p><h3>설계</h3><ul class="b"><li>MIT 미디어랩 ‘플립피드’: 반대 성향 피드 체험</li><li>반대 성향 뉴스 삽입 프로그램</li></ul></div>
+    <div class="card"><p class="k">정부·사회</p><h3>구조</h3><ul class="b"><li>다양한 의견을 공유·논의하는 구조</li><li>민주주의의 기반</li></ul></div>
+    <div class="card"><p class="k">소비자</p><h3>습관</h3><ul class="b"><li>의도적으로 다른 관점 찾기</li><li>추천 밖의 직접 검색</li></ul></div>
+  </div>
+  <p style="font-size:32px;font-weight:700;color:var(--red);text-align:center">“버블 터뜨리기”의 본격적 시작</p>
+  <aside class="note">원전: 연재 ⑦ — 기업·정부·소비자 각자의 노력으로 필터버블·에코챔버를 줄이는 '버블 터뜨리기'. 페이스북의 반대 성향 뉴스 삽입 프로그램도 칼럼에 언급. 소비자 습관 항목은 강의자 예시.</aside>
+</section>
+
+<!-- 16 11-4 반론 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">11-4</span><h2>인문학의 연원과 버블 터뜨리기</h2></div><p class="sub">[보충] 데이터 리터러시로 다시 보기</p></div>
+  <div class="vs">
+    <div class="card"><h3>필터버블 효과 크기 논쟁</h3><p style="font-size:30px;line-height:1.55">이후 연구: 알고리즘보다 사용자 자신의 선택(선택적 노출)이 더 크다는 반론 존재<br>→ 책임은 알고리즘 vs 클릭하는 나?</p></div>
+    <div class="card"><h3>선택의 역설 재현성</h3><p style="font-size:30px;line-height:1.55">잼 실험류 연구의 효과가 메타분석에서 일관되지 않음<br>→ 유명한 연구도 근거의 크기 확인 필요</p></div>
+  </div>
+  <aside class="note">[보충] 원전에 없는 후속 연구 논쟁. 강의안 11주차 [보충] 메모. 구체 논문은 수업 전 강의자 확인 권장(예: 잼 실험 메타분석 Scheibehenne 외, 2010).</aside>
+</section>
+
+<!-- 17 활동 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">11-5</span><h2>활동: 내 피드 감사(audit)</h2></div><p class="sub">60분 · 개인 → 짝 → 1주 실험</p></div>
+  <div class="tri">
+    <div class="card"><p class="k">STEP 1 · 15분</p><h3>기록</h3><ul class="b"><li>유튜브 홈 상위 20개</li><li>주제·관점·출처별 분류</li></ul></div>
+    <div class="card"><p class="k">STEP 2 · 30분</p><h3>비교</h3><ul class="b"><li>짝과 화면 비교</li><li>겹치는 비율 계산</li><li>내 버블의 색은?</li></ul></div>
+    <div class="card"><p class="k">STEP 3 · 15분</p><h3>실험 설계</h3><ul class="b"><li>1주일간 하루 3개 다른 관점 시청</li><li>다음 주 추천 화면 변화 보고</li></ul></div>
+  </div>
+  <aside class="note">강의안 11주차 활동. 결과는 12주차 도입에서 공유.</aside>
+</section>
+
+<!-- 18 정리 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">11-6</span><h2>정리 및 확인 문제</h2></div><p class="sub">오늘의 핵심 4줄</p></div>
+  <div class="col" style="gap:24px">
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">하이웨이 이펙트</b> = 추천은 빠르지만 우연한 발견을 생략</p></div>
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">선택의 역설</b> = 선택 과잉의 피로 → 큐레이션의 존재 이유</p></div>
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">에코챔버 · 필터버블</b> = 같은 목소리, 거른 정보에 갇힘</p></div>
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">버블 터뜨리기</b> = 기업 · 정부 · 소비자 모두의 몫</p></div>
+  </div>
+</section>
+
+<!-- 19 확인 문제 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">11-6</span><h2>정리 및 확인 문제</h2></div><p class="sub">확인 문제</p></div>
+  <div class="row" style="gap:64px;align-items:stretch">
+    <div class="col" style="gap:18px">
+      <h3 style="font-size:36px">문제 1</h3>
+      <p style="font-size:32px;line-height:1.45">추천 알고리즘을 옹호하는 근거가 되는 슈워츠의 개념</p>
+      <h3 style="font-size:36px;padding-top:20px">문제 2</h3>
+      <p style="font-size:32px;line-height:1.45">“알고리즘이 걸러 준 정보의 거품에 갇힘”과 “비슷한 생각의 사람들끼리 메아리”, 각각의 이름</p>
+      <h3 style="font-size:36px;padding-top:20px">문제 3</h3>
+      <p style="font-size:32px;line-height:1.45">언론사가 보도할 뉴스를 고르는 과정을 뜻하는 개념과, 오늘날 그 역할을 나눠 맡은 것</p>
+      <button class="reveal">정답 보기</button>
+      <div class="answer">문제 1: 선택의 역설<br>문제 2: 필터버블(패리저) / 에코챔버(선스타인)<br>문제 3: 게이트키핑(슈메이커) — 추천 알고리즘</div>
+    </div>
+    <img class="fig" src="assets/goal.png" alt="처음 피드와 클릭 뒤 피드" style="width:520px;height:390px;align-self:center">
+  </div>
+  <aside class="note">정답 — 1: 선택의 역설. 2: 필터버블 / 에코챔버. 3: 게이트키핑, 알고리즘.</aside>
+</section>
+
+<!-- 20 마무리 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">11-6</span><h2>정리 및 확인 문제</h2></div><p class="sub">마무리</p></div>
+  <div class="row" style="gap:80px">
+    <div class="col" style="gap:20px">
+      <h3 style="font-size:36px">이번 주 과제</h3>
+      <ul class="b" style="font-size:30px">
+        <li>연재 ② 「디지털이 만드는 새로운 세상」 읽기 + 사전 질문 1개</li>
+        <li>버블 실험 1주 진행 (하루 3개 다른 관점)</li>
+        <li>데이톨로지 저널: 내 추천 화면의 변화 캡처</li>
+      </ul>
+      <h3 style="font-size:36px;padding-top:24px">다음 시간</h3>
+      <p style="font-size:30px">메타버스와 공간미학 — 공간 욕망의 디지털 귀결</p>
+      <p style="font-size:26px;padding-top:24px"><a href="quiz.html" style="color:var(--red);font-weight:700">▶ 웹 퀴즈</a>&nbsp;&nbsp;&nbsp;<a href="playground.html" style="color:var(--red);font-weight:700">▶ 필터버블 놀이터</a></p>
+    </div>
+    <img class="fig" src="assets/cover.png" alt="필터버블 그림" style="width:450px;height:597px">
+  </div>
+</section>
+
+<!-- 21 이미지 출처 -->
+<section class="slide">
+  <div class="head"><h2>이미지 출처</h2><p class="sub">사진 (Openverse 검색, CC 라이선스)</p></div>
+  <ul class="b" style="font-size:24px;line-height:1.7">
+    <li>Gotthard Road Tunnel - Göschenen — Kecko, CC BY 2.0, <a href="https://www.flickr.com/photos/70981241@N00/15608222292">flickr</a></li>
+    <li>Breakfast Cereal Aisle — JeepersMedia, CC BY 2.0, <a href="https://www.flickr.com/photos/39160147@N03/13976920190">flickr</a></li>
+    <li>Soap bubble — trindade.joao, CC BY 2.0, <a href="https://www.flickr.com/photos/11091003@N02/6899550685">flickr</a></li>
+    <li>Cave Light — romainguy, CC0 1.0, <a href="https://www.flickr.com/photos/24046097@N00/6885444694">flickr</a></li>
+    <li>애니메이션·그림 — manim, matplotlib으로 직접 제작</li>
+    <li>인용 — 김성태, 『데이톨로지』(이른비, 2022); 지디넷코리아 연재 ⑦(2021.06.21)</li>
+  </ul>
+</section>
+
+</div>
+<div class="notes"></div>
+<div class="bar">
+  <a href="../index.html">← 목록</a>
+  <button data-act="prev">◀</button><span class="count"></span><button data-act="next">▶</button>
+  <span class="grow">← → 이동 · F 전체 화면 · N 노트</span>
+  <a href="quiz.html">퀴즈</a><a href="playground.html">놀이터</a>
+  <button data-act="notes">노트</button><button data-act="full">전체 화면</button>
+</div>
+<script src="../assets/deck.js"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+{
+  "gallery": {
+    "title": "American Gothic - 28/52",
+    "creator": "Phil Roeder",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/88876166@N00/5952870904",
+    "provider": "flickr"
+  },
+  "puzzle": {
+    "title": "jigsaw puzzle pieces",
+    "creator": "Electric-Eye",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/35111587@N00/4054093512",
+    "provider": "flickr"
+  },
+  "trophy": {
+    "title": "Golden trophy, five stars rating",
+    "creator": null,
+    "license": "cc0",
+    "license_version": "1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "source": "https://www.rawpixel.com/image/11189198/golden-trophy-five-stars-rating",
+    "provider": "rawpixel"
+  }
+}

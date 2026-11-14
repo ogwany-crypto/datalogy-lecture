@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>6강 평균인 놀이터</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="../assets/page.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="badge">6강</span><h1>평균인 놀이터</h1>
+    <nav><a href="index.html#1">슬라이드</a><a href="quiz.html">퀴즈</a><a href="../index.html">목록</a></nav>
+  </header>
+  <p class="lede">슬라이드의 manim 장면(PilotFilter, CoinAverage)을 직접 조작하는 공간 · 원본 장면 코드: scripts/06_animations.py</p>
+
+  <!-- 1 평균인 필터 -->
+  <section class="card" id="s1">
+    <h2><span class="n">01</span>'평균 조종사' 찾기</h2>
+    <p class="muted">가상의 조종사 4,000명(항목마다 정상분포, 항목끼리 독립인 가상 데이터) · 항목을 늘리거나 '평균 범위'를 넓혀 보기 · 관련 장면: PilotFilter</p>
+    <div class="controls">
+      <label>항목 수 <input type="range" id="p-k" min="1" max="10" value="10"> <b id="p-kv"></b>개</label>
+      <label>평균 범위 ± <input type="range" id="p-w" min="5" max="100" value="30"> <b id="p-wv"></b> 표준편차</label>
+      <button id="p-new">새 4,000명 만들기</button>
+    </div>
+    <canvas id="p-cv" aria-label="항목을 하나씩 더할 때 모든 항목이 평균 범위인 사람 수 막대그래프"></canvas>
+    <p class="stat" id="p-stat" aria-live="polite"></p>
+  </section>
+
+  <!-- 2 동전 -->
+  <section class="card" id="s2">
+    <h2><span class="n">02</span>동전 던지기: 많이 모으면 보이는 규칙성</h2>
+    <p class="muted">던질수록 앞면 비율이 0.5(점선)에 가까워지는 모습 — 케틀레가 사회 통계에서 찾은 '규칙성'의 원리 · 관련 장면: CoinAverage</p>
+    <div class="controls">
+      <button class="solid" id="c-10">10번 던지기</button><button id="c-100">100번</button><button id="c-1000">1,000번</button><button id="c-reset">초기화</button>
+    </div>
+    <canvas id="c-cv" aria-label="던진 횟수에 따른 앞면 비율 꺾은선"></canvas>
+    <p class="stat" id="c-stat" aria-live="polite"></p>
+  </section>
+</div>
+
+<script>
+const RED = '#E22B2D', GRAY = '#8C8C8C', INK = '#3F3F3F', GRAY_L = '#D9D9D9';
+function setup(cv, h) {   // 고해상도 캔버스
+  const dpr = window.devicePixelRatio || 1, w = cv.clientWidth;
+  cv.width = w * dpr; cv.height = h * dpr; cv.style.height = h + 'px';
+  const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.font = '14px "Noto Sans KR", sans-serif'; return [g, w, h];
+}
+const gauss = () => Math.sqrt(-2 * Math.log(1 - Math.random())) * Math.cos(2 * Math.PI * Math.random());
+
+// ---------- 1 평균인 필터 ----------
+const N = 4000, D = 10, NAMES = ['키', '가슴둘레', '팔 길이', '몸통 길이', '목둘레', '허벅지', '다리 길이', '엉덩이', '손목', '앉은키'];
+let people = [];
+function makePeople() { people = Array.from({ length: N }, () => Array.from({ length: D }, gauss)); }
+const kIn = document.getElementById('p-k'), wIn = document.getElementById('p-w'), pCv = document.getElementById('p-cv');
+function drawP() {
+  const k = +kIn.value, w = +wIn.value / 100;
+  document.getElementById('p-kv').textContent = k; document.getElementById('p-wv').textContent = w.toFixed(2);
+  const counts = [N];
+  let alive = people;
+  for (let j = 0; j < k; j++) { alive = alive.filter(p => Math.abs(p[j]) <= w); counts.push(alive.length); }
+  const [g, W, H] = setup(pCv, 320);
+  const x0 = 50, y0 = 270, bw = (W - 80) / 11;
+  g.strokeStyle = INK; g.beginPath(); g.moveTo(x0 - 6, y0); g.lineTo(W - 20, y0); g.stroke();
+  counts.forEach((c, i) => {
+    const h = 220 * c / N, x = x0 + i * bw;
+    g.fillStyle = c === 0 ? RED : i === 0 ? INK : GRAY; g.fillRect(x, y0 - Math.max(h, 1), bw * 0.7, Math.max(h, 1));
+    g.fillStyle = c === 0 ? RED : INK; g.textAlign = 'center'; g.fillText(c.toLocaleString(), x + bw * 0.35, y0 - h - 6);
+    g.fillStyle = GRAY; g.fillText(i === 0 ? '전체' : NAMES[i - 1], x + bw * 0.35, y0 + 20);
+  });
+  const p1 = counts[1] / N, last = counts[counts.length - 1];
+  document.getElementById('p-stat').innerHTML = `${k}개 항목 모두 평균 범위인 사람 <b>${last.toLocaleString()}명</b> / 4,000명`
+    + ` · 한 항목 통과 비율 약 <b>${Math.round(p1 * 100)}%</b> → 항목이 늘 때마다 그 비율만큼 계속 곱해짐`
+    + (last === 0 ? ' — <span class="bad">평균인 0명</span>' : '');
+}
+kIn.oninput = wIn.oninput = drawP;
+document.getElementById('p-new').onclick = () => { makePeople(); drawP(); };
+
+// ---------- 2 동전 ----------
+let flips = [];
+const cCv = document.getElementById('c-cv');
+function drawC() {
+  const [g, W, H] = setup(cCv, 260);
+  const x0 = 50, x1 = W - 20, y0 = 230, y1 = 20, Y = v => y0 - (y0 - y1) * v;
+  g.strokeStyle = INK; g.beginPath(); g.moveTo(x0, y1); g.lineTo(x0, y0); g.lineTo(x1, y0); g.stroke();
+  g.setLineDash([6, 6]); g.strokeStyle = GRAY; g.beginPath(); g.moveTo(x0, Y(0.5)); g.lineTo(x1, Y(0.5)); g.stroke(); g.setLineDash([]);
+  g.fillStyle = GRAY; g.textAlign = 'right'; ['0', '0.5', '1'].forEach((t, i) => g.fillText(t, x0 - 6, Y(i / 2) + 5));
+  const n = flips.length;
+  if (n) {
+    g.strokeStyle = RED; g.lineWidth = 2; g.beginPath();
+    let h = 0;
+    flips.forEach((f, i) => { h += f; const x = x0 + (x1 - x0) * (i + 1) / n, y = Y(h / (i + 1)); i ? g.lineTo(x, y) : g.moveTo(x, y); });
+    g.stroke();
+    document.getElementById('c-stat').innerHTML = `던진 횟수 <b>${n.toLocaleString()}</b> · 앞면 <b>${h.toLocaleString()}</b> · 비율 <b>${(h / n).toFixed(3)}</b> · 0.5와의 차이 ${Math.abs(h / n - 0.5).toFixed(3)}`;
+  } else document.getElementById('c-stat').textContent = '버튼을 눌러 던지기 시작';
+}
+const throwN = k => { for (let i = 0; i < k; i++) flips.push(Math.random() < 0.5 ? 1 : 0); drawC(); };
+document.getElementById('c-10').onclick = () => throwN(10);
+document.getElementById('c-100').onclick = () => throwN(100);
+document.getElementById('c-1000').onclick = () => throwN(1000);
+document.getElementById('c-reset').onclick = () => { flips = []; drawC(); };
+
+makePeople();
+addEventListener('resize', () => { drawP(); drawC(); });
+document.fonts.ready.then(() => { drawP(); drawC(); });
+drawP(); drawC();
+</script>
+</body>
+</html>

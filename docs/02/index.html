@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2강 데이터에서 길을 찾다</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="../assets/deck.css">
+<style>
+  .cover { flex-direction: row !important; align-items: center; justify-content: space-between; padding: 128px !important; }
+  .cover::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 24px; background: var(--red); }
+  .toc-item { display: flex; align-items: center; gap: 40px; padding: 30px 0; border-bottom: 2px solid var(--red-l); }
+  .toc-item:last-child { border-bottom: none; }
+  .toc-item b { font-size: 56px; font-weight: 900; color: var(--red); width: 100px; }
+  .toc-item span { font-size: 44px; font-weight: 500; }
+  .tri { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; flex: 1; align-items: stretch; }
+  .tri .card h3 { font-size: 40px; }
+  .tri .card .k { font-size: 26px; font-weight: 700; color: var(--gray); letter-spacing: 2px; }
+  .tri .card { justify-content: center; gap: 20px; }
+  .tri .card ul.b { font-size: 32px; line-height: 1.6; }
+  .quote { font-size: 44px; font-weight: 700; line-height: 1.5; }
+  .quote small { display: block; font-size: 26px; font-weight: 500; color: var(--gray); padding-top: 12px; }
+</style>
+</head>
+<body>
+<div class="progress"></div>
+<div class="stage">
+
+<!-- 1 표지 -->
+<section class="slide cover">
+  <div style="display:flex;flex-direction:column;gap:32px;width:1000px">
+    <p style="font-size:120px;font-weight:900;color:var(--red);line-height:1">02</p>
+    <p style="font-size:36px;font-weight:500;color:var(--gray)">데이톨로지 — 데이터로 읽는 인간과 사회</p>
+    <h1 style="font-size:96px;font-weight:900;line-height:1.15">데이터에서<br>길을 찾다</h1>
+    <hr style="width:160px;border:none;border-top:6px solid var(--red)">
+    <p style="font-size:32px;color:var(--gray)">김정호와 매튜 머리 — 아날로그 시대의 데이터 사이언티스트</p>
+  </div>
+  <img class="fig" src="assets/cover.png" alt="방안좌표 위 흩어진 점과 빨간 길" style="width:600px;height:796px">
+  <aside class="note">2주차. 원전: 책 1부 1장 「데이터에서 길을 찾다」, 지디넷 연재 ① 「역사를 바꾼 위대한 데이터 사이언티스트」(2021.05.10).</aside>
+</section>
+
+<!-- 2 목차 -->
+<section class="slide" style="flex-direction:row;align-items:center;gap:96px;padding:128px">
+  <div style="display:flex;flex-direction:column;gap:24px;width:520px">
+    <p style="font-size:32px;font-weight:700;color:var(--red);letter-spacing:4px">CONTENTS</p>
+    <h2 style="font-size:72px;font-weight:900;line-height:1.15">데이터에서<br>길을 찾다</h2>
+    <hr style="width:120px;border:none;border-top:6px solid var(--red)">
+  </div>
+  <div style="flex:1">
+    <div class="toc-item"><b>01</b><span>김정호와 『대동여지도』</span></div>
+    <div class="toc-item"><b>02</b><span>매튜 머리와 항해도</span></div>
+    <div class="toc-item"><b>03</b><span>창조는 편집이다</span></div>
+    <div class="toc-item"><b>04</b><span>활동 · 정리 및 확인 문제</span></div>
+  </div>
+</section>
+
+<!-- 3 학습 목표 -->
+<section class="slide" style="flex-direction:row;align-items:center;gap:80px;padding:128px">
+  <img class="fig" src="assets/goal.png" alt="흩어진 자료와 편집된 지도 비교" style="width:760px;height:568px">
+  <div class="col" style="gap:40px">
+    <h2 style="font-size:72px;font-weight:900">학습 목표</h2>
+    <div class="card"><p style="font-size:28px;font-weight:700;color:var(--red)">목표 1</p><p style="font-size:36px;font-weight:500">김정호·매튜 머리의 작업을 “수집 → 편집 → 표준화 → 가치 발견” 과정으로 분석</p></div>
+    <div class="card"><p style="font-size:28px;font-weight:700;color:var(--red)">목표 2</p><p style="font-size:36px;font-weight:500">“창조는 편집이다”를 데이터 관점에서 설명</p></div>
+  </div>
+</section>
+
+<!-- 4 오늘의 질문 -->
+<section class="slide" style="justify-content:center;align-items:center;gap:56px">
+  <p style="font-size:36px;font-weight:700;color:var(--red);letter-spacing:4px">오늘의 질문</p>
+  <p style="font-size:64px;font-weight:900;line-height:1.4;text-align:center">GPS도 위성사진도 없던 1861년<br>1만 개가 넘는 지명을 담은 지도,<br><span style="color:var(--red)">어떻게 가능했을까?</span></p>
+  <aside class="note">짝과 1분 추측. 흔한 답 “전국을 직접 걸었다” → 2-1에서 반전(기존 자료의 통합).</aside>
+</section>
+
+<!-- 5 2-1 비유: 퍼즐 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">2-1</span><h2>김정호와 『대동여지도』</h2></div><p class="sub">[비유] 퍼즐 조각</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/puzzle.jpg" alt="흩어진 퍼즐 조각" style="width:760px;height:570px"><p class="credit">사진: Electric-Eye / CC BY 2.0</p></div>
+    <div class="col">
+      <h3>퍼즐 조각 = 흩어진 지리 자료</h3>
+      <ul class="b">
+        <li>조각 하나 = 지도 한 장, 지리서 한 권, 구전 한 마디</li>
+        <li>조각만으로는 전체 그림 불가</li>
+        <li>맞추는 기준 = 방안좌표와 표준 기호</li>
+        <li>완성된 그림 = 한 장의 전국 지도</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 6 2-1 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">2-1</span><h2>김정호와 『대동여지도』</h2></div><p class="sub">수집 → 편집(방안좌표) → 표준화(같은 기호)</p></div>
+  <video class="anim" src="assets/anim/MapAssembly.mp4" poster="assets/anim/MapAssembly_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">manim: 출처 4종의 점이 방안좌표에 놓이고 같은 기호로 바뀜. 연재 ①: 직접 답사보다 중앙정부 지도·지리서, 지방 관청 문서, 보부상·짐꾼 구전의 통합. 그림 속 지형은 개념도(실제 지도 아님).</aside>
+</section>
+
+<!-- 7 2-1 사실 정리 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">2-1</span><h2>김정호와 『대동여지도』</h2></div><p class="sub">숫자로 본 대동여지도</p></div>
+  <div class="tri">
+    <div class="card"><p class="k">1861 · 철종 12년</p><h3>구성</h3>
+      <ul class="b"><li>남북 22판, 동서 19판</li><li>접고 펼치는 구조</li><li>산줄기·물줄기·고을·도로</li></ul></div>
+    <div class="card"><p class="k">거리와 지명</p><h3>정밀도</h3>
+      <ul class="b"><li>10리(약 4km)마다 점</li><li>지명 약 1만 1,680개</li><li>축척 약 1:16만~1:21.6만 (추정)</li></ul></div>
+    <div class="card"><p class="k">평가</p><h3>“첨단지도”</h3>
+      <ul class="b"><li>단순한 고지도 이상</li><li>누구나 읽는 표준 기호</li><li>(민병준의 평가)</li></ul></div>
+  </div>
+  <aside class="note">출처: 연재 ①(2021.05.10). [검증 노트] 칼럼은 축척을 “약 16만분의 1”과 “1:216,000”으로 함께 적음 → 연구자마다 추정치가 달라 범위로 표기. 지명 수는 민병준 해설서 기준.</aside>
+</section>
+
+<!-- 8 2-2 비유: 해도 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">2-2</span><h2>매튜 머리와 항해도</h2></div><p class="sub">[비유] 바다의 지도, 해도</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/chart.jpg" alt="해도와 디바이더" style="width:760px;height:570px"><p class="credit">사진: NOAA's National Ocean Service / CC BY 2.0</p></div>
+    <div class="col">
+      <h3>해도 = 항해일지 데이터의 결정체</h3>
+      <ul class="b">
+        <li>선박 한 척의 일지 = 바다의 한 줄 기록</li>
+        <li>수많은 일지를 겹치면 바람·해류의 패턴</li>
+        <li>패턴 위에 그린 선 = 더 빠르고 안전한 항로</li>
+        <li>창고 속 종이 더미 → 바다의 길잡이</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 9 2-2 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">2-2</span><h2>매튜 머리와 항해도</h2></div><p class="sub">항해일지 50만 건 이상 → 바람·해류 → 새 항로</p></div>
+  <video class="anim" src="assets/anim/MauryLogs.mp4" poster="assets/anim/MauryLogs_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">manim: 기록 수 카운터 → 바람·해류 화살표 → 기존 항로(회색) vs 데이터로 찾은 항로(빨강). 바다·항로 모양은 개념도. “50만 건 이상”은 연재 ① 수치.</aside>
+</section>
+
+<!-- 10 2-2 연표 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">2-2</span><h2>매튜 머리와 항해도</h2></div><p class="sub">사고에서 시작된 데이터 여정</p></div>
+  <div class="tri">
+    <div class="card"><p class="k">1825 → 1842</p><h3>위기</h3>
+      <ul class="b"><li>미 해군 장교로 입대</li><li>마차 사고로 현장 복귀 불가</li><li>해도측기창 배치, 창고 속 자료 정리</li></ul></div>
+    <div class="card"><p class="k">분석</p><h3>데이터</h3>
+      <ul class="b"><li>바다 날씨·기후, 시기별 기상</li><li>해류·암초 위치, 과거 사고</li><li>50만 건 이상의 기록</li></ul></div>
+    <div class="card"><p class="k">1853 · 1855</p><h3>성과</h3>
+      <ul class="b"><li>안전하고 빠른 항해도·항적도</li><li>브뤼셀 국제해양기상회의 (세계기상기구의 전신)</li><li>대서양 해저케이블 제안</li></ul></div>
+  </div>
+  <aside class="note">출처: 연재 ①. 1855년 저서 『바다의 자연지리학(The Physical Geography of the Sea)』. 연재는 멕시코만·카리브해 사고 데이터 분석으로 대서양의 따뜻한 해류를 “처음 발견”했다고 서술 — 해류 발견사는 다른 기록도 있으므로 강의에서는 “데이터로 확인·정리”로 표현.</aside>
+</section>
+
+<!-- 11 2-3 비유: 모자이크 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">2-3</span><h2>창조는 편집이다</h2></div><p class="sub">[비유] 모자이크</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/mosaic.jpg" alt="작은 타일로 만든 개의 눈 모자이크" style="width:760px;height:570px"><p class="credit">사진: Scott 97006 / CC BY 2.0</p></div>
+    <div class="col">
+      <h3>모자이크 = 편집</h3>
+      <ul class="b">
+        <li>타일 하나하나 = 이미 있던 조각</li>
+        <li>새 타일을 만들지 않아도 새 그림</li>
+        <li>가치 = 조각의 배치와 연결</li>
+        <li>김정호·머리 = 남의 기록으로 새 지도</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 12 2-3 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">2-3</span><h2>창조는 편집이다</h2></div><p class="sub">에디톨로지와 패러다임 시프트</p></div>
+  <video class="anim" src="assets/anim/EditCreate.mp4" poster="assets/anim/EditCreate_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">manim: 흩어진 타일이 하나의 무늬로 재배치. 연재 ①: 토머스 쿤의 패러다임 시프트, 김정운의 에디톨로지. [검증 노트] 칼럼 표기 “에티톨로지” = 김정운 『에디톨로지』(2014).</aside>
+</section>
+
+<!-- 13 2-3 비교 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">2-3</span><h2>창조는 편집이다</h2></div><p class="sub">두 사람의 같은 방법</p></div>
+  <table style="width:100%;border-collapse:collapse;font-size:32px;background:#fff;border-radius:16px;overflow:hidden">
+    <tr style="background:var(--red);color:#fff;font-weight:700"><td style="padding:22px 32px;width:22%">단계</td><td style="padding:22px 32px">김정호 (1861)</td><td style="padding:22px 32px">매튜 머리 (1840~50년대)</td></tr>
+    <tr><td style="padding:22px 32px;font-weight:700;color:var(--red)">수집</td><td style="padding:22px 32px">정부 지도·지리서·관청 문서·구전</td><td style="padding:22px 32px">창고 속 항해일지·사고 기록</td></tr>
+    <tr style="background:#FBF7F5"><td style="padding:22px 32px;font-weight:700;color:var(--red)">편집</td><td style="padding:22px 32px">방안좌표로 비율 맞추기</td><td style="padding:22px 32px">시기·위치별 바람·해류 정리</td></tr>
+    <tr><td style="padding:22px 32px;font-weight:700;color:var(--red)">표준화</td><td style="padding:22px 32px">기호·선·점의 규격화</td><td style="padding:22px 32px">항해도·항적도 양식</td></tr>
+    <tr style="background:#FBF7F5"><td style="padding:22px 32px;font-weight:700;color:var(--red)">가치</td><td style="padding:22px 32px">누구나 읽는 전국 지도</td><td style="padding:22px 32px">빠르고 안전한 항로, 국제 기상 협력</td></tr>
+  </table>
+  <aside class="note">강의자 정리표(연재 ① 내용을 4단계 틀에 배치). 결론: 완전히 새로운 것은 드묾, 흩어진 데이터를 통합하는 능력이 핵심 역량.</aside>
+</section>
+
+<!-- 14 활동 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">2-4</span><h2>활동 · 정리 및 확인 문제</h2></div><p class="sub">활동 (60분): 흩어진 자료로 “보부상 지도” 만들기</p></div>
+  <div class="tri">
+    <div class="card"><p class="k">STEP 1 · 20분</p><h3>수집</h3>
+      <ul class="b"><li>캠퍼스·동네의 숨은 정보</li><li>출처 3가지 이상: 공식 지도, 커뮤니티 후기, 직접 관찰, 지인 구전</li></ul></div>
+    <div class="card"><p class="k">STEP 2 · 25분</p><h3>편집·표준화</h3>
+      <ul class="b"><li>범례(기호) 5개 정하기</li><li>A3 한 장에 지도 그리기</li></ul></div>
+    <div class="card"><p class="k">STEP 3 · 15분</p><h3>발표</h3>
+      <ul class="b"><li>충돌한 출처는?</li><li>무엇을 믿었고 왜?</li></ul></div>
+  </div>
+  <aside class="note">팀 3~4인. 출처 간 충돌 사례가 핵심 토론 거리(데이터 품질·신뢰도 판단).</aside>
+</section>
+
+<!-- 15 토론 -->
+<section class="slide" style="justify-content:center;gap:48px">
+  <div class="head"><div class="t"><span class="badge">2-4</span><h2>활동 · 정리 및 확인 문제</h2></div><p class="sub">토론 질문</p></div>
+  <div class="card"><p style="font-size:40px;font-weight:700;line-height:1.5">① 김정호가 보부상의 구전을 쓴 것 vs 우리가 리뷰·커뮤니티 정보를 쓰는 것 — 같은 점과 다른 점</p></div>
+  <div class="card"><p style="font-size:40px;font-weight:700;line-height:1.5">② 머리의 데이터는 “창고에 쌓인 종이 더미” — 오늘 우리 주변의 “창고 속 데이터”</p></div>
+</section>
+
+<!-- 16 정리 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">2-4</span><h2>활동 · 정리 및 확인 문제</h2></div><p class="sub">오늘의 핵심 4줄</p></div>
+  <div class="col" style="gap:24px">
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">김정호</b> = 기존 자료의 통합 + 방안좌표 + 표준 기호 → 대동여지도</p></div>
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">매튜 머리</b> = 항해일지 50만 건 이상 → 바람·해류 패턴 → 새 항로</p></div>
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">공통 방법</b> = 수집 → 편집 → 표준화 → 가치 발견</p></div>
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">메시지</b> = 창조는 편집, 흩어진 데이터를 잇는 능력</p></div>
+  </div>
+</section>
+
+<!-- 17 확인 문제 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">2-4</span><h2>활동 · 정리 및 확인 문제</h2></div><p class="sub">확인 문제</p></div>
+  <div class="row" style="gap:64px;align-items:stretch">
+    <div class="col" style="gap:18px">
+      <h3 style="font-size:36px">문제 1</h3>
+      <p style="font-size:32px;line-height:1.45">김정호가 대동여지도를 만들 때 활용한 자료 두 가지 이상</p>
+      <h3 style="font-size:36px;padding-top:20px">문제 2</h3>
+      <p style="font-size:32px;line-height:1.45">매튜 머리가 항로를 찾은 데이터의 출처와 분석 내용</p>
+      <h3 style="font-size:36px;padding-top:20px">문제 3</h3>
+      <p style="font-size:32px;line-height:1.45">“창조는 편집이다”를 두 사람의 사례로 한 문장 설명</p>
+      <button class="reveal">정답 보기</button>
+      <div class="answer">문제 1: 중앙정부 지도·지리서, 지방 관청 문서, 보부상·짐꾼의 구전 정보<br>문제 2: 해도측기창 창고의 항해일지 등 50만 건 이상 → 바다 날씨·해류·암초·사고 분석<br>문제 3: 새 자료를 만들기보다 흩어진 기존 기록을 모아 엮고 표준화해 새 가치(지도·항로)를 만든 것</div>
+    </div>
+    <img class="fig" src="assets/goal.png" alt="흩어진 자료와 편집된 지도" style="width:560px;height:420px;align-self:center">
+  </div>
+  <aside class="note">정답 근거: 연재 ①(2021.05.10).</aside>
+</section>
+
+<!-- 18 마무리 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">2-4</span><h2>활동 · 정리 및 확인 문제</h2></div><p class="sub">마무리</p></div>
+  <div class="row" style="gap:80px">
+    <div class="col" style="gap:20px">
+      <h3 style="font-size:36px">이번 주 과제</h3>
+      <ul class="b" style="font-size:30px">
+        <li>책 1장 후반부 읽기 (코호트·태아 프로그래밍)</li>
+        <li>사전 질문 1개 LMS에 올리기</li>
+        <li>데이톨로지 저널: 내가 “편집”해서 만든 정보 1건</li>
+      </ul>
+      <h3 style="font-size:36px;padding-top:24px">다음 시간</h3>
+      <p style="font-size:30px">시간을 가로지르는 데이터 — 코호트, 태아 프로그래밍, 히든 이펙트</p>
+      <p style="font-size:26px;padding-top:24px"><a href="quiz.html" style="color:var(--red);font-weight:700">▶ 웹 퀴즈</a>&nbsp;&nbsp;&nbsp;<a href="playground.html" style="color:var(--red);font-weight:700">▶ 출처 합치기 놀이터</a></p>
+    </div>
+    <img class="fig" src="assets/cover.png" alt="방안좌표 위 빨간 길" style="width:420px;height:557px">
+  </div>
+</section>
+
+<!-- 19 이미지 출처 -->
+<section class="slide">
+  <div class="head"><h2>이미지 출처</h2><p class="sub">사진 (Openverse 검색, CC 라이선스)</p></div>
+  <ul class="b" style="font-size:24px;line-height:1.7">
+    <li>jigsaw puzzle pieces — Electric-Eye, CC BY 2.0, <a href="https://www.flickr.com/photos/35111587@N00/4054093512">flickr</a></li>
+    <li>NOAA Nautical Chart: Tampa Bay, Florida — NOAA's National Ocean Service, CC BY 2.0, <a href="https://www.flickr.com/photos/40322276@N04/3903852519">flickr</a></li>
+    <li>Dog Eye - Mosaic Tile — Scott 97006, CC BY 2.0, <a href="https://www.flickr.com/photos/29487672@N07/14684810795">flickr</a></li>
+    <li>애니메이션·그림 — manim, matplotlib으로 직접 제작 (지도·바다 모양은 개념도)</li>
+    <li>인용 — 김성태, 『데이톨로지』(이른비, 2022); 지디넷코리아 연재 ①(2021.05.10)</li>
+  </ul>
+</section>
+
+</div>
+<div class="notes"></div>
+<div class="bar">
+  <a href="../index.html">← 목록</a>
+  <button data-act="prev">◀</button><span class="count"></span><button data-act="next">▶</button>
+  <span class="grow">← → 이동 · F 전체 화면 · N 노트</span>
+  <a href="quiz.html">퀴즈</a><a href="playground.html">놀이터</a>
+  <button data-act="notes">노트</button><button data-act="full">전체 화면</button>
+</div>
+<script src="../assets/deck.js"></script>
+</body>
+</html>

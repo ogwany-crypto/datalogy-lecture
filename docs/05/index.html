@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5강 숫자로 된 일상의 법칙들</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="../assets/deck.css">
+<style>
+  .cover { flex-direction: row !important; align-items: center; justify-content: space-between; padding: 128px !important; }
+  .cover::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 24px; background: var(--red); }
+  .toc-item { display: flex; align-items: center; gap: 40px; padding: 30px 0; border-bottom: 2px solid var(--red-l); }
+  .toc-item:last-child { border-bottom: none; }
+  .toc-item b { font-size: 56px; font-weight: 900; color: var(--red); width: 100px; }
+  .toc-item span { font-size: 44px; font-weight: 500; }
+  .tri { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; flex: 1; align-items: stretch; }
+  .tri .card h3 { font-size: 40px; }
+  .tri .card .k { font-size: 26px; font-weight: 700; color: var(--gray); letter-spacing: 2px; }
+  .tri .card { justify-content: center; gap: 20px; }
+  .tri .card ul.b { font-size: 32px; line-height: 1.6; }
+  table.tl { border-collapse: collapse; font-size: 28px; width: 100%; }
+  table.tl th { text-align: left; color: var(--gray); font-size: 24px; padding: 8px 20px; border-bottom: 3px solid var(--red-l); }
+  table.tl td { padding: 14px 20px; border-bottom: 2px solid var(--line); }
+  table.tl td:first-child { color: var(--red); font-weight: 700; width: 300px; }
+  code { font-family: Menlo, monospace; font-size: 26px; background: #F4F1EE; padding: 4px 10px; border-radius: 8px; }
+</style>
+</head>
+<body>
+<div class="progress"></div>
+<div class="stage">
+
+<!-- 1 표지 -->
+<section class="slide cover">
+  <div style="display:flex;flex-direction:column;gap:32px;width:1000px">
+    <p style="font-size:120px;font-weight:900;color:var(--red);line-height:1">05</p>
+    <p style="font-size:36px;font-weight:500;color:var(--gray)">데이톨로지 — 데이터로 읽는 인간과 사회</p>
+    <h1 style="font-size:96px;font-weight:900;line-height:1.15">숫자로 된<br>일상의 법칙들</h1>
+    <hr style="width:160px;border:none;border-top:6px solid var(--red)">
+    <p style="font-size:32px;color:var(--gray)">주교재: 김성태, 『데이톨로지』 1부 · 강사 : ○○○</p>
+  </div>
+  <img class="fig" src="assets/cover.png" alt="첫 자리 숫자 1~9의 분포 막대, 1이 가장 김" style="width:600px;height:796px">
+  <aside class="note">5주차. 원전: 지디넷 연재 ⑨ 「알고 나면 더 재미있는 '숫자로 된 일상의 법칙들'」(2021.07.05).</aside>
+</section>
+
+<!-- 2 목차 -->
+<section class="slide" style="flex-direction:row;align-items:center;gap:96px;padding:128px">
+  <div style="display:flex;flex-direction:column;gap:24px;width:520px">
+    <p style="font-size:32px;font-weight:700;color:var(--red);letter-spacing:4px">CONTENTS</p>
+    <h2 style="font-size:72px;font-weight:900;line-height:1.15">숫자로 된<br>일상의 법칙들</h2>
+    <hr style="width:120px;border:none;border-top:6px solid var(--red)">
+  </div>
+  <div style="flex:1">
+    <div class="toc-item"><b>01</b><span>벤포드 법칙</span></div>
+    <div class="toc-item"><b>02</b><span>파레토와 롱테일</span></div>
+    <div class="toc-item"><b>03</b><span>하인리히 법칙</span></div>
+    <div class="toc-item"><b>04</b><span>짧은 시간, 긴 시간의 법칙</span></div>
+    <div class="toc-item"><b>05</b><span>벤포드 실습 · 정리</span></div>
+  </div>
+</section>
+
+<!-- 3 학습 목표 -->
+<section class="slide" style="flex-direction:row;align-items:center;gap:80px;padding:128px">
+  <img class="fig" src="assets/goal.png" alt="법칙을 나타내는 숫자 카드 여섯 개" style="width:760px;height:568px">
+  <div class="col" style="gap:40px">
+    <h2 style="font-size:72px;font-weight:900">학습 목표</h2>
+    <div class="card"><p style="font-size:28px;font-weight:700;color:var(--red)">목표 1</p><p style="font-size:36px;font-weight:500">벤포드·파레토·하인리히·1만 시간 법칙의 뜻과 한계 지적</p></div>
+    <div class="card"><p style="font-size:28px;font-weight:700;color:var(--red)">목표 2</p><p style="font-size:36px;font-weight:500">벤포드 법칙으로 실제 데이터 검증</p></div>
+  </div>
+</section>
+
+<!-- 4 오늘의 질문 -->
+<section class="slide" style="justify-content:center;align-items:center;gap:56px">
+  <p style="font-size:36px;font-weight:700;color:var(--red);letter-spacing:4px">오늘의 질문</p>
+  <p style="font-size:64px;font-weight:900;line-height:1.4;text-align:center">세상의 숫자들은<br><span style="color:var(--red)">1로 시작하는 경우</span>가 많을까,<br>9로 시작하는 경우가 많을까?</p>
+  <aside class="note">손들기 투표: 1 / 9 / 같다. 대부분 "같다"를 고름 → 벤포드 법칙으로 반전.</aside>
+</section>
+
+<!-- 5 5-1 비유: 거리 번지 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">5-1</span><h2>벤포드 법칙</h2></div><p class="sub">[비유] 번지가 늘어선 거리</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/street.jpg" alt="번지가 이어지는 주택가" style="width:760px;height:570px"><p class="credit">사진: ell brown / CC BY 2.0</p></div>
+    <div class="col">
+      <h3>거리의 번지 = 첫 자리 숫자</h3>
+      <ul class="b">
+        <li>1번지에서 시작해 차례로 늘어나는 번호</li>
+        <li>1~9, 10~19, 100~199… 늘 1이 먼저 등장</li>
+        <li>2로 넘어가려면 두 배로 커져야 하는 구조</li>
+        <li>번지·주가·인구·전기요금 = 1로 시작이 최다</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="note">"두 배로 커져야" 설명은 강의자 보충(직관). 원전(⑨): 벤포드가 강 면적·물리 상수·분자량 등 20개 자료집 분석, 건물 높이·주소 번지·전기요금·주가·집값·인구통계에서도 같은 패턴.</aside>
+</section>
+
+<!-- 6 5-1 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">5-1</span><h2>벤포드 법칙</h2></div><p class="sub">벤포드 법칙(Benford's law): 첫 자리 d의 비율 = log₁₀(1 + 1/d)</p></div>
+  <video class="anim" src="assets/anim/BenfordBars.mp4" poster="assets/anim/BenfordBars_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">manim: 1~9 이론 비율 막대 + 지어낸 숫자(고른 분포 11.1%) 점선. 원전(⑨): 1938년 프랭크 벤포드. 공식은 강의안 5주차.</aside>
+</section>
+
+<!-- 7 5-1 활용과 조건 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">5-1</span><h2>벤포드 법칙</h2></div><p class="sub">어디에 쓰고, 언제 안 맞나</p></div>
+  <div class="tri">
+    <div class="card"><p class="k">활용</p><h3>조작 탐지</h3>
+      <ul class="b"><li>회계·금융 데이터 감사</li><li>1~9가 고르게 나오면 가짜 의심</li></ul></div>
+    <div class="card"><p class="k">확장</p><h3>SNS에서도</h3>
+      <ul class="b"><li>팔로워 수 등 분포</li><li>상관계수 0.9 이상 (골벡, 2015)</li></ul></div>
+    <div class="card"><p class="k">조건</p><h3>안 맞는 데이터</h3>
+      <ul class="b"><li>키·몸무게 (좁은 범위)</li><li>전화번호 (부여된 번호)</li><li>상한 있는 점수</li></ul></div>
+  </div>
+  <aside class="note">활용·확장: 연재 ⑨. 조건(여러 자릿수에 걸쳐 퍼진 데이터에만 적용)은 강의안 [보충].</aside>
+</section>
+
+<!-- 8 5-2 비유: 옷장 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">5-2</span><h2>파레토와 롱테일</h2></div><p class="sub">[비유] 옷장</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/closet.jpg" alt="옷이 가득 걸린 옷장" style="width:760px;height:570px"><p class="credit">사진: Sofy Marquez / CC BY 2.0</p></div>
+    <div class="col">
+      <h3>옷장 = 20:80 법칙</h3>
+      <ul class="b">
+        <li>자주 입는 옷 = 옷장의 약 20%</li>
+        <li>입는 횟수의 대부분 = 그 20%에서</li>
+        <li>나머지 80% = 가끔 입는 긴 꼬리</li>
+        <li>꼬리를 모으면 무시 못 할 양 = 롱테일</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="note">원전(⑨): 자주 입는 옷은 옷장의 20%, 고객 20%가 백화점 매출 80%, 범죄 80%는 20% 범죄자 등. 파레토 → 조셉 주란이 20:80으로 정리.</aside>
+</section>
+
+<!-- 9 5-2 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">5-2</span><h2>파레토와 롱테일</h2></div><p class="sub">같은 그래프, 머리를 볼까 꼬리를 볼까</p></div>
+  <video class="anim" src="assets/anim/ParetoLongTail.mp4" poster="assets/anim/ParetoLongTail_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">manim: 가상 데이터(40개 품목, 값 ∝ 1/k^1.4) → 상위 20%가 약 81%. 롱테일: 크리스 앤더슨(2004, 『와이어드』) — 아마존 비인기 서적 매출 합이 소수 베스트셀러를 넘음(연재 ⑨). 수치는 원전 아님.</aside>
+</section>
+
+<!-- 10 5-3 비유: 금 간 벽 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">5-3</span><h2>하인리히 법칙</h2></div><p class="sub">[비유] 금 간 벽</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/crack.jpg" alt="길게 금이 간 콘크리트 벽" style="width:760px;height:570px"><p class="credit">사진: shaire productions / CC BY 2.0</p></div>
+    <div class="col">
+      <h3>벽의 금 = 사고의 징후</h3>
+      <ul class="b">
+        <li>건물은 하루아침에 무너지지 않음</li>
+        <li>작은 금 → 큰 균열 → 붕괴</li>
+        <li>삼풍백화점·성수대교의 교훈</li>
+        <li>금을 기록하고 살피면 예방 가능</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="note">원전(⑨): 미국 마이애미 아파트 붕괴 전 주민 민원, 삼풍백화점·성수대교 붕괴, 세월호 참사 사례.</aside>
+</section>
+
+<!-- 11 5-3 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">5-3</span><h2>하인리히 법칙</h2></div><p class="sub">1 : 29 : 300 — 중대 사고 1건 앞의 경미한 사고 29건, 징후 300건</p></div>
+  <video class="anim" src="assets/anim/HeinrichPyramid.mp4" poster="assets/anim/HeinrichPyramid_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">manim: 점 300 → 29 → 1. 원전(⑨): 1931년 보험회사 통계분석가 허버트 하인리히 『산업재해예방』. 수치가 정확히 맞지는 않지만 "갑작스러운 사고는 드묾"이라는 메시지.</aside>
+</section>
+
+<!-- 12 5-4 짧은 시간의 법칙 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">5-4</span><h2>짧은 시간, 긴 시간의 법칙</h2></div><p class="sub">순간이 결정하는 것들 — 그리고 의심해 볼 숫자</p></div>
+  <div class="tri">
+    <div class="card"><p class="k">0.017초</p><h3>첫인상</h3>
+      <ul class="b"><li>편도체의 첫인상 형성 (폴 왈렌)</li><li>먼저 들어온 정보 우세 = 초두효과</li></ul></div>
+    <div class="card"><p class="k">최근 정보</p><h3>점화효과</h3>
+      <ul class="b"><li>가장 최근 정보가 평가 좌우</li><li>대통령 지지도의 주간 등락</li></ul></div>
+    <div class="card"><p class="k">8초</p><h3>집중 시간</h3>
+      <ul class="b"><li>MS(2015): 12초 → 8초</li><li>발표·면접은 첫 8초 승부</li><li style="color:var(--red)">원 데이터 출처 논란</li></ul></div>
+  </div>
+  <aside class="note">원전(⑨). [검증 노트] "8초 집중력" 통계는 원 데이터가 불분명하다는 지적 → "인용된 숫자의 출처를 끝까지 추적" 리터러시 사례. 부정적 첫인상 회복에 "200배 정보 / 60번 만남"은 칼럼 인용, 근거 연구 미확인.</aside>
+</section>
+
+<!-- 13 5-5 비유: 대나무 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">5-4</span><h2>짧은 시간, 긴 시간의 법칙</h2></div><p class="sub">[비유] 대나무 숲</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/bamboo.jpg" alt="하늘로 곧게 뻗은 대나무 숲" style="width:760px;height:570px"><p class="credit">사진: Lenny K Photography / CC BY 2.0</p></div>
+    <div class="col">
+      <h3>모소대나무 = 1만 시간</h3>
+      <ul class="b">
+        <li>4년 동안 땅 위로는 약 3cm</li>
+        <li>그사이 뿌리는 땅속 깊이</li>
+        <li>5년차부터 하루 약 30cm 성장</li>
+        <li>보이지 않는 준비 = 성장의 바탕</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="note">원전(⑨): 모소대나무 비유, 김난도 교수 글 인용. 수치(3cm, 30cm, 15m)는 칼럼 그대로.</aside>
+</section>
+
+<!-- 14 5-5 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">5-4</span><h2>짧은 시간, 긴 시간의 법칙</h2></div><p class="sub">1만 시간의 법칙: 절대 조건이 아닌 노력의 상징</p></div>
+  <video class="anim" src="assets/anim/BambooTenThousand.mp4" poster="assets/anim/BambooTenThousand_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">manim: 4년간 뿌리, 5년차 급성장 + 하루 8시간 누적 시간. 원전(⑨): 에릭슨(1993) 베를린 음악 아카데미 바이올린 전공생 — 최상위 약 1만, 우수 7~8천, 평범 3~4천 시간. 글래드웰 『아웃라이어』(2008). 저자 해석: 성공 가능성을 높이는 노력의 상징.</aside>
+</section>
+
+<!-- 15 법칙 한눈에 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">5-5</span><h2>법칙 한눈에</h2></div><p class="sub">숫자 · 활용 · 비판적 질문</p></div>
+  <table class="tl">
+    <tr><th>법칙</th><th>활용</th><th>비판적 질문</th></tr>
+    <tr><td>벤포드</td><td>회계 부정·선거 조작 탐지</td><td>모든 데이터에 맞을까?</td></tr>
+    <tr><td>파레토 20:80</td><td>VIP 마케팅, 시간 관리</td><td>롱테일과 승자독식, 플랫폼은 무엇을 키웠나?</td></tr>
+    <tr><td>하인리히 1:29:300</td><td>안전 관리, 위험 예측</td><td>숫자보다 "징후 기록 문화"가 핵심 아닐까?</td></tr>
+    <tr><td>8초 · 0.017초</td><td>발표·면접·광고</td><td>그 통계, 원 출처는?</td></tr>
+    <tr><td>1만 시간</td><td>전문성 훈련</td><td>재능·환경·운은 어디에?</td></tr>
+  </table>
+  <aside class="note">강의안 5주차 표. 토론: 이 "법칙"들은 자연법칙인가, 경험칙인가, 마케팅 문구인가?</aside>
+</section>
+
+<!-- 16 활동 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">5-6</span><h2>벤포드 실습</h2></div><p class="sub">활동 (60분): 실제 데이터로 벤포드 법칙 검증</p></div>
+  <div class="row" style="gap:56px;align-items:stretch">
+    <div class="col" style="gap:20px">
+      <div class="card"><h3 style="font-size:34px">① 데이터 (15분)</h3><p style="font-size:28px">공공데이터포털·KOSIS: 시군구 인구, 국가별 GDP, 상장사 시가총액 중 하나</p></div>
+      <div class="card"><h3 style="font-size:34px">② 계산 (25분)</h3><p style="font-size:28px">첫 자리 <code>=VALUE(LEFT(TEXT(A2,"0"),1))</code><br>이론 비율 <code>=LOG10(1+1/d)</code></p></div>
+    </div>
+    <div class="col" style="gap:20px">
+      <div class="card"><h3 style="font-size:34px">③ 대조군 (10분)</h3><p style="font-size:28px">학생들이 지어낸 숫자 50개로 같은 분석 → 가짜 숫자의 분포</p></div>
+      <div class="card"><h3 style="font-size:34px">④ 정리 (10분)</h3><p style="font-size:28px">벤포드가 안 맞는 데이터의 공통점 찾기</p></div>
+    </div>
+  </div>
+  <aside class="note">놀이터(playground.html)에 숫자를 붙여 넣으면 첫 자리 분포를 바로 확인 가능. 강의안 5주차 활동.</aside>
+</section>
+
+<!-- 17 정리 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">5-7</span><h2>정리 및 확인 문제</h2></div><p class="sub">오늘의 핵심 4줄</p></div>
+  <div class="col" style="gap:24px">
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">벤포드</b> = 자연 데이터 첫 자리 1이 약 30%, 고른 분포는 의심 신호</p></div>
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">파레토·롱테일</b> = 머리의 집중 vs 꼬리의 합</p></div>
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">하인리히</b> = 1 : 29 : 300, 징후 기록이 예방</p></div>
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">태도</b> = 법칙도 숫자도 출처와 조건부터 확인</p></div>
+  </div>
+</section>
+
+<!-- 18 확인 문제 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">5-7</span><h2>정리 및 확인 문제</h2></div><p class="sub">확인 문제</p></div>
+  <div class="row" style="gap:64px;align-items:stretch">
+    <div class="col" style="gap:18px">
+      <h3 style="font-size:36px">문제 1</h3>
+      <p style="font-size:32px;line-height:1.45">어느 회사 장부의 첫 자리 숫자가 1~9에 각각 약 11%씩 고르게 분포. 이 결과의 해석</p>
+      <h3 style="font-size:36px;padding-top:20px">문제 2</h3>
+      <p style="font-size:32px;line-height:1.45">하인리히 법칙의 세 숫자와 그 의미</p>
+      <h3 style="font-size:36px;padding-top:20px">문제 3</h3>
+      <p style="font-size:32px;line-height:1.45">벤포드 법칙이 잘 맞지 않는 데이터 예 한 가지</p>
+      <button class="reveal">정답 보기</button>
+      <div class="answer">문제 1: 자연 데이터라면 1이 약 30%, 9가 약 4.6% → 고른 분포는 조작·허위 의심 신호 (단, 확정 증거는 아님)<br>문제 2: 중대 사고 1 : 경미한 사고 29 : 징후 300 → 갑작스러운 사고는 드묾, 징후 관찰로 예방<br>문제 3: 키, 몸무게, 전화번호, 상한 있는 시험 점수 등</div>
+    </div>
+    <img class="fig" src="assets/cover.png" alt="벤포드 분포 막대" style="width:420px;height:557px;align-self:center">
+  </div>
+  <aside class="note">정답 — 1: 연재 ⑨(가짜 숫자 판별). 2: 연재 ⑨. 3: 강의안 [보충].</aside>
+</section>
+
+<!-- 19 마무리 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">5-7</span><h2>정리 및 확인 문제</h2></div><p class="sub">마무리</p></div>
+  <div class="row" style="gap:80px">
+    <div class="col" style="gap:20px">
+      <h3 style="font-size:36px">이번 주 과제</h3>
+      <ul class="b" style="font-size:30px">
+        <li>연재 ⑧ 「'평균의 종말'과 역사적 '연결고리'」 읽기</li>
+        <li>사전 질문 1개 LMS에 올리기</li>
+        <li>데이톨로지 저널: "내 주변의 20:80"</li>
+      </ul>
+      <h3 style="font-size:36px;padding-top:24px">다음 시간</h3>
+      <p style="font-size:30px">평균의 종말 — '평균 인간'은 존재하는가</p>
+      <p style="font-size:26px;padding-top:24px"><a href="quiz.html" style="color:var(--red);font-weight:700">▶ 웹 퀴즈</a>&nbsp;&nbsp;&nbsp;<a href="playground.html" style="color:var(--red);font-weight:700">▶ 벤포드 검사기 놀이터</a></p>
+    </div>
+    <img class="fig" src="assets/goal.png" alt="법칙 숫자 카드" style="width:640px;height:478px">
+  </div>
+</section>
+
+<!-- 20 이미지 출처 -->
+<section class="slide">
+  <div class="head"><h2>이미지 출처</h2><p class="sub">사진 (Openverse 검색, CC 라이선스)</p></div>
+  <ul class="b" style="font-size:24px;line-height:1.7">
+    <li>38-46 Grove Street, Leamington Spa — ell brown, CC BY 2.0, <a href="https://www.flickr.com/photos/39415781@N06/6292083300">flickr</a></li>
+    <li>Closet — Sofy Marquez, CC BY 2.0, <a href="https://www.flickr.com/photos/69593795@N06/6334619144">flickr</a></li>
+    <li>Cracked Wall — shaire productions, CC BY 2.0, <a href="https://www.flickr.com/photos/9822107@N08/3632302149">flickr</a></li>
+    <li>Bamboo Forest, Kyoto, Japan — Lenny K Photography, CC BY 2.0, <a href="https://www.flickr.com/photos/57527070@N06/24737378890">flickr</a></li>
+    <li>애니메이션·그림 — manim, matplotlib으로 직접 제작</li>
+    <li>인용 — 김성태, 『데이톨로지』(이른비, 2022); 지디넷코리아 연재 ⑨(2021.07.05)</li>
+  </ul>
+</section>
+
+</div>
+<div class="notes"></div>
+<div class="bar">
+  <a href="../index.html">← 목록</a>
+  <button data-act="prev">◀</button><span class="count"></span><button data-act="next">▶</button>
+  <span class="grow">← → 이동 · F 전체 화면 · N 노트</span>
+  <a href="quiz.html">퀴즈</a><a href="playground.html">놀이터</a>
+  <button data-act="notes">노트</button><button data-act="full">전체 화면</button>
+</div>
+<script src="../assets/deck.js"></script>
+</body>
+</html>

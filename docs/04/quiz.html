@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>4강 웹 퀴즈 · 3차 데이터 혁명과 0·1</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="../assets/page.css">
+<style>
+  .q { font-size: 18px; font-weight: 500; margin-bottom: 14px; white-space: pre-line; }
+  .opts { display: grid; gap: 10px; }
+  .opt { display: flex; gap: 12px; align-items: center; text-align: left; border: 2px solid var(--line); border-radius: 12px;
+    padding: 12px 16px; background: #fff; color: var(--ink); font-weight: 500; }
+  .opt:hover:not(:disabled) { border-color: var(--red-l); }
+  .opt:disabled { opacity: 1; }
+  .opt.sel { border-color: var(--red); background: var(--red-bg); }
+  .opt.right { border-color: var(--ok); background: var(--ok-bg); }
+  .opt.wrong { border-color: var(--red); background: var(--red-bg); text-decoration: line-through; }
+  .opt .k { width: 28px; height: 28px; flex: none; border-radius: 50%; border: 2px solid currentColor; display: grid; place-items: center; font-size: 14px; }
+  .fb { margin-top: 14px; padding: 12px 16px; border-radius: 10px; display: none; }
+  .fb.show { display: block; }
+  .fb.good { background: var(--ok-bg); }
+  .fb.no { background: var(--red-bg); }
+  table.dist { border-collapse: collapse; margin: 8px 0 14px; font-size: 17px; }
+  table.dist td, table.dist th { border: 1px solid #ccc; padding: 6px 16px; text-align: center; }
+  table.dist th { background: #f4f1ee; }
+  .progress { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; margin-bottom: 24px; }
+  .progress i { display: block; height: 100%; width: 0; background: var(--red); transition: width .3s; }
+  .result { text-align: center; padding: 40px 24px; }
+  .result .big { font-size: 64px; font-weight: 900; color: var(--red); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="badge">4강</span><h1>웹 퀴즈 · 3차 데이터 혁명과 0·1</h1>
+    <nav><a href="index.html#1">슬라이드</a><a href="playground.html">놀이터</a><a href="../index.html">목록</a></nav>
+  </header>
+  <p class="lede">10문제 · 고르거나 답을 입력한 뒤 “확인”</p>
+  <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+  <div id="app"></div>
+</div>
+
+<script>
+// type: choice(하나 고르기) | multi(모두 고르기) | num(수 입력, 분수 가능)
+const QUIZ = [
+  { type: 'choice', q: '저자가 말하는 3차 데이터 혁명의 순서',
+    opts: ['인쇄술 → 아라비아 숫자 → 디지털 코드', '아라비아 숫자 → 금속활판 인쇄술 → 디지털 코드(0과 1)', '문자 → 전화 → 인터넷', '주판 → 계산기 → 컴퓨터'],
+    ans: 1, why: '1차 아라비아 숫자, 2차 구텐베르크 금속활판 인쇄술, 3차 디지털 코드(0과 1).' },
+  { type: 'num', q: '로마 숫자 MCMLXXXIV를 아라비아 숫자로',
+    ans: 1984, why: 'M(1000) + CM(900) + LXXX(80) + IV(4) = 1984. 9글자 vs 4글자.' },
+  { type: 'choice', q: '위치값 기수법에서 0의 역할',
+    opts: ['아무 의미 없는 장식', '비어 있는 자리를 표시해 자리값을 지킴', '항상 맨 앞에만 쓰임', '음수를 나타냄'],
+    ans: 1, why: '205의 0 = 십의 자리가 비었다는 표시. 0이 없으면 25와 구분 불가.' },
+  { type: 'choice', q: '0을 실제 수로 정의하고 연산 규칙을 처음 문헌에 남긴 7세기 인도 수학자',
+    opts: ['피타고라스', '브라마굽타', '피보나치', '라이프니츠'], ans: 1,
+    why: '브라마굽타(7세기). 바빌로니아의 빈자리 기호는 0의 원형, 브라마굽타는 0을 수로 정의.' },
+  { type: 'choice', q: '‘알고리즘’이라는 말의 어원이 된 인물',
+    opts: ['알콰리즈미', '구텐베르크', '조지 불', '노버트 위너'], ans: 0,
+    why: '알콰리즈미 『인도 숫자를 사용한 계산』(820년대) → 알고리즘·알지브라의 어원.' },
+  { type: 'choice', q: '1202년 『산반서(Liber Abaci)』로 유럽에 현대식 아라비아 숫자를 소개한 인물',
+    opts: ['피보나치', '케틀레', '브라마굽타', '데카르트'], ans: 0, why: '피보나치, 1202년.' },
+  { type: 'num', q: '이진수 1000001을 십진수로',
+    ans: 65, why: '64 + 1 = 65. 문자 코드(ASCII)에서 65 = 대문자 A.' },
+  { type: 'num', q: '스위치(비트) 8개로 만들 수 있는 서로 다른 조합의 수',
+    ans: 256, why: '2를 8번 곱함 → 2⁸ = 256.' },
+  { type: 'choice', q: '라이프니츠가 이진법과의 유사성을 발견한 동양의 체계',
+    opts: ['주역 64괘', '훈민정음', '사주팔자', '바둑'], ans: 0,
+    why: '부베 신부의 편지로 주역 64괘를 접하고 음양과 이진법의 유사성 발견 (연재 ⑩).' },
+  { type: 'choice', q: '참/거짓을 1/0에 대응시킨 논리 대수를 만든 19세기 영국 수학자',
+    opts: ['조지 불', '찰스 다윈', '아이작 뉴턴', '앨런 튜링'], ans: 0,
+    why: '조지 불의 불 대수(1847·1854) → 디지털 회로 설계의 바탕.' },
+];
+
+const app = document.getElementById('app');
+const bar = document.getElementById('bar');
+let idx = 0, score = 0, picked = new Set(), done = false;
+
+function parseNum(s) {
+  s = s.trim().replace(/\s/g, '').replace('−', '-');
+  const m = s.match(/^(-?\d*\.?\d+)\/(\d*\.?\d+)$/);
+  if (m) return parseFloat(m[1]) / parseFloat(m[2]);
+  return s === '' ? NaN : Number(s);
+}
+
+function render() {
+  bar.style.width = `${idx / QUIZ.length * 100}%`;
+  if (idx >= QUIZ.length) return renderResult();
+  const it = QUIZ[idx];
+  picked = new Set(); done = false;
+  const table = it.table ? `<table class="dist">${it.table.map((r, i) =>
+    `<tr>${r.map(c => i === 0 ? `<th>${c}</th>` : `<td>${c}</td>`).join('')}</tr>`).join('')}</table>` : '';
+  const body = it.type === 'num'
+    ? `<div class="controls"><label>답 <input type="text" id="num" inputmode="decimal" placeholder="예: 3/8 또는 0.375" autocomplete="off"></label></div>`
+    : `<div class="opts">${it.opts.map((o, i) =>
+        `<button class="opt" data-i="${i}"><span class="k">${it.type === 'multi' ? '✓' : i + 1}</span><span>${o}</span></button>`).join('')}</div>`;
+  app.innerHTML = `<div class="card">
+    <p class="muted">문제 ${idx + 1} / ${QUIZ.length}${it.type === 'multi' ? ' · 모두 고르기' : ''}</p>
+    <p class="q">${it.q}</p>${table}${body}
+    <div class="controls"><button class="solid" id="check">확인</button><button id="next" hidden>${idx + 1 < QUIZ.length ? '다음 문제 →' : '결과 보기'}</button></div>
+    <div class="fb" id="fb" role="status"></div></div>`;
+  app.querySelectorAll('.opt').forEach(b => b.onclick = () => {
+    if (done) return;
+    const i = +b.dataset.i;
+    if (it.type === 'choice') { picked = new Set([i]); app.querySelectorAll('.opt').forEach(x => x.classList.toggle('sel', +x.dataset.i === i)); }
+    else { picked.has(i) ? picked.delete(i) : picked.add(i); b.classList.toggle('sel'); }
+  });
+  const num = document.getElementById('num');
+  if (num) { num.focus(); num.onkeydown = e => { if (e.key === 'Enter') check(); }; }
+  document.getElementById('check').onclick = check;
+  document.getElementById('next').onclick = () => { idx++; render(); };
+}
+
+function check() {
+  if (done) return;
+  const it = QUIZ[idx], fb = document.getElementById('fb');
+  let ok;
+  if (it.type === 'num') {
+    const v = parseNum(document.getElementById('num').value);
+    if (isNaN(v)) { fb.className = 'fb show no'; fb.textContent = '수를 입력 (분수 3/8 또는 소수 0.375)'; return; }
+    ok = Math.abs(v - it.ans) < 1e-3;
+  } else {
+    if (!picked.size) { fb.className = 'fb show no'; fb.textContent = '보기 선택 필요'; return; }
+    const ans = new Set([].concat(it.ans));
+    ok = picked.size === ans.size && [...picked].every(i => ans.has(i));
+    app.querySelectorAll('.opt').forEach(b => {
+      const i = +b.dataset.i; b.disabled = true;
+      if (ans.has(i)) b.classList.add('right'); else if (picked.has(i)) b.classList.add('wrong');
+    });
+  }
+  done = true;
+  if (ok) score++;
+  fb.className = `fb show ${ok ? 'good' : 'no'}`;
+  fb.innerHTML = `<b class="${ok ? 'ok' : 'bad'}">${ok ? '정답' : '오답'}</b>${it.type === 'num' && !ok ? ` · 정답 ${fmt(it.ans)}` : ''}<br>${it.why}`;
+  document.getElementById('check').hidden = true;
+  const next = document.getElementById('next'); next.hidden = false; next.focus();
+}
+
+function fmt(v) {
+  for (let d = 1; d <= 20; d++) { const n = Math.round(v * d); if (Math.abs(n / d - v) < 1e-9) return d === 1 ? `${n}` : `${n}/${d}`; }
+  return v.toFixed(3);
+}
+
+function renderResult() {
+  bar.style.width = '100%';
+  const msg = score === QUIZ.length ? '만점! 4강 핵심 완벽 이해' : score >= 7 ? '거의 완벽. 틀린 문제만 슬라이드로 복습' : '슬라이드와 놀이터로 복습 후 재도전';
+  app.innerHTML = `<div class="card result"><p class="muted">결과</p><p class="big">${score} / ${QUIZ.length}</p><p style="margin:8px 0 24px">${msg}</p>
+    <div class="controls" style="justify-content:center"><button class="solid" id="again">다시 풀기</button><a class="btn" href="playground.html">놀이터 가기</a><a class="btn" href="index.html#1">슬라이드 복습</a></div></div>`;
+  document.getElementById('again').onclick = () => { idx = 0; score = 0; render(); };
+}
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+{
+  "snowball": {
+    "title": "Snowball",
+    "creator": "kamshots",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/32239176@N00/384814496",
+    "provider": "flickr"
+  },
+  "iceberg": {
+    "title": "Iceberg",
+    "creator": "NOAA's National Ocean Service",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/40322276@N04/8290528771",
+    "provider": "flickr"
+  },
+  "thermometer": {
+    "title": "Thermometer",
+    "creator": "matsuyuki",
+    "license": "by-sa",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0/",
+    "source": "https://www.flickr.com/photos/12173213@N00/4057428737",
+    "provider": "flickr"
+  },
+  "newspapers": {
+    "title": "British newspapers piled high at BBC Monitoring in Caversham",
+    "creator": "Ben Sutherland",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/60179301@N00/8365261138",
+    "provider": "flickr"
+  }
+}

@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>8강 웹 퀴즈 · 중간 점검 · 1부 복습</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="../assets/page.css">
+<style>
+  .q { font-size: 18px; font-weight: 500; margin-bottom: 14px; white-space: pre-line; }
+  .opts { display: grid; gap: 10px; }
+  .opt { display: flex; gap: 12px; align-items: center; text-align: left; border: 2px solid var(--line); border-radius: 12px;
+    padding: 12px 16px; background: #fff; color: var(--ink); font-weight: 500; }
+  .opt:hover:not(:disabled) { border-color: var(--red-l); }
+  .opt:disabled { opacity: 1; }
+  .opt.sel { border-color: var(--red); background: var(--red-bg); }
+  .opt.right { border-color: var(--ok); background: var(--ok-bg); }
+  .opt.wrong { border-color: var(--red); background: var(--red-bg); text-decoration: line-through; }
+  .opt .k { width: 28px; height: 28px; flex: none; border-radius: 50%; border: 2px solid currentColor; display: grid; place-items: center; font-size: 14px; }
+  .fb { margin-top: 14px; padding: 12px 16px; border-radius: 10px; display: none; }
+  .fb.show { display: block; }
+  .fb.good { background: var(--ok-bg); }
+  .fb.no { background: var(--red-bg); }
+  table.dist { border-collapse: collapse; margin: 8px 0 14px; font-size: 17px; }
+  table.dist td, table.dist th { border: 1px solid #ccc; padding: 6px 16px; text-align: center; }
+  table.dist th { background: #f4f1ee; }
+  .progress { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; margin-bottom: 24px; }
+  .progress i { display: block; height: 100%; width: 0; background: var(--red); transition: width .3s; }
+  .result { text-align: center; padding: 40px 24px; }
+  .result .big { font-size: 64px; font-weight: 900; color: var(--red); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="badge">8강</span><h1>웹 퀴즈 · 중간 점검 · 1부 복습</h1>
+    <nav><a href="index.html#1">슬라이드</a><a href="playground.html">놀이터</a><a href="../index.html">목록</a></nav>
+  </header>
+  <p class="lede">10문제 · 고르거나 답을 입력한 뒤 “확인” · 수 입력은 정수·소수·분수 모두 가능</p>
+  <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+  <div id="app"></div>
+</div>
+
+<script>
+// type: choice(하나 고르기) | multi(모두 고르기) | num(수 입력, 분수 가능)
+const QUIZ = [
+  { type: 'choice', q: '김정호의 『대동여지도』(1861) 제작 방식에서 저자가 강조한 데이터 역량',
+    opts: ['혼자 전국을 모두 직접 답사한 체력', '흩어진 지도·문서·구전을 모아 편집·표준화한 능력', '최신 측량 기계의 사용', '왕실의 전폭적인 예산 지원'],
+    ans: 1, why: '연재 ①: 기존 자료의 통합·방안좌표·기호 표준화 → “창조는 편집이다”.' },
+  { type: 'choice', q: '매튜 머리가 항해일지 50만 건 이상을 분석해 만든 성과',
+    opts: ['대동여지도', '더 빠르고 안전한 항로도', '콜레라 지도', '로즈 다이어그램'],
+    ans: 1, why: '창고에 쌓인 항해일지의 바람·해류·사고 기록 → 항로도, 국제해양기상회의(1853).' },
+  { type: 'choice', q: '저자가 말하는 3차 데이터 혁명의 순서',
+    opts: ['인쇄술 → 아라비아 숫자 → 디지털 코드', '아라비아 숫자 → 금속활자 인쇄술 → 디지털 코드(0과 1)', '디지털 코드 → 인쇄술 → 아라비아 숫자', '문자 → 종이 → 인터넷'],
+    ans: 1, why: '지디넷 출간 기사(2022.08.29)와 연재 ⑩: 아라비아 숫자, 구텐베르크 인쇄술, 0과 1.' },
+  { type: 'choice', q: '라이프니츠가 이진법 구상과 연결한 동양 사상',
+    opts: ['주역 64괘', '사서삼경의 논어', '불교의 윤회', '풍수지리'],
+    ans: 0, why: '연재 ⑩: 부베 신부를 통해 주역 64괘를 접하고 이진법과의 유사성 발견.' },
+  { type: 'num', q: '벤포드 법칙에서 첫 자리가 1일 확률은 약 몇 %? (정수로 입력)',
+    ans: 30, tol: 1.5, why: 'P(1) = log₁₀(1 + 1/1) = log₁₀2 ≈ 0.301 → 약 30%. 9는 약 4.6%.' },
+  { type: 'choice', q: '하인리히 법칙의 비율 (중대 사고 : 경미 사고 : 징후)',
+    opts: ['1 : 10 : 100', '1 : 29 : 300', '2 : 8 : 80', '1 : 1 : 1'],
+    ans: 1, why: '1931년 허버트 하인리히: 중대 사고 1건 전에 경미 사고 29건, 징후 300건 (연재 ⑨).' },
+  { type: 'num', q: '미 공군 조종사 4,000여 명 중 10개 신체 항목이 모두 평균에 맞는 사람의 수',
+    ans: 0, why: '0명 → 평균 인간은 존재하지 않음. 조절 가능한 조종석의 탄생 (연재 ⑧, 토드 로즈).' },
+  { type: 'choice', q: '‘평균 인간(average man)’ 개념을 제시한 인물',
+    opts: ['프레더릭 테일러', '아돌프 케틀레', '토드 로즈', '세스 고딘'],
+    ans: 1, why: '19세기 벨기에 통계학자 케틀레 → 테일러주의, 표준화 교육으로 이어지는 연결고리.' },
+  { type: 'choice', q: '크림전쟁 사망 원인을 월별 원형 그래프로 보여 주어 병원 위생 개혁을 이끈 인포그래픽',
+    opts: ['존 스노우의 콜레라 지도', '나이팅게일의 로즈 다이어그램', '미나르의 나폴레옹 원정도', '뉴욕타임스 방언 지도'],
+    ans: 1, why: '연재 ⑥: 감염 사망이 전투 사망보다 많음을 한 컷으로 → 위생 개선.' },
+  { type: 'multi', q: '중간 과제 인포그래픽 루브릭의 평가 기준 (모두 고르기)',
+    opts: ['메시지 명확성', '데이터 정확성', '시각 설계', '한계 성찰', '사용한 색의 개수'], ans: [0, 1, 2, 3],
+    why: '메시지 30 · 데이터 30 · 설계 25 · 한계 15 = 100점. 색의 개수 자체는 기준 아님.' },
+];
+
+const app = document.getElementById('app');
+const bar = document.getElementById('bar');
+let idx = 0, score = 0, picked = new Set(), done = false;
+
+function parseNum(s) {
+  s = s.trim().replace(/\s/g, '').replace('−', '-');
+  const m = s.match(/^(-?\d*\.?\d+)\/(\d*\.?\d+)$/);
+  if (m) return parseFloat(m[1]) / parseFloat(m[2]);
+  return s === '' ? NaN : Number(s);
+}
+
+function render() {
+  bar.style.width = `${idx / QUIZ.length * 100}%`;
+  if (idx >= QUIZ.length) return renderResult();
+  const it = QUIZ[idx];
+  picked = new Set(); done = false;
+  const table = it.table ? `<table class="dist">${it.table.map((r, i) =>
+    `<tr>${r.map(c => i === 0 ? `<th>${c}</th>` : `<td>${c}</td>`).join('')}</tr>`).join('')}</table>` : '';
+  const body = it.type === 'num'
+    ? `<div class="controls"><label>답 <input type="text" id="num" inputmode="decimal" placeholder="예: 3/8 또는 0.375" autocomplete="off"></label></div>`
+    : `<div class="opts">${it.opts.map((o, i) =>
+        `<button class="opt" data-i="${i}"><span class="k">${it.type === 'multi' ? '✓' : i + 1}</span><span>${o}</span></button>`).join('')}</div>`;
+  app.innerHTML = `<div class="card">
+    <p class="muted">문제 ${idx + 1} / ${QUIZ.length}${it.type === 'multi' ? ' · 모두 고르기' : ''}</p>
+    <p class="q">${it.q}</p>${table}${body}
+    <div class="controls"><button class="solid" id="check">확인</button><button id="next" hidden>${idx + 1 < QUIZ.length ? '다음 문제 →' : '결과 보기'}</button></div>
+    <div class="fb" id="fb" role="status"></div></div>`;
+  app.querySelectorAll('.opt').forEach(b => b.onclick = () => {
+    if (done) return;
+    const i = +b.dataset.i;
+    if (it.type === 'choice') { picked = new Set([i]); app.querySelectorAll('.opt').forEach(x => x.classList.toggle('sel', +x.dataset.i === i)); }
+    else { picked.has(i) ? picked.delete(i) : picked.add(i); b.classList.toggle('sel'); }
+  });
+  const num = document.getElementById('num');
+  if (num) { num.focus(); num.onkeydown = e => { if (e.key === 'Enter') check(); }; }
+  document.getElementById('check').onclick = check;
+  document.getElementById('next').onclick = () => { idx++; render(); };
+}
+
+function check() {
+  if (done) return;
+  const it = QUIZ[idx], fb = document.getElementById('fb');
+  let ok;
+  if (it.type === 'num') {
+    const v = parseNum(document.getElementById('num').value);
+    if (isNaN(v)) { fb.className = 'fb show no'; fb.textContent = '수를 입력 (분수 3/8 또는 소수 0.375)'; return; }
+    ok = Math.abs(v - it.ans) < (it.tol || 1e-3);
+  } else {
+    if (!picked.size) { fb.className = 'fb show no'; fb.textContent = '보기 선택 필요'; return; }
+    const ans = new Set([].concat(it.ans));
+    ok = picked.size === ans.size && [...picked].every(i => ans.has(i));
+    app.querySelectorAll('.opt').forEach(b => {
+      const i = +b.dataset.i; b.disabled = true;
+      if (ans.has(i)) b.classList.add('right'); else if (picked.has(i)) b.classList.add('wrong');
+    });
+  }
+  done = true;
+  if (ok) score++;
+  fb.className = `fb show ${ok ? 'good' : 'no'}`;
+  fb.innerHTML = `<b class="${ok ? 'ok' : 'bad'}">${ok ? '정답' : '오답'}</b>${it.type === 'num' && !ok ? ` · 정답 ${fmt(it.ans)}` : ''}<br>${it.why}`;
+  document.getElementById('check').hidden = true;
+  const next = document.getElementById('next'); next.hidden = false; next.focus();
+}
+
+function fmt(v) {
+  for (let d = 1; d <= 20; d++) { const n = Math.round(v * d); if (Math.abs(n / d - v) < 1e-9) return d === 1 ? `${n}` : `${n}/${d}`; }
+  return v.toFixed(3);
+}
+
+function renderResult() {
+  bar.style.width = '100%';
+  const msg = score === QUIZ.length ? '만점! 1부 완벽 복습' : score >= 7 ? '거의 완벽. 틀린 문제만 슬라이드로 복습' : '슬라이드와 놀이터로 복습 후 재도전';
+  app.innerHTML = `<div class="card result"><p class="muted">결과</p><p class="big">${score} / ${QUIZ.length}</p><p style="margin:8px 0 24px">${msg}</p>
+    <div class="controls" style="justify-content:center"><button class="solid" id="again">다시 풀기</button><a class="btn" href="playground.html">놀이터 가기</a><a class="btn" href="index.html#1">슬라이드 복습</a></div></div>`;
+  document.getElementById('again').onclick = () => { idx = 0; score = 0; render(); };
+}
+render();
+</script>
+</body>
+</html>

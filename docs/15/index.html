@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>15강 딥필링의 과제와 공존</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="../assets/deck.css">
+<style>
+  .cover { flex-direction: row !important; align-items: center; justify-content: space-between; padding: 128px !important; }
+  .cover::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 24px; background: var(--red); }
+  .toc-item { display: flex; align-items: center; gap: 40px; padding: 30px 0; border-bottom: 2px solid var(--red-l); }
+  .toc-item:last-child { border-bottom: none; }
+  .toc-item b { font-size: 56px; font-weight: 900; color: var(--red); width: 100px; }
+  .toc-item span { font-size: 44px; font-weight: 500; }
+  .tri { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; flex: 1; align-items: stretch; }
+  .tri .card h3 { font-size: 40px; }
+  .tri .card .k { font-size: 26px; font-weight: 700; color: var(--gray); letter-spacing: 2px; }
+  .tri .card { justify-content: center; gap: 20px; }
+  .tri .card ul.b { font-size: 32px; line-height: 1.6; }
+  .quote { font-size: 44px; font-weight: 700; line-height: 1.5; }
+  .quote small { display: block; font-size: 26px; font-weight: 500; color: var(--gray); padding-top: 12px; }
+  table.t { border-collapse: collapse; font-size: 30px; width: 100%; background: #fff; }
+  table.t th, table.t td { border-bottom: 2px solid var(--line); padding: 16px 24px; text-align: left; }
+  table.t th { color: var(--red); font-weight: 700; white-space: nowrap; }
+</style>
+</head>
+<body>
+<div class="progress"></div>
+<div class="stage">
+
+<!-- 1 표지 -->
+<section class="slide cover">
+  <div style="display:flex;flex-direction:column;gap:32px;width:1000px">
+    <p style="font-size:120px;font-weight:900;color:var(--red);line-height:1">15</p>
+    <p style="font-size:36px;font-weight:500;color:var(--gray)">데이톨로지 — 데이터로 읽는 인간과 사회</p>
+    <h1 style="font-size:96px;font-weight:900;line-height:1.15">딥필링의 과제와<br>인간-기술의 공존</h1>
+    <hr style="width:160px;border:none;border-top:6px solid var(--red)">
+    <p style="font-size:32px;color:var(--gray)">주교재: 김성태, 『데이톨로지』 3부·에필로그 · 강사 : ○○○</p>
+  </div>
+  <img class="fig" src="assets/cover.png" alt="조각 판에서 한 칸만 빨간 빈칸인 그림" style="width:600px;height:796px">
+  <aside class="note">15주차(마지막 강의). 강의안 3장 15주차. 개념 강의 60분 + 기말 프로젝트 발표. 16주 성찰 에세이.</aside>
+</section>
+
+<!-- 2 목차 -->
+<section class="slide" style="flex-direction:row;align-items:center;gap:96px;padding:128px">
+  <div style="display:flex;flex-direction:column;gap:24px;width:520px">
+    <p style="font-size:32px;font-weight:700;color:var(--red);letter-spacing:4px">CONTENTS</p>
+    <h2 style="font-size:72px;font-weight:900;line-height:1.15">딥필링의 과제와<br>공존</h2>
+    <hr style="width:120px;border:none;border-top:6px solid var(--red)">
+  </div>
+  <div style="flex:1">
+    <div class="toc-item"><b>01</b><span>딥필링 구현의 다섯 과제</span></div>
+    <div class="toc-item"><b>02</b><span>감정은 평균화할 수 없음</span></div>
+    <div class="toc-item"><b>03</b><span>아름다운 거리: 15주 돌아보기</span></div>
+    <div class="toc-item"><b>04</b><span>기말 프로젝트 발표</span></div>
+    <div class="toc-item"><b>05</b><span>정리 및 확인 문제</span></div>
+  </div>
+</section>
+
+<!-- 3 학습 목표 -->
+<section class="slide" style="flex-direction:row;align-items:center;gap:80px;padding:128px">
+  <img class="fig" src="assets/goal.png" alt="회색 원과 빨간 원을 잇는 다리 그림" style="width:760px;height:568px">
+  <div class="col" style="gap:40px">
+    <h2 style="font-size:72px;font-weight:900">학습 목표</h2>
+    <div class="card"><p style="font-size:28px;font-weight:700;color:var(--red)">목표 1</p><p style="font-size:36px;font-weight:500">딥필링 구현의 과제와 윤리적 쟁점 정리</p></div>
+    <div class="card"><p style="font-size:28px;font-weight:700;color:var(--red)">목표 2</p><p style="font-size:36px;font-weight:500">강의 전체를 “아름다운 거리”라는 태도로 통합</p></div>
+  </div>
+</section>
+
+<!-- 4 오늘의 질문 -->
+<section class="slide" style="justify-content:center;align-items:center;gap:56px">
+  <p style="font-size:36px;font-weight:700;color:var(--red);letter-spacing:4px">오늘의 질문</p>
+  <p style="font-size:64px;font-weight:900;line-height:1.4;text-align:center">주식 수익률은 AI에게 물을 수 있음<br>그렇다면 결혼 상대는?<br><span style="color:var(--red)">AI에게 맡길 수 없는 판단은 무엇일까?</span></p>
+  <aside class="note">출처: 연재 ⑫(2021.09.27) 결론 — 사랑·결혼처럼 가치와 감정이 개입하는 판단은 현재 알고리즘이 최적의 답을 주기 어려움.</aside>
+</section>
+
+<!-- 5 15-1 비유: 퍼즐 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">15-1</span><h2>딥필링 구현의 다섯 과제</h2></div><p class="sub">[비유] 한 조각이 빠진 퍼즐</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/puzzle.jpg" alt="한 조각이 빠진 직소 퍼즐" style="width:760px;height:570px"><p class="credit">사진: romana klee / CC BY-SA 2.0</p></div>
+    <div class="col">
+      <h3>빠진 조각 = 딥필링</h3>
+      <ul class="b">
+        <li>거의 완성된 그림, 그러나 빈칸 하나</li>
+        <li>빈칸 하나로 그림 전체가 미완성</li>
+        <li>AI의 빈칸 = 인간 감정의 이해</li>
+        <li>저자: 딥필링 = 미래 특이점의 퍼즐 조각</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="note">“퍼즐 조각” 표현은 연재 ⑫(2021.09.27) 결론.</aside>
+</section>
+
+<!-- 6 15-1 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">15-1</span><h2>딥필링 구현의 다섯 과제</h2></div><p class="sub">측정 · 개별성 · 맥락 · 과장 · 윤리</p></div>
+  <video class="anim" src="assets/anim/PuzzleChallenges.mp4" poster="assets/anim/PuzzleChallenges_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">manim: 다섯 과제 조각이 모이고 가운데 빈칸 = 딥필링. 다섯 과제 분류는 강의자 정리([보충]), 각 근거는 연재 ⑪·⑫와 출간 인터뷰.</aside>
+</section>
+
+<!-- 7 15-1 저자의 당부 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">15-1</span><h2>딥필링 구현의 다섯 과제</h2></div><p class="sub">저자의 당부</p></div>
+  <div class="row" style="gap:64px">
+    <div class="col">
+      <div class="card">
+        <p class="quote" style="font-size:40px">“포기하자”가 아니라<br>“이 고민을 함께하고,<br>완벽한 AI라고 말하지 말자”</p>
+      </div>
+    </div>
+    <div class="col">
+      <h3>복잡계 – 열린계 – 감정계</h3>
+      <ul class="b" style="font-size:30px">
+        <li>감정 = 세상과 실시간으로 교류하는 열린 체계</li>
+        <li>관건 = 세상과 직접 교류하는 감정의 세계 구현</li>
+        <li>과장의 비용: 완성된 것처럼 말하면 사회적 비용</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="note">출처: 연재 ⑫(2021.09.27). 따옴표 문장은 칼럼 결론의 취지를 옮긴 것(원문 문장과 다를 수 있음). ‘복잡계-열린계-감정계’ 틀의 자세한 설명은 책 3부 확인 필요.</aside>
+</section>
+
+<!-- 8 15-2 비유: 지문 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">15-2</span><h2>감정은 평균화할 수 없음</h2></div><p class="sub">[비유] 지문</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/fingerprint.jpg" alt="손끝 지문 확대 사진" style="width:760px;height:570px"><p class="credit">사진: kevin dooley / CC BY 2.0</p></div>
+    <div class="col">
+      <h3>지문 = 각자의 감정</h3>
+      <ul class="b">
+        <li>모든 사람에게 있지만 모두 다른 무늬</li>
+        <li>“평균 지문”으로는 누구도 식별 불가</li>
+        <li>같은 사건에도 사람마다 다른 감정</li>
+        <li>평균 감정을 배운 AI ≠ 나의 감정</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="note">지문 비유는 강의자 구성. 6주 ‘평균의 종말’과 연결.</aside>
+</section>
+
+<!-- 9 15-2 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">15-2</span><h2>감정은 평균화할 수 없음</h2></div><p class="sub">같은 장례식, 다른 슬픔</p></div>
+  <video class="anim" src="assets/anim/GriefCurves.mp4" poster="assets/anim/GriefCurves_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">manim: 다섯 남매의 슬픔(가상의 값)과 평균선 → 평균과 같은 사람 0명. 사례는 연재 ⑫(어머니 장례식), 수치는 설명용 가상의 값. 6주 미 공군 조종석(평균에 맞는 조종사 0명)과 같은 구조.</aside>
+</section>
+
+<!-- 10 15-2 1~3부 연결 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">15-2</span><h2>감정은 평균화할 수 없음</h2></div><p class="sub">미래의 과제 = 과거·현재에서 이미 만난 문제</p></div>
+  <div class="tri">
+    <div class="card"><p class="k">6주 · 평균의 종말</p><h3>개별성</h3>
+      <ul class="b"><li>평균 조종사 = 0명</li><li>평균 슬픔 = 0명</li></ul></div>
+    <div class="card"><p class="k">9~10주 · 별점</p><h3>측정</h3>
+      <ul class="b"><li>별점 하나로 경험 요약 불가</li><li>설문·뇌파 하나로 감정 요약 불가</li></ul></div>
+    <div class="card"><p class="k">13주 · 특이점</p><h3>과장</h3>
+      <ul class="b"><li>“2029년 특이점” 예언</li><li>“완벽한 감정 AI” 홍보</li></ul></div>
+  </div>
+  <aside class="note">강의자 정리: 3부의 과제를 1·2부 주차와 연결해 15주 내용을 회수.</aside>
+</section>
+
+<!-- 11 15-3 비유: 다리 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">15-3</span><h2>아름다운 거리</h2></div><p class="sub">[비유] 숲속 다리</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/bridge.jpg" alt="숲속 계곡을 건너는 나무 다리" style="width:760px;height:570px"><p class="credit">사진: pfly / CC BY-SA 2.0</p></div>
+    <div class="col">
+      <h3>다리 = 데이톨로지</h3>
+      <ul class="b">
+        <li>양쪽 기슭 = 과학과 인문학</li>
+        <li>한쪽 기슭에만 서면 건널 수 없는 계곡</li>
+        <li>두 기슭에 발을 디딘 구조물</li>
+        <li>다리 위 = 양극단 사이의 아름다운 거리</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="note">다리 비유는 강의자 구성. 1주차 쌍안경(두 렌즈)·시소(받침점) 비유와 같은 메시지.</aside>
+</section>
+
+<!-- 12 15-3 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">15-3</span><h2>아름다운 거리</h2></div><p class="sub">15주 여정과 세 가지 질문</p></div>
+  <video class="anim" src="assets/anim/CourseJourney.mp4" poster="assets/anim/CourseJourney_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">manim: 1부 과거 → 2부 현재 → 3부 미래를 따라 진행, 1주차의 관통 질문 3가지 회수. 결론 문장은 강의안 15주차 정리.</aside>
+</section>
+
+<!-- 13 15-3 에필로그 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">15-3</span><h2>아름다운 거리</h2></div><p class="sub">에필로그: 인간과 기술의 공존</p></div>
+  <div class="row" style="gap:56px;align-items:stretch">
+    <div class="card" style="flex:1;justify-content:center">
+      <h3>이분법 넘어서기</h3>
+      <ul class="b" style="font-size:32px"><li>관념론 / 경험론</li><li>자연 / 인간</li><li>이성 / 감정</li><li>객관 / 주관</li></ul>
+    </div>
+    <div class="card" style="flex:1;justify-content:center">
+      <h3>두 가지 태도의 결합</h3>
+      <ul class="b" style="font-size:32px"><li>기술 만능주의에 대한 비판적 성찰</li><li>기술의 가능성에 대한 열린 태도</li><li>1주차 시소의 받침점으로 귀환</li></ul>
+    </div>
+  </div>
+  <p style="font-size:34px;font-weight:700;color:var(--red);text-align:center">한쪽만 옳다는 주장 경계 → 양극단 사이에서 접점 찾기</p>
+  <aside class="note">출처: 지디넷 출간 인터뷰(2022.08.29) 결론. 책 에필로그 「인간과 기술의 공존」(예스24 목차 요약).</aside>
+</section>
+
+<!-- 14 기말 프로젝트 구조 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">15-4</span><h2>기말 프로젝트 발표</h2></div><p class="sub">데이톨로지 리포트: 하나의 기술을 세 관점으로</p></div>
+  <div class="tri">
+    <div class="card"><p class="k">1부 관점 · 과거</p><h3>데이터의 조상</h3>
+      <ul class="b"><li>편집·평균·인포그래픽·0과 1 중 무엇?</li></ul></div>
+    <div class="card"><p class="k">2부 관점 · 현재</p><h3>함정과 편익</h3>
+      <ul class="b"><li>별점·집단지성·필터버블·존재감</li><li>사회적 편익 vs 비용</li></ul></div>
+    <div class="card"><p class="k">3부 관점 · 미래</p><h3>어느 계단?</h3>
+      <ul class="b"><li>딥러닝·딥언더스탠딩·딥필링</li><li>5년 뒤: 낙관 / 비관 / 아름다운 거리</li></ul></div>
+  </div>
+  <aside class="note">강의안 2.4·15주차. 주제 예: 배달앱 리뷰, 유튜브 추천, AI 상담 챗봇, 스마트워치 건강 데이터, 감정 인식 광고, 디지털 휴먼. 산출물: 발표 슬라이드, 보고서(A4 8~10쪽), 인포그래픽 1장 이상.</aside>
+</section>
+
+<!-- 15 루브릭 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">15-4</span><h2>기말 프로젝트 발표</h2></div><p class="sub">발표 운영과 평가 기준 (35%)</p></div>
+  <div class="row" style="gap:64px;align-items:flex-start">
+    <table class="t" style="flex:1.4">
+      <tr><th>개념 적용</th><td>30점 · 15주 개념의 정확한 사용</td></tr>
+      <tr><th>데이터 근거</th><td>25점 · 출처·표본·수치의 명시</td></tr>
+      <tr><th>비판적 균형</th><td>25점 · 편익과 비용을 함께 다룸</td></tr>
+      <tr><th>전달력</th><td>20점 · 인포그래픽·발표 구성</td></tr>
+    </table>
+    <div class="col" style="gap:20px">
+      <h3>발표 운영</h3>
+      <ul class="b" style="font-size:30px">
+        <li>팀당 발표 15분 + 질의 5분</li>
+        <li>질문은 세 관점 중 하나를 골라서</li>
+        <li>보고서는 발표 후 제출</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="note">강의안 2.4(기말 프로젝트 35%)·15주차 평가 기준. 질문 방식·제출 시점은 강의자 운영안.</aside>
+</section>
+
+<!-- 16 정리 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">15-5</span><h2>정리 및 확인 문제</h2></div><p class="sub">오늘의 핵심 4줄</p></div>
+  <div class="col" style="gap:24px">
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">다섯 과제</b> = 측정 · 개별성 · 맥락 · 과장 · 윤리</p></div>
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">개별성</b> = 같은 사건, 다른 감정 → 평균화 불가</p></div>
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">당부</b> = 포기가 아닌 함께 고민, 과장 금지</p></div>
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">데이톨로지</b> = 데이터를 아는 것 = 결국 인간을 아는 것</p></div>
+  </div>
+</section>
+
+<!-- 17 확인 문제 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">15-5</span><h2>정리 및 확인 문제</h2></div><p class="sub">확인 문제</p></div>
+  <div class="row" style="gap:64px;align-items:stretch">
+    <div class="col" style="gap:18px">
+      <h3 style="font-size:36px">문제 1</h3>
+      <p style="font-size:32px;line-height:1.45">“어머니 장례식” 사례가 딥필링 구현에 던지는 과제</p>
+      <h3 style="font-size:36px;padding-top:20px">문제 2</h3>
+      <p style="font-size:32px;line-height:1.45">연구자·언론이 감정 AI를 “완성된 것처럼” 말할 때의 문제</p>
+      <h3 style="font-size:36px;padding-top:20px">문제 3</h3>
+      <p style="font-size:32px;line-height:1.45">저자가 말하는 “아름다운 거리”의 뜻</p>
+      <button class="reveal">정답 보기</button>
+      <div class="answer">문제 1: 개별성 — 같은 사건에도 사람마다 감정의 깊이가 달라 평균화·대체가 어려움<br>문제 2: 과장 — 기대와 실제의 차이가 사회적 비용을 낳음<br>문제 3: 낙관과 비관, 이성과 감정 등 양극단 가운데 한쪽만 옳다고 하지 않고 그 사이에서 접점을 찾는 태도</div>
+    </div>
+    <img class="fig" src="assets/cover.png" alt="한 칸이 빈 퍼즐 판 그림" style="width:420px;height:557px;align-self:center">
+  </div>
+  <aside class="note">정답 — 1·2: 연재 ⑫. 3: 출간 인터뷰(2022.08.29).</aside>
+</section>
+
+<!-- 18 16주 에세이 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">15-5</span><h2>정리 및 확인 문제</h2></div><p class="sub">16주차: 기말 성찰 에세이</p></div>
+  <div class="card" style="align-self:stretch">
+    <p class="quote">“나는 기술과 어떤<br>‘아름다운 거리’를 둘 것인가”<small>A4 2쪽 · 성적의 15%</small></p>
+  </div>
+  <div class="tri" style="flex:none">
+    <div class="card"><p class="k">조건 1</p><h3>개념 3개 이상</h3></div>
+    <div class="card"><p class="k">조건 2</p><h3>저널 사례 1개 이상</h3></div>
+    <div class="card"><p class="k">평가</p><h3>성찰 · 개념 · 균형</h3></div>
+  </div>
+  <aside class="note">강의안 16주차·2.4. 데이톨로지 저널(누적 기록)을 사례로 활용.</aside>
+</section>
+
+<!-- 19 마무리 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">15-5</span><h2>정리 및 확인 문제</h2></div><p class="sub">마무리: 15주를 닫으며</p></div>
+  <div class="row" style="gap:80px">
+    <div class="col" style="gap:20px">
+      <h3 style="font-size:36px">1주차의 질문으로 귀환</h3>
+      <ul class="b" style="font-size:30px">
+        <li>1주차: 데이터 = 과학 ∩ 인문학 (쌍안경)</li>
+        <li>1주차: 낙관과 비관 사이의 시소</li>
+        <li>15주차: 그 받침점 = 아름다운 거리</li>
+      </ul>
+      <h3 style="font-size:36px;padding-top:24px">다음 시간</h3>
+      <p style="font-size:30px">16주차 기말 — 성찰 에세이 제출</p>
+      <p style="font-size:26px;padding-top:24px"><a href="quiz.html" style="color:var(--red);font-weight:700">▶ 웹 퀴즈</a>&nbsp;&nbsp;&nbsp;<a href="playground.html" style="color:var(--red);font-weight:700">▶ 공존 놀이터</a>&nbsp;&nbsp;&nbsp;<a href="../01/index.html#1" style="color:var(--red);font-weight:700">▶ 1주차 다시 보기</a></p>
+    </div>
+    <img class="fig" src="assets/goal.png" alt="두 원을 잇는 다리 그림" style="width:640px;height:478px">
+  </div>
+</section>
+
+<!-- 20 이미지 출처 -->
+<section class="slide">
+  <div class="head"><h2>이미지 출처</h2><p class="sub">사진 (Openverse 검색, CC 라이선스)</p></div>
+  <ul class="b" style="font-size:24px;line-height:1.7">
+    <li>one missing piece — romana klee, CC BY-SA 2.0, <a href="https://www.flickr.com/photos/28581290@N08/8370697517">flickr</a></li>
+    <li>Fingerprint — kevin dooley, CC BY 2.0, <a href="https://www.flickr.com/photos/12836528@N00/2422430207">flickr</a></li>
+    <li>Rainforest footbridge — pfly, CC BY-SA 2.0, <a href="https://www.flickr.com/photos/24934185@N00/471983071">flickr</a></li>
+    <li>애니메이션·그림 — manim, matplotlib으로 직접 제작</li>
+    <li>인용 — 김성태, 『데이톨로지』(이른비, 2022); 지디넷코리아 연재 ⑫(2021), 출간 기사(2022.08.29)</li>
+  </ul>
+</section>
+
+</div>
+<div class="notes"></div>
+<div class="bar">
+  <a href="../index.html">← 목록</a>
+  <button data-act="prev">◀</button><span class="count"></span><button data-act="next">▶</button>
+  <span class="grow">← → 이동 · F 전체 화면 · N 노트</span>
+  <a href="quiz.html">퀴즈</a><a href="playground.html">놀이터</a>
+  <button data-act="notes">노트</button><button data-act="full">전체 화면</button>
+</div>
+<script src="../assets/deck.js"></script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>12강 가상공간 놀이터</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="../assets/page.css">
+<style>
+  .legend { display: flex; gap: 18px; font-size: 14px; color: #666; margin-top: 8px; flex-wrap: wrap; }
+  .legend i { display: inline-block; width: 14px; height: 14px; vertical-align: -2px; margin-right: 6px; border-radius: 3px; }
+  .views { display: grid; gap: 10px; margin: 12px 0; }
+  .views label { display: grid; grid-template-columns: 1fr 200px 48px; gap: 12px; align-items: center; font-size: 15px; }
+  .views input { width: 100%; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="badge">12강</span><h1>가상공간 놀이터</h1>
+    <nav><a href="index.html#1">슬라이드</a><a href="quiz.html">퀴즈</a><a href="../index.html">목록</a></nav>
+  </header>
+  <p class="lede">슬라이드의 manim 장면(MetaverseTimeline, SpaceDesire)을 직접 조작하는 공간 · 원본 장면 코드: scripts/12_animations.py</p>
+
+  <!-- 1 성장 외삽 -->
+  <section class="card" id="s1">
+    <h2><span class="n">01</span>같은 속도로 계속 자란다면? — 예측의 유통기한</h2>
+    <p class="muted">로블록스 이용자 3,500만(2017) → 1억 5,000만(2020)은 연재 ②의 실제 수치 · 그 뒤 막대는 “같은 증가율이 계속된다면”이라는 가정의 계산값(실제 아님) · 관련 장면: MetaverseTimeline</p>
+    <div class="controls">
+      <label>몇 년 뒤까지 연장 <input type="range" id="g-n" min="0" max="10" value="0"> <b id="g-nv">0</b>년 (→ <b id="g-y">2020</b>년)</label>
+    </div>
+    <canvas id="g-cv" aria-label="연도별 이용자 막대와 세계 인구선"></canvas>
+    <div class="legend"><span><i style="background:#8C8C8C"></i>실제 수치 (칼럼)</span><span><i style="background:#F6C4C5"></i>가정의 계산값</span><span><i style="border:2px dashed #3F3F3F"></i>세계 인구 약 80억</span></div>
+    <p class="stat" id="g-stat" aria-live="polite"></p>
+  </section>
+
+  <!-- 2 나의 가상공간 비율 -->
+  <section class="card" id="s2">
+    <h2><span class="n">02</span>나의 하루, 얼마나 가상공간에 있나</h2>
+    <p class="muted">활동마다 “가상공간에서 하는 비율”을 고르기 → 가장 바깥 원(가상공간)이 얼마나 넓어지는지 확인 · 관련 장면: SpaceDesire · 항목은 수업용 예시</p>
+    <div class="views" id="v-list"></div>
+    <canvas id="v-cv" aria-label="현실과 가상공간 비율 동심원"></canvas>
+    <p class="stat" id="v-stat" aria-live="polite"></p>
+  </section>
+</div>
+
+<script>
+const RED = '#E22B2D', RED_L = '#F6C4C5', GRAY = '#8C8C8C', INK = '#3F3F3F', GRAY_L = '#D9D9D9';
+function setup(cv, h) {   // 고해상도 캔버스
+  const dpr = window.devicePixelRatio || 1, w = cv.clientWidth;
+  cv.width = w * dpr; cv.height = h * dpr; cv.style.height = h + 'px';
+  const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.font = '13px "Noto Sans KR", sans-serif'; return [g, w, h];
+}
+const fmt = v => v >= 1e8 ? `${(v / 1e8).toFixed(1)}억` : `${Math.round(v / 1e4).toLocaleString()}만`;
+
+// ---------- 1 성장 외삽 ----------
+const RATE = Math.pow(150 / 35, 1 / 3);   // 2017→2020 연평균 배수 ≈ 1.625
+const WORLD = 80e8;
+console.assert(Math.abs(RATE - 1.6245) < 0.001, 'rate');
+const gN = document.getElementById('g-n'), gCv = document.getElementById('g-cv');
+function drawG() {
+  const n = +gN.value;
+  document.getElementById('g-nv').textContent = n; document.getElementById('g-y').textContent = 2020 + n;
+  const bars = [[2017, 35e6, 0], [2020, 150e6, 0]];
+  for (let k = 1; k <= n; k++) bars.push([2020 + k, 150e6 * Math.pow(RATE, k), 1]);
+  const [g, w, h] = setup(gCv, 320);
+  const x0 = 50, x1 = w - 20, y0 = 280, top = 30;
+  const maxV = Math.max(WORLD * 1.15, ...bars.map(b => b[1]));
+  const Y = v => y0 - (y0 - top) * v / maxV;
+  g.strokeStyle = INK; g.lineWidth = 2; g.beginPath(); g.moveTo(x0, y0); g.lineTo(x1, y0); g.stroke();
+  g.setLineDash([6, 5]); g.beginPath(); g.moveTo(x0, Y(WORLD)); g.lineTo(x1, Y(WORLD)); g.stroke(); g.setLineDash([]);
+  g.fillStyle = INK; g.textAlign = 'left'; g.fillText('세계 인구 약 80억', x0 + 4, Y(WORLD) - 6);
+  const bw = Math.min(56, (x1 - x0) / bars.length - 8);
+  bars.forEach(([yr, v, fake], i) => {
+    const bx = x0 + 10 + i * (bw + 8);
+    g.fillStyle = fake ? (v > WORLD ? RED : RED_L) : GRAY;
+    g.fillRect(bx, Y(v), bw, y0 - Y(v));
+    g.fillStyle = INK; g.textAlign = 'center';
+    g.fillText(yr, bx + bw / 2, y0 + 16);
+    if (bars.length <= 8 || i % 2 === 1 || i === bars.length - 1) g.fillText(fmt(v), bx + bw / 2, Math.max(Y(v) - 6, 14));
+  });
+  const over = bars.find(b => b[1] > WORLD);
+  document.getElementById('g-stat').innerHTML = `연평균 약 <b>${((RATE - 1) * 100).toFixed(1)}%</b> 증가 가정 · ` + (over
+    ? `<span class="bad">${over[0]}년 계산값 ${fmt(over[1])} > 세계 인구</span> — 같은 속도의 성장은 불가능. 2021년의 추세를 그대로 늘린 예측의 한계`
+    : n === 0 ? '슬라이더를 오른쪽으로 → 2020년의 증가율이 계속된다는 가정' : `${2020 + n}년 계산값 ${fmt(bars[bars.length - 1][1])} — 아직 세계 인구 아래`);
+}
+gN.oninput = drawG;
+
+// ---------- 2 가상공간 비율 ----------
+const ACTS = ['친구와 대화', '공부·수업', '쇼핑', '공연·영상 감상', '게임·놀이', '일·아르바이트'];
+const vBox = document.getElementById('v-list');
+vBox.innerHTML = ACTS.map((a, i) => `<label>${a}<input type="range" min="0" max="100" step="10" value="${[60, 40, 70, 80, 70, 20][i]}" data-i="${i}" aria-label="${a}: 가상공간 비율"><b>${[60, 40, 70, 80, 70, 20][i]}%</b></label>`).join('');
+const vCv = document.getElementById('v-cv');
+function drawV() {
+  const rs = [...vBox.querySelectorAll('input')];
+  rs.forEach(r => r.nextElementSibling.textContent = r.value + '%');
+  const avg = rs.reduce((a, r) => a + +r.value, 0) / rs.length;
+  const [g, w, h] = setup(vCv, 280);
+  const cx = w / 2, cy = 140, R = 120, rIn = R * Math.sqrt(1 - avg / 100);   // 넓이 비율 = 가상공간 비율
+  g.fillStyle = RED_L; g.beginPath(); g.arc(cx, cy, R, 0, 7); g.fill();
+  g.strokeStyle = RED; g.lineWidth = 4; g.stroke();
+  g.fillStyle = GRAY_L; g.beginPath(); g.arc(cx, cy, rIn, 0, 7); g.fill();
+  g.strokeStyle = GRAY; g.lineWidth = 2; g.stroke();
+  g.font = 'bold 15px "Noto Sans KR", sans-serif'; g.textAlign = 'center';
+  g.fillStyle = INK; if (rIn > 30) g.fillText('현실', cx, cy + 5);
+  g.fillStyle = RED; g.fillText('가상공간', cx, cy - R + 22 > cy - rIn ? cy - R - 8 : cy - R + 22);
+  document.getElementById('v-stat').innerHTML = `가상공간 비율 평균 <b>${Math.round(avg)}%</b> — ` +
+    (avg >= 50 ? '하루의 절반 이상이 가상공간: 저자의 “공간 욕망”이 내 일상에서 진행 중' : '아직은 현실 중심의 하루: 어떤 활동이 가상으로 옮겨 갈까?');
+}
+vBox.oninput = drawV;
+addEventListener('resize', () => { drawG(); drawV(); });
+document.fonts.ready.then(() => { drawG(); drawV(); });
+drawG(); drawV();
+</script>
+</body>
+</html>

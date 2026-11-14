@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2강 출처 합치기 놀이터</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="../assets/page.css">
+<style>
+  .srcs { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; margin: 12px 0; }
+  .srcs label { display: flex; gap: 8px; align-items: center; font-size: 15px; border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; cursor: pointer; }
+  .srcs input { accent-color: var(--red); }
+  .srcs small { color: var(--gray); margin-left: auto; }
+  .legend { display: flex; gap: 18px; font-size: 14px; color: #666; margin-top: 8px; flex-wrap: wrap; }
+  .legend i { display: inline-block; width: 14px; height: 14px; vertical-align: -2px; margin-right: 6px; border-radius: 50%; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="badge">2강</span><h1>출처 합치기 놀이터</h1>
+    <nav><a href="index.html#1">슬라이드</a><a href="quiz.html">퀴즈</a><a href="../index.html">목록</a></nav>
+  </header>
+  <p class="lede">김정호처럼 여러 출처를 엮어 한 고을의 위치를 추정하는 공간 · 관련 장면: MapAssembly · 출처별 오차는 수업용 가정값</p>
+
+  <section class="card" id="s1">
+    <h2><span class="n">01</span>흩어진 출처로 고을 위치 찾기</h2>
+    <p class="muted">출처를 고르고 “다시 측정” → 출처마다 조금씩 틀린 위치 표시 · 합친 추정(빨간 별)이 실제 위치(검은 십자)에 얼마나 가까운지 확인</p>
+    <div class="srcs" id="g-src"></div>
+    <div class="controls">
+      <label>합치는 방법
+        <select id="g-mode"><option value="avg">단순 평균</option><option value="w">신뢰도 가중 평균</option></select>
+      </label>
+      <button class="solid" id="g-again">다시 측정</button>
+      <button id="g-sim">1,000번 반복 평균 오차</button>
+    </div>
+    <canvas id="g-cv" aria-label="출처별 추정 위치와 합친 추정, 실제 위치가 표시된 방안 지도"></canvas>
+    <div class="legend"><span><i style="background:#8C8C8C"></i>출처별 추정</span><span><i style="background:#E22B2D"></i>합친 추정</span><span><i style="background:#3F3F3F;border-radius:0"></i>실제 위치</span></div>
+    <p class="stat" id="g-stat" aria-live="polite"></p>
+  </section>
+</div>
+
+<script>
+const RED = '#E22B2D', GRAY = '#8C8C8C', INK = '#3F3F3F', GRAY_L = '#D9D9D9';
+// [이름, 오차 크기(km, 표준편차) — 수업용 가정값]
+const SRC = [['중앙정부 지도', 6], ['지리서', 10], ['지방 관청 문서', 8], ['보부상 구전', 16], ['직접 답사', 4]];
+const TRUE = [50, 50];   // 지도 100km × 100km 가운데
+const box = document.getElementById('g-src');
+box.innerHTML = SRC.map(([n, s], i) => `<label><input type="checkbox" data-i="${i}" ${i < 4 ? 'checked' : ''}>${n}<small>오차 ±${s}km</small></label>`).join('');
+
+function gauss() { let u = 0, v = 0; while (!u) u = Math.random(); while (!v) v = Math.random(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+function measure() { return SRC.map(([, s]) => [TRUE[0] + gauss() * s, TRUE[1] + gauss() * s]); }
+function combine(est, on, mode) {   // 단순 평균 또는 1/σ² 가중 평균
+  let wx = 0, wy = 0, ws = 0;
+  on.forEach(i => { const w = mode === 'w' ? 1 / SRC[i][1] ** 2 : 1; wx += w * est[i][0]; wy += w * est[i][1]; ws += w; });
+  return [wx / ws, wy / ws];
+}
+console.assert(combine([[0, 0], [10, 10]], [0, 1], 'avg')[0] === 5, 'combine avg self-check');
+
+let est = measure();
+const on = () => [...box.querySelectorAll('input')].filter(c => c.checked).map(c => +c.dataset.i);
+const cv = document.getElementById('g-cv');
+
+function setup(cv, h) {   // 고해상도 캔버스
+  const dpr = window.devicePixelRatio || 1, w = cv.clientWidth;
+  cv.width = w * dpr; cv.height = h * dpr; cv.style.height = h + 'px';
+  const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.font = '14px "Noto Sans KR", sans-serif'; return [g, w, h];
+}
+
+function draw(extra) {
+  const [g, w] = setup(cv, 420), S = Math.min(w - 40, 400), x0 = (w - S) / 2, y0 = 10;
+  const P = ([x, y]) => [x0 + S * x / 100, y0 + S * (1 - y / 100)];
+  g.strokeStyle = GRAY_L; g.lineWidth = 1;
+  for (let k = 0; k <= 10; k++) { g.beginPath(); g.moveTo(x0 + S * k / 10, y0); g.lineTo(x0 + S * k / 10, y0 + S); g.moveTo(x0, y0 + S * k / 10); g.lineTo(x0 + S, y0 + S * k / 10); g.stroke(); }
+  const ids = on();
+  g.textAlign = 'left';
+  ids.forEach((i, k) => { const [px, py] = P(est[i]); g.fillStyle = GRAY; g.beginPath(); g.arc(px, py, 6, 0, 7); g.fill(); g.fillStyle = INK; g.textAlign = k % 2 ? 'right' : 'left'; g.fillText(SRC[i][0], px + (k % 2 ? -9 : 9), py + 4); });
+  const [tx, ty] = P(TRUE); g.strokeStyle = INK; g.lineWidth = 3; g.beginPath(); g.moveTo(tx - 9, ty); g.lineTo(tx + 9, ty); g.moveTo(tx, ty - 9); g.lineTo(tx, ty + 9); g.stroke();
+  const stat = document.getElementById('g-stat');
+  if (!ids.length) { stat.textContent = '출처를 하나 이상 선택'; return; }
+  const c = combine(est, ids, document.getElementById('g-mode').value), [cx, cy] = P(c);
+  g.fillStyle = RED; g.beginPath();
+  for (let k = 0; k < 10; k++) { const r = k % 2 ? 5 : 12, a = -Math.PI / 2 + k * Math.PI / 5; g.lineTo(cx + r * Math.cos(a), cy + r * Math.sin(a)); }
+  g.fill();
+  const err = Math.hypot(c[0] - TRUE[0], c[1] - TRUE[1]);
+  const best = Math.min(...ids.map(i => Math.hypot(est[i][0] - TRUE[0], est[i][1] - TRUE[1])));
+  stat.innerHTML = `출처 <b>${ids.length}개</b> · 합친 추정의 오차 <b>${err.toFixed(1)}km</b> · 가장 가까운 단일 출처 ${best.toFixed(1)}km` + (extra || '');
+}
+
+document.getElementById('g-sim').onclick = () => {
+  const ids = on(); if (!ids.length) return draw();
+  const mode = document.getElementById('g-mode').value; let sc = 0, ss = ids.map(() => 0);
+  for (let r = 0; r < 1000; r++) {
+    const e = measure(), c = combine(e, ids, mode);
+    sc += Math.hypot(c[0] - TRUE[0], c[1] - TRUE[1]);
+    ids.forEach((i, k) => ss[k] += Math.hypot(e[i][0] - TRUE[0], e[i][1] - TRUE[1]));
+  }
+  const single = Math.min(...ss) / 1000;
+  draw(`<br>1,000번 반복: 합친 추정 평균 오차 <b>${(sc / 1000).toFixed(1)}km</b> vs 가장 좋은 단일 출처 평균 ${single.toFixed(1)}km — ` +
+    (sc / 1000 < single ? '<span class="ok">편집(합치기)의 힘</span>' : '<span class="bad">나쁜 출처가 섞이면 손해 — 신뢰도 가중으로 바꿔 보기</span>'));
+};
+document.getElementById('g-again').onclick = () => { est = measure(); draw(); };
+box.onchange = () => draw();
+document.getElementById('g-mode').onchange = () => draw();
+addEventListener('resize', () => draw());
+document.fonts.ready.then(() => draw());
+draw();
+</script>
+</body>
+</html>

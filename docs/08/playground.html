@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>8강 루브릭 점수 계산기</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="../assets/page.css">
+<style>
+  table.rb { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 15px; }
+  table.rb th, table.rb td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: center; }
+  table.rb th:first-child, table.rb td:first-child { text-align: left; }
+  table.rb input { width: 64px; text-align: center; font: inherit; padding: 4px; border: 1px solid #ccc; border-radius: 6px; }
+  table.rb td.tot { font-weight: 700; color: var(--red); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="badge">8강</span><h1>루브릭 점수 계산기</h1>
+    <nav><a href="index.html#1">슬라이드</a><a href="quiz.html">퀴즈</a><a href="../index.html">목록</a></nav>
+  </header>
+  <p class="lede">갤러리 워크 동료 평가 점수를 넣으면 기준별 평균과 총점 계산 · 극단 점수 하나가 결과를 얼마나 흔드는지 확인 (10주 “아웃라이어 보정” 예고)</p>
+
+  <section class="card">
+    <h2><span class="n">01</span>동료 평가 4명의 점수</h2>
+    <p class="muted">기준별 배점: 메시지 30 · 데이터 30 · 설계 25 · 한계 15 · 배점을 넘는 값은 배점으로 맞춤 · 예시 점수는 가상</p>
+    <table class="rb" id="rb"></table>
+    <div class="controls">
+      <label><input type="checkbox" id="trim"> 총점 최고·최저 평가자 제외 (오디션 방식)</label>
+      <button id="ex-ok">예: 고른 평가</button><button id="ex-out">예: 극단 평가 1명</button>
+    </div>
+    <canvas id="cv" aria-label="평가자별 총점 막대와 평균선"></canvas>
+    <p class="stat" id="stat" aria-live="polite"></p>
+  </section>
+</div>
+
+<script>
+const RED = '#E22B2D', RED_L = '#F6C4C5', GRAY = '#8C8C8C', INK = '#3F3F3F', GRAY_L = '#D9D9D9';
+const CRIT = [['메시지 명확성', 30], ['데이터 정확성', 30], ['시각 설계', 25], ['한계 성찰', 15]];
+const EX = { ok: [[24, 22, 20, 10], [26, 24, 19, 11], [23, 25, 21, 9], [25, 23, 18, 12]],
+             out: [[24, 22, 20, 10], [26, 24, 19, 11], [23, 25, 21, 9], [3, 2, 2, 1]] };
+const rb = document.getElementById('rb'), cv = document.getElementById('cv');
+rb.innerHTML = `<tr><th>평가자</th>${CRIT.map(([c, m]) => `<th>${c}<br><span class="muted">/${m}</span></th>`).join('')}<th>총점</th></tr>` +
+  [0, 1, 2, 3].map(r => `<tr><td>동료 ${r + 1}</td>${CRIT.map((_, c) =>
+    `<td><input type="number" min="0" max="${CRIT[c][1]}" data-r="${r}" data-c="${c}" aria-label="동료 ${r + 1} ${CRIT[c][0]}"></td>`).join('')}<td class="tot" id="t${r}"></td></tr>`).join('');
+
+function fill(m) { rb.querySelectorAll('input').forEach(i => i.value = m[+i.dataset.r][+i.dataset.c]); draw(); }
+function read() {
+  const m = [0, 1, 2, 3].map(() => [0, 0, 0, 0]);
+  rb.querySelectorAll('input').forEach(i => {
+    const c = +i.dataset.c, v = Math.max(0, Math.min(CRIT[c][1], +i.value || 0));
+    if (+i.value !== v && i.value !== '') i.value = v;   // 배점 범위로 맞춤
+    m[+i.dataset.r][c] = v;
+  });
+  return m;
+}
+const mean = a => a.reduce((s, x) => s + x, 0) / a.length;
+
+function draw() {
+  const m = read(), tots = m.map(r => r.reduce((s, x) => s + x, 0));
+  tots.forEach((t, i) => document.getElementById('t' + i).textContent = t);
+  const trim = document.getElementById('trim').checked;
+  const order = tots.map((t, i) => [t, i]).sort((a, b) => a[0] - b[0]);
+  const used = trim ? order.slice(1, -1).map(x => x[1]) : [0, 1, 2, 3];
+  const avg = mean(used.map(i => tots[i])), raw = mean(tots);
+
+  const dpr = devicePixelRatio || 1, w = cv.clientWidth, h = 260;
+  cv.width = w * dpr; cv.height = h * dpr; cv.style.height = h + 'px';
+  const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.font = '14px "Noto Sans KR", sans-serif';
+  const x0 = 80, x1 = w - 30, X = v => x0 + (x1 - x0) * v / 100;
+  g.strokeStyle = GRAY_L; g.fillStyle = GRAY; g.textAlign = 'center';
+  for (let v = 0; v <= 100; v += 20) { g.beginPath(); g.moveTo(X(v), 20); g.lineTo(X(v), 220); g.stroke(); g.fillText(v, X(v), 240); }
+  tots.forEach((t, i) => {
+    const y = 30 + i * 46;
+    g.fillStyle = used.includes(i) ? INK : GRAY_L; g.fillRect(X(0), y, X(t) - X(0), 30);
+    g.fillStyle = INK; g.textAlign = 'right'; g.fillText(`동료 ${i + 1}`, x0 - 10, y + 20);
+  });
+  g.strokeStyle = RED; g.lineWidth = 3; g.beginPath(); g.moveTo(X(avg), 18); g.lineTo(X(avg), 222); g.stroke();
+  g.fillStyle = RED; g.textAlign = 'center'; g.fillText(`평균 ${avg.toFixed(1)}`, X(avg), 14);
+
+  const crit = CRIT.map(([c], k) => `${c} ${mean(used.map(i => m[i][k])).toFixed(1)}`).join(' · ');
+  document.getElementById('stat').innerHTML = `기준별 평균: ${crit}<br>최종 점수 <b>${avg.toFixed(1)}</b> / 100` +
+    (trim ? ` · 제외 전 평균 ${raw.toFixed(1)} → 차이 <b>${(avg - raw).toFixed(1)}</b>점` : ' · 체크하면 극단 평가자 제외 결과 비교');
+}
+rb.oninput = draw;
+document.getElementById('trim').onchange = draw;
+document.getElementById('ex-ok').onclick = () => fill(EX.ok);
+document.getElementById('ex-out').onclick = () => fill(EX.out);
+addEventListener('resize', draw);
+document.fonts.ready.then(draw);
+fill(EX.out);
+</script>
+</body>
+</html>

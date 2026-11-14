@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>13강 수확 가속 놀이터</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="../assets/page.css">
+<style>
+  .legend { display: flex; gap: 18px; font-size: 14px; color: #666; margin-top: 8px; flex-wrap: wrap; }
+  .legend i { display: inline-block; width: 14px; height: 14px; vertical-align: -2px; margin-right: 6px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="badge">13강</span><h1>수확 가속 놀이터</h1>
+    <nav><a href="index.html#1">슬라이드</a><a href="quiz.html">퀴즈</a><a href="../index.html">목록</a></nav>
+  </header>
+  <p class="lede">슬라이드의 manim 장면(AINewsBars, LinearVsExp)을 직접 조작하는 공간 · 원본 장면 코드: scripts/13_animations.py</p>
+
+  <!-- 1 빅카인즈 -->
+  <section class="card" id="s1">
+    <h2><span class="n">01</span>‘AI’ 뉴스 건수: 축을 바꾸면 이야기가 바뀜</h2>
+    <p class="muted">빅카인즈 분석 수치(연재 ⑪) · 보통 축에서는 2020년만 보이고, 로그 축에서는 매 구간의 성장 배수가 보임 · 관련 장면: AINewsBars</p>
+    <div class="controls">
+      <button class="solid" id="n-lin">보통 축</button><button id="n-log">로그 축</button>
+    </div>
+    <canvas id="n-cv" aria-label="연도별 AI 뉴스 건수 막대그래프"></canvas>
+    <p class="stat" id="n-stat" aria-live="polite"></p>
+  </section>
+
+  <!-- 2 선형 vs 지수 -->
+  <section class="card" id="s2">
+    <h2><span class="n">02</span>직선 vs 수확 가속 — 언제 인간 지능선에 닿을까</h2>
+    <p class="muted">2005년의 능력 = 1로 두고 출발 · 숫자는 모두 가정(실제 측정값 아님) · 성장 방식의 차이가 예측 연도를 얼마나 흔드는지 확인 · 관련 장면: LinearVsExp</p>
+    <div class="controls">
+      <label>선형: 해마다 <input type="range" id="e-lin" min="1" max="20" value="4"> +<b id="e-linv">4</b></label>
+      <label>지수: <input type="range" id="e-dbl" min="1" max="8" value="2"> <b id="e-dblv">2</b>년마다 2배</label>
+      <label>인간 지능선 <input type="range" id="e-h" min="10" max="5000" step="10" value="100"> <b id="e-hv">100</b></label>
+    </div>
+    <canvas id="e-cv" aria-label="선형 성장과 지수 성장 곡선, 인간 지능선과 만나는 연도"></canvas>
+    <div class="legend"><span><i style="background:#8C8C8C"></i>선형</span><span><i style="background:#E22B2D"></i>지수 (수확 가속)</span><span><i style="border:2px dashed #3F3F3F"></i>인간 지능선</span></div>
+    <p class="stat" id="e-stat" aria-live="polite"></p>
+  </section>
+</div>
+
+<script>
+const RED = '#E22B2D', RED_L = '#F6C4C5', GRAY = '#8C8C8C', INK = '#3F3F3F';
+function setup(cv, h) {   // 고해상도 캔버스
+  const dpr = window.devicePixelRatio || 1, w = cv.clientWidth;
+  cv.width = w * dpr; cv.height = h * dpr; cv.style.height = h + 'px';
+  const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.font = '13px "Noto Sans KR", sans-serif'; return [g, w, h];
+}
+
+// ---------- 1 빅카인즈 ----------
+const NEWS = [[2000, 163], [2005, 1471], [2015, 5801], [2020, 90835]];
+let logAxis = false;
+const nCv = document.getElementById('n-cv');
+function drawN() {
+  const [g, w, h] = setup(nCv, 300);
+  const x0 = 70, y0 = 260, top = 30, maxV = 100000;
+  const Y = v => logAxis ? y0 - (y0 - top) * Math.log10(v) / 5 : y0 - (y0 - top) * v / maxV;
+  g.strokeStyle = INK; g.lineWidth = 2; g.beginPath(); g.moveTo(x0, top - 10); g.lineTo(x0, y0); g.lineTo(w - 20, y0); g.stroke();
+  g.fillStyle = GRAY; g.textAlign = 'right';
+  const ticks = logAxis ? [10, 100, 1000, 10000, 100000] : [0, 25000, 50000, 75000, 100000];
+  ticks.forEach(t => { g.fillText(t.toLocaleString(), x0 - 6, Y(t) + 4); g.fillRect(x0 - 3, Y(t), 6, 1); });
+  const bw = Math.min(90, (w - x0 - 40) / 4 - 24);
+  NEWS.forEach(([yr, v], i) => {
+    const bx = x0 + 24 + i * (bw + 24);
+    g.fillStyle = i === 3 ? RED : GRAY; g.fillRect(bx, Y(v), bw, y0 - Y(v));
+    g.fillStyle = INK; g.textAlign = 'center';
+    g.fillText(yr, bx + bw / 2, y0 + 16); g.fillText(v.toLocaleString() + '건', bx + bw / 2, Y(v) - 6);
+    if (logAxis && i > 0) { g.fillStyle = RED; g.fillText(`×${(v / NEWS[i - 1][1]).toFixed(1)}`, bx - 12, (Y(v) + Y(NEWS[i - 1][1])) / 2); }
+  });
+  document.getElementById('n-lin').className = logAxis ? '' : 'solid';
+  document.getElementById('n-log').className = logAxis ? 'solid' : '';
+  document.getElementById('n-stat').innerHTML = logAxis
+    ? '로그 축: 눈금 한 칸 = 10배 · 2000→2005 <b>×9.0</b>, 2005→2015 <b>×3.9</b>(10년), 2015→2020 <b>×15.7</b> — 가장 가파른 구간은 2015년 이후'
+    : '보통 축: 2020년의 <b>90,835건</b>이 나머지를 눌러 버림 — 2000년 163건은 거의 보이지 않음';
+}
+document.getElementById('n-lin').onclick = () => { logAxis = false; drawN(); };
+document.getElementById('n-log').onclick = () => { logAxis = true; drawN(); };
+
+// ---------- 2 선형 vs 지수 ----------
+const eLin = document.getElementById('e-lin'), eDbl = document.getElementById('e-dbl'), eH = document.getElementById('e-h');
+const eCv = document.getElementById('e-cv');
+const lin = (t, a) => 1 + a * t;                 // t = 2005년부터 지난 햇수
+const exp = (t, d) => Math.pow(2, t / d);
+const reachLin = (H, a) => (H - 1) / a;
+const reachExp = (H, d) => d * Math.log2(H);
+console.assert(Math.abs(reachExp(16, 2) - 8) < 1e-9 && Math.abs(lin(reachLin(41, 4), 4) - 41) < 1e-9, 'reach');
+function drawE() {
+  const a = +eLin.value, d = +eDbl.value, H = +eH.value;
+  document.getElementById('e-linv').textContent = a; document.getElementById('e-dblv').textContent = d; document.getElementById('e-hv').textContent = H;
+  const T = 45;   // 2005~2050
+  const [g, w, h] = setup(eCv, 320);
+  const x0 = 50, x1 = w - 20, y0 = 280, top = 20, maxV = H * 1.6;
+  const X = t => x0 + (x1 - x0) * t / T, Y = v => y0 - (y0 - top) * Math.min(v, maxV) / maxV;
+  g.strokeStyle = INK; g.lineWidth = 2; g.beginPath(); g.moveTo(x0, top); g.lineTo(x0, y0); g.lineTo(x1, y0); g.stroke();
+  g.fillStyle = GRAY; g.textAlign = 'center';
+  for (let t = 0; t <= T; t += 5) g.fillText(2005 + t, X(t), y0 + 16);
+  g.setLineDash([6, 5]); g.strokeStyle = INK; g.beginPath(); g.moveTo(x0, Y(H)); g.lineTo(x1, Y(H)); g.stroke(); g.setLineDash([]);
+  g.fillStyle = INK; g.textAlign = 'left'; g.fillText('인간 지능선', x0 + 6, Y(H) - 6);
+  [[t => lin(t, a), GRAY], [t => exp(t, d), RED]].forEach(([f, c]) => {
+    g.strokeStyle = c; g.lineWidth = 4; g.beginPath();
+    for (let t = 0; t <= T; t += 0.25) { const v = f(t); t ? g.lineTo(X(t), Y(v)) : g.moveTo(X(t), Y(v)); if (v > maxV) break; }
+    g.stroke();
+  });
+  const yl = 2005 + reachLin(H, a), ye = 2005 + reachExp(H, d);
+  [[yl, GRAY], [ye, RED]].forEach(([yr, c]) => { if (yr <= 2050) { g.fillStyle = c; g.beginPath(); g.arc(X(yr - 2005), Y(H), 7, 0, 7); g.fill(); } });
+  const s = y => y > 2050 ? '2050년 이후' : `${Math.round(y)}년`;
+  document.getElementById('e-stat').innerHTML = `선형 도달 <b>${s(yl)}</b> · 지수 도달 <b>${s(ye)}</b> — ` +
+    (Math.abs(ye - 2029) <= 1 ? '지수 곡선이 2029년 전후에 닿는 설정 = 커즈와일의 그림' :
+     '가정(배가 기간·지능선의 높이)을 조금만 바꿔도 도달 연도가 크게 이동 → 연도를 특정한 예측을 경계하는 이유');
+}
+[eLin, eDbl, eH].forEach(el => el.oninput = drawE);
+addEventListener('resize', () => { drawN(); drawE(); });
+document.fonts.ready.then(() => { drawN(); drawE(); });
+drawN(); drawE();
+</script>
+</body>
+</html>

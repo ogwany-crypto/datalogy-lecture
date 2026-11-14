@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3강 코호트 시뮬레이터</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="../assets/page.css">
+<style>
+  .legend { display: flex; gap: 18px; font-size: 14px; color: #666; margin-top: 8px; flex-wrap: wrap; }
+  .legend i { display: inline-block; width: 14px; height: 4px; vertical-align: 3px; margin-right: 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="badge">3강</span><h1>코호트 시뮬레이터</h1>
+    <nav><a href="index.html#1">슬라이드</a><a href="quiz.html">퀴즈</a><a href="../index.html">목록</a></nav>
+  </header>
+  <p class="lede">같은 해 태어난 두 집단을 60년 동안 추적하는 가상 실험 · 관련 장면: CohortVsCross, BarkerTrace · <b>가상 시뮬레이션, 실제 연구 수치 아님</b></p>
+
+  <section class="card" id="s1">
+    <h2><span class="n">01</span>차이는 언제 보이기 시작할까?</h2>
+    <p class="muted">태아기 어려움을 겪은 집단(빨강)과 아닌 집단(회색) 각 500명 · 추적 기간을 늘리며 누적 발병 비율 비교 · 노출 효과 = 같은 나이에서 발병 위험이 몇 배인지</p>
+    <div class="controls">
+      <label>추적 기간 <input type="range" id="c-t" min="0" max="60" value="20"> <b id="c-tv">20</b>년</label>
+      <label>노출 효과 <input type="range" id="c-rr" min="10" max="30" value="18"> <b id="c-rrv">1.8</b>배</label>
+      <button class="solid" id="c-new">새 코호트 만들기</button>
+    </div>
+    <canvas id="c-cv" aria-label="두 집단의 나이별 누적 발병 비율 곡선"></canvas>
+    <div class="legend"><span><i style="background:#E22B2D"></i>노출 집단</span><span><i style="background:#8C8C8C"></i>비노출 집단</span><span><i style="background:#3F3F3F;height:2px"></i>지금 시점(스냅숏)</span></div>
+    <p class="stat" id="c-stat" aria-live="polite"></p>
+  </section>
+</div>
+
+<script>
+const RED = '#E22B2D', GRAY = '#8C8C8C', INK = '#3F3F3F', GRAY_L = '#D9D9D9';
+const N = 500, YEARS = 60;
+const hazard = age => 0.0004 * Math.exp(0.07 * age);   // shortcut: 나이에 따라 커지는 가상 발병 위험, 실제 역학 모델 아님
+
+function onsetAges(rr) {   // 각 사람의 발병 나이(없으면 Infinity)
+  return Array.from({ length: N }, () => {
+    for (let a = 0; a < YEARS; a++) if (Math.random() < Math.min(1, hazard(a) * rr)) return a;
+    return Infinity;
+  });
+}
+let base, expo;
+function regen() { const rr = +document.getElementById('c-rr').value / 10; base = onsetAges(1); expo = onsetAges(rr); }
+const cum = (arr, t) => arr.filter(a => a < t).length / N;
+console.assert(cum([0, 5, Infinity], 6) === 2 / N, 'cum self-check');
+
+function setup(cv, h) {   // 고해상도 캔버스
+  const dpr = window.devicePixelRatio || 1, w = cv.clientWidth;
+  cv.width = w * dpr; cv.height = h * dpr; cv.style.height = h + 'px';
+  const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.font = '14px "Noto Sans KR", sans-serif'; return [g, w, h];
+}
+
+function draw() {
+  const t = +document.getElementById('c-t').value;
+  document.getElementById('c-tv').textContent = t;
+  document.getElementById('c-rrv').textContent = (+document.getElementById('c-rr').value / 10).toFixed(1);
+  const [g, w, h] = setup(document.getElementById('c-cv'), 340);
+  const L = 50, R = w - 20, T = 20, B = h - 40;
+  const ymax = Math.max(0.2, Math.ceil(cum(expo, YEARS) * 10) / 10);
+  const X = a => L + (R - L) * a / YEARS, Y = p => B - (B - T) * p / ymax;
+  g.strokeStyle = GRAY_L; g.fillStyle = GRAY; g.textAlign = 'right';
+  for (let p = 0; p <= ymax + 1e-9; p += 0.1) { g.beginPath(); g.moveTo(L, Y(p)); g.lineTo(R, Y(p)); g.stroke(); g.fillText(`${Math.round(p * 100)}%`, L - 6, Y(p) + 4); }
+  g.textAlign = 'center';
+  for (let a = 0; a <= YEARS; a += 10) g.fillText(`${a}년`, X(a), B + 20);
+  const curve = (arr, col) => { g.strokeStyle = col; g.lineWidth = 3; g.beginPath(); for (let a = 0; a <= t; a++) g.lineTo(X(a), Y(cum(arr, a))); g.stroke(); };
+  curve(base, GRAY); curve(expo, RED);
+  g.strokeStyle = INK; g.lineWidth = 2; g.setLineDash([6, 5]); g.beginPath(); g.moveTo(X(t), T); g.lineTo(X(t), B); g.stroke(); g.setLineDash([]);
+  const pe = cum(expo, t), pb = cum(base, t), diff = (pe - pb) * 100;
+  document.getElementById('c-stat').innerHTML = `${t}년 추적 시점 누적 발병: 노출 <b>${(pe * 100).toFixed(1)}%</b> · 비노출 ${(pb * 100).toFixed(1)}% · 차이 <b>${diff.toFixed(1)}%p</b> — ` +
+    (t < 30 ? '아직 차이가 작아 짧은 조사로는 놓치기 쉬움' : '시간이 지나야 드러나는 차이 = 코호트의 힘');
+}
+document.getElementById('c-t').oninput = draw;
+document.getElementById('c-rr').onchange = () => { regen(); draw(); };
+document.getElementById('c-rr').oninput = draw;
+document.getElementById('c-new').onclick = () => { regen(); draw(); };
+addEventListener('resize', draw);
+regen(); document.fonts.ready.then(draw); draw();
+</script>
+</body>
+</html>

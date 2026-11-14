@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>13강 2029년, 특이점은 올 것인가</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="../assets/deck.css">
+<style>
+  .cover { flex-direction: row !important; align-items: center; justify-content: space-between; padding: 128px !important; }
+  .cover::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 24px; background: var(--red); }
+  .toc-item { display: flex; align-items: center; gap: 40px; padding: 30px 0; border-bottom: 2px solid var(--red-l); }
+  .toc-item:last-child { border-bottom: none; }
+  .toc-item b { font-size: 56px; font-weight: 900; color: var(--red); width: 100px; }
+  .toc-item span { font-size: 44px; font-weight: 500; }
+  .tri { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; flex: 1; align-items: stretch; }
+  .tri .card h3 { font-size: 40px; }
+  .tri .card .k { font-size: 26px; font-weight: 700; color: var(--gray); letter-spacing: 2px; }
+  .tri .card { justify-content: center; gap: 20px; }
+  .tri .card ul.b { font-size: 32px; line-height: 1.6; }
+  table.t { border-collapse: collapse; font-size: 28px; width: 100%; background: #fff; }
+  table.t th, table.t td { border-bottom: 2px solid var(--line); padding: 14px 20px; text-align: left; vertical-align: top; }
+  table.t th { color: var(--red); font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="progress"></div>
+<div class="stage">
+
+<!-- 1 표지 -->
+<section class="slide cover">
+  <div style="display:flex;flex-direction:column;gap:32px;width:1000px">
+    <p style="font-size:120px;font-weight:900;color:var(--red);line-height:1">13</p>
+    <p style="font-size:36px;font-weight:500;color:var(--gray)">데이톨로지 — 데이터로 읽는 인간과 사회</p>
+    <h1 style="font-size:96px;font-weight:900;line-height:1.15">2029년,<br>특이점은 올 것인가</h1>
+    <hr style="width:160px;border:none;border-top:6px solid var(--red)">
+    <p style="font-size:32px;color:var(--gray)">주교재: 김성태, 『데이톨로지』 2부 · 연재 ⑪ · 강사 : ○○○</p>
+  </div>
+  <img class="fig" src="assets/cover.png" alt="직선과 지수 곡선이 인간 지능선을 향하는 그래프" style="width:600px;height:796px">
+  <aside class="note">13주차. 원전: 연재 ⑪ 「2029년, 과연 '특이점'은 올 것인가」(2021.08.18). 저자의 비판은 2021년 시점의 것 — 2022년 말 이후 생성형 AI의 발전은 원전 이후 사건이므로 토론의 증거로만 다룸.</aside>
+</section>
+
+<!-- 2 목차 -->
+<section class="slide" style="flex-direction:row;align-items:center;gap:96px;padding:128px">
+  <div style="display:flex;flex-direction:column;gap:24px;width:520px">
+    <p style="font-size:32px;font-weight:700;color:var(--red);letter-spacing:4px">CONTENTS</p>
+    <h2 style="font-size:72px;font-weight:900;line-height:1.15">2029년,<br>특이점은<br>올 것인가</h2>
+    <hr style="width:120px;border:none;border-top:6px solid var(--red)">
+  </div>
+  <div style="flex:1">
+    <div class="toc-item"><b>01</b><span>AI 관심의 폭증</span></div>
+    <div class="toc-item"><b>02</b><span>특이점과 수확 가속의 법칙</span></div>
+    <div class="toc-item"><b>03</b><span>저자의 세 가지 반론</span></div>
+    <div class="toc-item"><b>04</b><span>쿨 데이터와 핫 데이터</span></div>
+    <div class="toc-item"><b>05</b><span>2029 예측 법정 · 정리 및 확인 문제</span></div>
+  </div>
+</section>
+
+<!-- 3 학습 목표 -->
+<section class="slide" style="flex-direction:row;align-items:center;gap:80px;padding:128px">
+  <img class="fig" src="assets/goal.png" alt="낙관과 비판을 다는 저울" style="width:760px;height:568px">
+  <div class="col" style="gap:40px">
+    <h2 style="font-size:72px;font-weight:900">학습 목표</h2>
+    <div class="card"><p style="font-size:28px;font-weight:700;color:var(--red)">목표 1</p><p style="font-size:36px;font-weight:500">특이점 낙관론과 비판론의 논거 정리</p></div>
+    <div class="card"><p style="font-size:28px;font-weight:700;color:var(--red)">목표 2</p><p style="font-size:36px;font-weight:500">저자의 세 가지 반론과 쿨/핫 데이터 구분 설명</p></div>
+  </div>
+</section>
+
+<!-- 4 오늘의 질문 -->
+<section class="slide" style="justify-content:center;align-items:center;gap:56px">
+  <p style="font-size:36px;font-weight:700;color:var(--red);letter-spacing:4px">오늘의 질문</p>
+  <p style="font-size:64px;font-weight:900;line-height:1.4;text-align:center">2005년 커즈와일의 예언<br>“2029년, AI가 인간 수준에 도달”<br><span style="color:var(--red)">2026년의 우리는 어떻게 채점할까?</span></p>
+  <aside class="note">강의안 13주차 도입 질문. 손을 들어 "맞을 것 / 틀릴 것 / 모르겠음" 투표 후 수업 끝에 다시 투표.</aside>
+</section>
+
+<!-- 5 13-1 비유: 신문 더미 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">13-1</span><h2>AI 관심의 폭증</h2></div><p class="sub">[비유] 높이 쌓인 신문 더미</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/newspapers.jpg" alt="높이 쌓인 신문" style="width:760px;height:570px"><p class="credit">사진: Ben Sutherland / CC BY 2.0</p></div>
+    <div class="col">
+      <h3>신문 더미 = AI 담론</h3>
+      <ul class="b">
+        <li>날마다 쌓이는 AI 기사</li>
+        <li>더미의 높이 = 관심의 크기</li>
+        <li>더미의 높이 ≠ 기술의 수준</li>
+        <li>많이 말할수록 커지는 과장의 위험</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="note">비유는 강의자 구성. 저자의 결론(장밋빛 예측보다 가능성과 문제점을 정확히 논의)과 연결.</aside>
+</section>
+
+<!-- 6 13-1 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">13-1</span><h2>AI 관심의 폭증</h2></div><p class="sub">빅카인즈 ‘AI’ 키워드 뉴스: 2000년 163건 → 2020년 90,835건</p></div>
+  <video class="anim" src="assets/anim/AINewsBars.mp4" poster="assets/anim/AINewsBars_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">원전 수치: 연재 ⑪, 빅카인즈 분석(2001.1.1~2021.8.11 누적 41만 6,077건). 연도별 2000 163 · 2005 1,471 · 2015 5,801 · 2020 90,835. '약 557배'는 강의자 계산(90,835 ÷ 163).</aside>
+</section>
+
+<!-- 7 13-1 우려와 실패 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">13-1</span><h2>AI 관심의 폭증</h2></div><p class="sub">관심의 그림자: 우려와 실패</p></div>
+  <div class="row" style="gap:56px;align-items:stretch">
+    <div class="card" style="flex:1;justify-content:center">
+      <h3>퓨리서치센터 (2018.12)</h3>
+      <p style="font-size:30px;color:var(--gray)">전문가 979명, ‘AI and the Future of Humans’</p>
+      <ul class="b" style="font-size:30px"><li>프라이버시 침해</li><li>일자리 대체와 격차</li><li>인간 능력 감소</li><li>사이버 범죄·전쟁</li></ul>
+    </div>
+    <div class="card" style="flex:1;justify-content:center">
+      <h3>코로나 AI의 실패 (2021.7)</h3>
+      <p style="font-size:30px;color:var(--gray)">MIT 테크놀로지리뷰 보도</p>
+      <ul class="b" style="font-size:30px"><li>탐지·추적 AI 대부분 임상 효능 미인정</li><li>원인 = 짜깁기한 데이터의 질</li><li>좋은 알고리즘보다 좋은 데이터</li></ul>
+    </div>
+  </div>
+  <aside class="note">원전: 연재 ⑪. 데이터 리터러시 관통 주제와 연결 — 데이터 품질이 AI 성능의 한계.</aside>
+</section>
+
+<!-- 8 13-2 비유: 눈덩이 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">13-2</span><h2>특이점과 수확 가속의 법칙</h2></div><p class="sub">[비유] 굴러가는 눈덩이</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/snowball.jpg" alt="여럿이 큰 눈덩이를 굴리는 모습" style="width:760px;height:570px"><p class="credit">사진: kamshots / CC BY 2.0</p></div>
+    <div class="col">
+      <h3>눈덩이 = 수확 가속</h3>
+      <ul class="b">
+        <li>클수록 한 바퀴에 붙는 눈도 많아짐</li>
+        <li>처음엔 느리고, 어느 순간 폭발</li>
+        <li>기술이 기술을 키우는 기하급수 성장</li>
+        <li>커즈와일: 그 끝 = 특이점</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="note">비유는 강의자 [보충]. 수확 가속의 법칙(커즈와일, 『특이점이 온다』 2005) = 기술이 선형이 아닌 기하급수적으로 발전한다는 주장(연재 ⑪). 특이점(singularity) = AI가 인간 지능을 넘어서는 순간, 물리학에서는 물리량이 정의되지 않는 지점.</aside>
+</section>
+
+<!-- 9 13-2 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">13-2</span><h2>특이점과 수확 가속의 법칙</h2></div><p class="sub">선형 성장 vs 기하급수 성장</p></div>
+  <video class="anim" src="assets/anim/LinearVsExp.mp4" poster="assets/anim/LinearVsExp_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">manim: 직선(1,2,3…)과 지수 곡선(1,2,4,8…)이 인간 지능선을 향함. 곡선의 모양은 개념 설명용 가상 그래프(실제 데이터 아님).</aside>
+</section>
+
+<!-- 10 13-2 논쟁 지형 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">13-2</span><h2>특이점과 수확 가속의 법칙</h2></div><p class="sub">특이점 논쟁의 지형</p></div>
+  <table class="t">
+    <tr><th style="width:50%">낙관</th><th>경고·비판</th></tr>
+    <tr><td>레이 커즈와일 『특이점이 온다』(2005): 2029년 전후</td><td>스티븐 호킹: 초지능은 인류의 재앙일 수 있음</td></tr>
+    <tr><td>에릭 슈미트: AI가 기후·빈곤·전쟁·암 해결</td><td>일론 머스크(2014): “AI는 원자폭탄보다 위험”</td></tr>
+    <tr><td></td><td>제리 캐플런: AI는 인간처럼 사고 불가 → 특이점 없음</td></tr>
+    <tr><td></td><td>게리 마커스·어니스트 데이비스 『2029 기계가 멈추는 날』</td></tr>
+  </table>
+  <p style="font-size:30px;font-weight:700;color:var(--red)">마커스·데이비스의 사례: 알렉사(1억 대)·구글 자율주행·IBM 왓슨의 한계</p>
+  <aside class="note">원전: 연재 ⑪. [검증 노트] 칼럼은 '케리 마커스'로 적었으나 게리 마커스(Gary Marcus), 원서 Rebooting AI(2019).</aside>
+</section>
+
+<!-- 11 13-3 비유: 빙산 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">13-3</span><h2>저자의 세 가지 반론</h2></div><p class="sub">[비유] 빙산</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/iceberg.jpg" alt="물 아래 거대한 부분이 보이는 빙산" style="width:760px;height:570px"><p class="credit">사진: NOAA's National Ocean Service / CC BY 2.0</p></div>
+    <div class="col">
+      <h3>빙산 = 인간의 정신</h3>
+      <ul class="b">
+        <li>물 위 = 의식 (약 10%)</li>
+        <li>물 아래 = 무의식 (약 90%)</li>
+        <li>AI가 배우는 것 = 주로 물 위의 데이터</li>
+        <li>물 아래까지 닿아야 특이점</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="note">원전: 연재 ⑪의 프로이트 인용(정신 = 의식 10%, 무의식 90%의 빙산 구조). 대니얼 데닛 『의식의 수수께끼를 풀다』: 의식은 지능과 다른 차원.</aside>
+</section>
+
+<!-- 12 13-3 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">13-3</span><h2>저자의 세 가지 반론</h2></div><p class="sub">뇌공학 · 인간의 감성 · 사회 환경</p></div>
+  <video class="anim" src="assets/anim/IcebergMind.mp4" poster="assets/anim/IcebergMind_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">원전: 연재 ⑪. ① 뇌공학: 무의식·내면은 학습·측정이 어려움 ② 감성: 식사·투표·투자 같은 판단이 즉흥적 감정에 좌우 ③ 사회 환경: 자율주행차도 센서가 깔린 도로·만물인터넷·제도가 함께 갖춰져야 함. 결론: 특이점은 가능하지만 예측보다 훨씬 오래 걸림.</aside>
+</section>
+
+<!-- 13 13-4 비유: 온도계 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">13-4</span><h2>쿨 데이터와 핫 데이터</h2></div><p class="sub">[비유] 온도계</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/thermometer.jpg" alt="체온계 눈금" style="width:760px;height:570px"><p class="credit">사진: matsuyuki / CC BY-SA 2.0</p></div>
+    <div class="col">
+      <h3>온도계 = 데이터의 온도</h3>
+      <ul class="b">
+        <li>차가운 쪽 = 쿨 데이터 (논리·정형)</li>
+        <li>뜨거운 쪽 = 핫 데이터 (감성·비정형)</li>
+        <li>AI가 강한 곳 = 차가운 눈금</li>
+        <li>갈 길이 먼 곳 = 뜨거운 눈금</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="note">원전: 연재 ⑪, 맥루한의 핫/쿨 미디어 구분을 차용한 저자의 개념. 온도계 비유는 강의자 구성.</aside>
+</section>
+
+<!-- 14 13-4 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">13-4</span><h2>쿨 데이터와 핫 데이터</h2></div><p class="sub">AI 발전 3단계: 딥러닝 → 딥언더스탠딩 → 딥필링</p></div>
+  <video class="anim" src="assets/anim/DeepSteps.mp4" poster="assets/anim/DeepSteps_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">원전: 연재 ⑪의 저자 제안. 딥러닝 = 외면 인식(이미지 등), 딥언더스탠딩 = 사회적 맥락 이해, 딥필링 = 인간 감정 메커니즘 학습. 딥필링은 연재 ⑫·14주차에서 자세히.</aside>
+</section>
+
+<!-- 15 13-4 결론 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">13-4</span><h2>쿨 데이터와 핫 데이터</h2></div><p class="sub">저자의 결론</p></div>
+  <div class="row" style="gap:56px;align-items:stretch">
+    <div class="card" style="flex:1;justify-content:center">
+      <h3>경계할 것</h3>
+      <ul class="b" style="font-size:32px"><li>연도를 특정한 예언</li><li>AI에 대한 무비판적 믿음</li><li>잘못된 예측의 사회적 비용</li></ul>
+    </div>
+    <div class="card" style="flex:1;justify-content:center">
+      <h3>필요한 것</h3>
+      <ul class="b" style="font-size:32px"><li>가능성과 문제점의 정확한 논의</li><li>기술보다 인간 내면·감성·사회 먼저</li><li>미래 AI의 퍼즐 조각 = 딥필링</li></ul>
+    </div>
+  </div>
+  <p style="font-size:30px;color:var(--gray);text-align:center">하라리 『호모 데우스』의 ‘데이터교’ · ‘만물인터넷’과 함께 읽기</p>
+  <aside class="note">원전: 연재 ⑪ 결론. 강의자 노트: 2022년 말 이후 생성형 AI의 도약 = 쿨 데이터 영역의 빠른 진전 + 감정·의식 영역의 여전한 논쟁. 저자의 틀이 여전히 유용하다는 점과 예측은 늘 겸손해야 한다는 점을 함께 짚기.</aside>
+</section>
+
+<!-- 16 활동 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">13-5</span><h2>2029 예측 법정</h2></div><p class="sub">활동 (60분): 모의재판</p></div>
+  <div class="tri">
+    <div class="card"><p class="k">역할</p><h3>법정 구성</h3>
+      <ul class="b"><li>커즈와일 측 변호인</li><li>마커스 측 변호인</li><li>김성태 교수 (참고인)</li><li>나머지 = 배심원</li></ul></div>
+    <div class="card"><p class="k">증거 규칙</p><h3>2021~2026 증거</h3>
+      <ul class="b"><li>실제 AI 발전 사례만</li><li>출처·날짜 필수</li><li>예언이 아닌 사실</li></ul></div>
+    <div class="card"><p class="k">쟁점</p><h3>평결</h3>
+      <ul class="b"><li>세 반론 중 약해진 것은?</li><li>생성형 AI = 쿨 데이터의 승리? 핫 데이터로의 진입?</li><li>평결 + 소수의견</li></ul></div>
+  </div>
+  <aside class="note">강의안 13주차 활동. 증거 예시(대규모 언어모델, 생성형 AI, 자율주행 상용화 현황)는 원전 이후 사건이므로 학생이 직접 자료를 찾아 제출.</aside>
+</section>
+
+<!-- 17 정리 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">13-6</span><h2>정리 및 확인 문제</h2></div><p class="sub">오늘의 핵심 4줄</p></div>
+  <div class="row" style="gap:64px">
+    <div class="col" style="gap:24px">
+      <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">특이점</b> = AI가 인간 지능을 넘어서는 순간 (커즈와일: 2029년 전후)</p></div>
+      <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">수확 가속의 법칙</b> = 기술의 기하급수적 발전</p></div>
+      <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">저자의 반론</b> = 뇌공학(무의식) · 감성 · 사회 환경</p></div>
+      <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">쿨 → 핫 데이터</b> = 딥러닝 → 딥언더스탠딩 → 딥필링</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 18 확인 문제 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">13-6</span><h2>정리 및 확인 문제</h2></div><p class="sub">확인 문제</p></div>
+  <div class="row" style="gap:64px;align-items:stretch">
+    <div class="col" style="gap:18px">
+      <h3 style="font-size:36px">문제 1</h3>
+      <p style="font-size:32px;line-height:1.45">커즈와일이 특이점의 근거로 제시한 법칙과 그 뜻</p>
+      <h3 style="font-size:36px;padding-top:20px">문제 2</h3>
+      <p style="font-size:32px;line-height:1.45">저자가 2029년 특이점에 반대한 세 가지 이유</p>
+      <h3 style="font-size:36px;padding-top:20px">문제 3</h3>
+      <p style="font-size:32px;line-height:1.45">“감정이 담긴 영화 후기 문장”은 쿨 데이터와 핫 데이터 중 어느 쪽</p>
+      <button class="reveal">정답 보기</button>
+      <div class="answer">문제 1: 수확 가속의 법칙 — 기술은 선형이 아닌 기하급수적으로 발전<br>문제 2: ① 뇌공학(무의식까지 학습 필요) ② 인간의 감성(즉흥적 감정에 좌우되는 판단) ③ 사회 환경(인프라·제도 구축에 오랜 시간)<br>문제 3: 핫 데이터 — 감성적·비정형 데이터</div>
+    </div>
+    <img class="fig" src="assets/cover.png" alt="직선과 지수 곡선" style="width:420px;height:557px;align-self:center">
+  </div>
+  <aside class="note">정답 출처: 연재 ⑪. 문제 3의 예시 문장은 강의자 구성.</aside>
+</section>
+
+<!-- 19 마무리 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">13-6</span><h2>정리 및 확인 문제</h2></div><p class="sub">마무리</p></div>
+  <div class="row" style="gap:80px">
+    <div class="col" style="gap:20px">
+      <h3 style="font-size:36px">이번 주 과제</h3>
+      <ul class="b" style="font-size:30px">
+        <li>연재 ⑫ 「‘딥러닝’에서 ‘딥필링’ 시대로」 읽기</li>
+        <li>영화 「그녀(Her)」(2013) 감상 또는 요약 영상</li>
+        <li>오늘의 질문 다시 투표: 2029년 특이점, 내 평결은?</li>
+      </ul>
+      <h3 style="font-size:36px;padding-top:24px">다음 시간</h3>
+      <p style="font-size:30px">딥러닝에서 딥필링으로 — 감정이라는 마지막 영토</p>
+      <p style="font-size:26px;padding-top:24px"><a href="quiz.html" style="color:var(--red);font-weight:700">▶ 웹 퀴즈</a>&nbsp;&nbsp;&nbsp;<a href="playground.html" style="color:var(--red);font-weight:700">▶ 수확 가속 놀이터</a></p>
+    </div>
+    <img class="fig" src="assets/goal.png" alt="낙관과 비판의 저울" style="width:640px;height:478px">
+  </div>
+</section>
+
+<!-- 20 이미지 출처 -->
+<section class="slide">
+  <div class="head"><h2>이미지 출처</h2><p class="sub">사진 (Openverse 검색, CC 라이선스)</p></div>
+  <ul class="b" style="font-size:24px;line-height:1.7">
+    <li>British newspapers piled high at BBC Monitoring in Caversham — Ben Sutherland, CC BY 2.0, <a href="https://www.flickr.com/photos/60179301@N00/8365261138">flickr</a></li>
+    <li>Snowball — kamshots, CC BY 2.0, <a href="https://www.flickr.com/photos/32239176@N00/384814496">flickr</a></li>
+    <li>Iceberg — NOAA's National Ocean Service, CC BY 2.0, <a href="https://www.flickr.com/photos/40322276@N04/8290528771">flickr</a></li>
+    <li>Thermometer — matsuyuki, CC BY-SA 2.0, <a href="https://www.flickr.com/photos/12173213@N00/4057428737">flickr</a></li>
+    <li>애니메이션·그림 — manim, matplotlib으로 직접 제작</li>
+    <li>인용 — 김성태, 『데이톨로지』(이른비, 2022); 지디넷코리아 연재 ⑪(2021.08.18)</li>
+  </ul>
+</section>
+
+</div>
+<div class="notes"></div>
+<div class="bar">
+  <a href="../index.html">← 목록</a>
+  <button data-act="prev">◀</button><span class="count"></span><button data-act="next">▶</button>
+  <span class="grow">← → 이동 · F 전체 화면 · N 노트</span>
+  <a href="quiz.html">퀴즈</a><a href="playground.html">놀이터</a>
+  <button data-act="notes">노트</button><button data-act="full">전체 화면</button>
+</div>
+<script src="../assets/deck.js"></script>
+</body>
+</html>

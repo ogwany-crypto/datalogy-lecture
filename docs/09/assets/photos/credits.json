@@ -1,0 +1,38 @@
+{
+  "trophy": {
+    "title": "Golden trophy, five stars rating",
+    "creator": null,
+    "license": "cc0",
+    "license_version": "1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "source": "https://www.rawpixel.com/image/11189198/golden-trophy-five-stars-rating",
+    "provider": "rawpixel"
+  },
+  "megaphone": {
+    "title": "With A Megaphone By A Wall",
+    "creator": "garryknight",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/8176740@N05/5542172347",
+    "provider": "flickr"
+  },
+  "valley": {
+    "title": "Classic U shaped Valley on east side of Chinook Pass",
+    "creator": "theslowlane",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/90536753@N00/1456234727",
+    "provider": "flickr"
+  },
+  "scale": {
+    "title": "Vintage balance scale",
+    "creator": "Mad Mod Smith",
+    "license": "by-sa",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0/",
+    "source": "https://www.flickr.com/photos/47036348@N02/6369680607",
+    "provider": "flickr"
+  }
+}

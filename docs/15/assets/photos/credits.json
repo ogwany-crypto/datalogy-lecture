@@ -1,0 +1,29 @@
+{
+  "puzzle": {
+    "title": "one missing piece",
+    "creator": "romana klee",
+    "license": "by-sa",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0/",
+    "source": "https://www.flickr.com/photos/28581290@N08/8370697517",
+    "provider": "flickr"
+  },
+  "fingerprint": {
+    "title": "Fingerprint",
+    "creator": "kevin dooley",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/12836528@N00/2422430207",
+    "provider": "flickr"
+  },
+  "bridge": {
+    "title": "Rainforest footbridge",
+    "creator": "pfly",
+    "license": "by-sa",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0/",
+    "source": "https://www.flickr.com/photos/24934185@N00/471983071",
+    "provider": "flickr"
+  }
+}

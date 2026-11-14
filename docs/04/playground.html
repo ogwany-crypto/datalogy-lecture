@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>4강 0과 1 놀이터</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="../assets/page.css">
+<style>
+  .rows { font-family: Menlo, monospace; font-size: 15px; line-height: 1.8; margin-top: 10px; white-space: pre-wrap; }
+  .rows b { color: var(--red); }
+  .cmp { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+  .cmp div { border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; word-break: break-all; }
+  .cmp .v { font-size: 26px; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="badge">4강</span><h1>0과 1 놀이터</h1>
+    <nav><a href="index.html#1">슬라이드</a><a href="quiz.html">퀴즈</a><a href="../index.html">목록</a></nav>
+  </header>
+  <p class="lede">슬라이드의 manim 장면(BinarySwitches, RomanVsArabic)을 직접 조작하는 공간 · 원본 장면 코드: scripts/04_animations.py</p>
+
+  <!-- 1 스위치 -->
+  <section class="card" id="s1">
+    <h2><span class="n">01</span>스위치 8개 = 8비트</h2>
+    <p class="muted">스위치를 눌러 켜고(1) 끄기(0) → 십진수와 문자 코드가 바로 반응 · 관련 장면: BinarySwitches</p>
+    <canvas id="b-cv" aria-label="8개 스위치, 클릭으로 켜고 끄기"></canvas>
+    <div class="controls"><button id="b-clear">모두 끄기</button><button id="b-a">'A' 만들기</button><button id="b-max">모두 켜기</button></div>
+    <p class="stat" id="b-stat" aria-live="polite"></p>
+    <div class="controls"><label>이름(영문) <input type="text" id="b-name" value="DATA" maxlength="12" autocomplete="off"></label></div>
+    <div class="rows" id="b-rows"></div>
+  </section>
+
+  <!-- 2 로마 vs 아라비아 -->
+  <section class="card" id="s2">
+    <h2><span class="n">02</span>로마 숫자 vs 아라비아 숫자</h2>
+    <p class="muted">1~3999 사이 수를 넣으면 두 표기의 길이 비교 · 관련 장면: RomanVsArabic</p>
+    <div class="controls"><label>수 <input type="text" id="r-n" value="1984" inputmode="numeric" autocomplete="off"></label></div>
+    <div class="cmp">
+      <div><p class="muted">로마 숫자</p><p class="v" id="r-rom"></p><p class="muted" id="r-rl"></p></div>
+      <div><p class="muted">아라비아 숫자</p><p class="v" id="r-ara" style="color:var(--red)"></p><p class="muted" id="r-al"></p></div>
+    </div>
+    <p class="stat" id="r-stat" aria-live="polite"></p>
+  </section>
+</div>
+
+<script>
+const RED = '#E22B2D', GRAY = '#8C8C8C', INK = '#3F3F3F', LINE = '#EEEAE6';
+const W8 = [128, 64, 32, 16, 8, 4, 2, 1];
+let val = 65;
+
+function setup(cv, h) {
+  const dpr = window.devicePixelRatio || 1, w = cv.clientWidth;
+  cv.width = w * dpr; cv.height = h * dpr; cv.style.height = h + 'px';
+  const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); return [g, w, h];
+}
+const cv = document.getElementById('b-cv');
+function geom(w) { const gap = 8, cw = Math.min(90, (w - 40 - gap * 7) / 8); return { gap, cw, x0: (w - (cw * 8 + gap * 7)) / 2 }; }
+function drawB() {
+  const [g, w] = setup(cv, 150), { gap, cw, x0 } = geom(w);
+  W8.forEach((wt, i) => {
+    const on = val & wt, x = x0 + i * (cw + gap);
+    g.fillStyle = GRAY; g.font = '14px "Noto Sans KR", sans-serif'; g.textAlign = 'center'; g.fillText(wt, x + cw / 2, 22);
+    g.fillStyle = on ? RED : '#fff'; g.strokeStyle = on ? RED : INK; g.lineWidth = 2;
+    g.beginPath(); g.roundRect(x, 34, cw, 100, 10); g.fill(); g.stroke();
+    g.fillStyle = on ? '#fff' : GRAY; g.font = 'bold 34px "Noto Sans KR", sans-serif'; g.fillText(on ? '1' : '0', x + cw / 2, 96);
+  });
+  const ch = val >= 32 && val < 127 ? `문자 코드(ASCII) '${String.fromCharCode(val)}'` : '인쇄 가능한 문자 아님';
+  document.getElementById('b-stat').innerHTML = `이진수 <b>${val.toString(2).padStart(8, '0')}</b> = 십진수 <b>${val}</b> · ${ch}`;
+}
+cv.onclick = e => {
+  const r = cv.getBoundingClientRect(), { gap, cw, x0 } = geom(r.width), i = Math.floor((e.clientX - r.left - x0) / (cw + gap));
+  if (i >= 0 && i < 8) { val ^= W8[i]; drawB(); }
+};
+document.getElementById('b-clear').onclick = () => { val = 0; drawB(); };
+document.getElementById('b-a').onclick = () => { val = 65; drawB(); };
+document.getElementById('b-max').onclick = () => { val = 255; drawB(); };
+const nameIn = document.getElementById('b-name');
+function drawName() {
+  const s = [...nameIn.value].map(c => {
+    const k = c.charCodeAt(0);
+    return k < 128 ? `${c}  →  ${String(k).padStart(3)}  →  <b>${k.toString(2).padStart(8, '0')}</b>` : `${c}  →  영문·숫자만 8비트 변환 (한글은 유니코드 여러 바이트)`;
+  });
+  document.getElementById('b-rows').innerHTML = s.join('\n') || '영문 이름 입력';
+}
+nameIn.oninput = drawName;
+
+// 로마 숫자 변환
+function roman(n) {
+  const t = [[1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'], [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']];
+  let s = ''; for (const [v, r] of t) while (n >= v) { s += r; n -= v; } return s;
+}
+console.assert(roman(1984) === 'MCMLXXXIV' && roman(3888) === 'MMMDCCCLXXXVIII' && roman(2026) === 'MMXXVI', 'roman() self-check');
+const rIn = document.getElementById('r-n');
+function drawR() {
+  const n = Number(rIn.value.trim());
+  if (!Number.isInteger(n) || n < 1 || n > 3999) {
+    ['r-rom', 'r-ara', 'r-rl', 'r-al'].forEach(id => document.getElementById(id).textContent = '');
+    document.getElementById('r-stat').innerHTML = '<span class="bad">1~3999 사이의 정수 입력</span> (로마 숫자에는 0도 없음)';
+    return;
+  }
+  const r = roman(n), a = String(n);
+  document.getElementById('r-rom').textContent = r; document.getElementById('r-rl').textContent = `${r.length}자`;
+  document.getElementById('r-ara').textContent = a; document.getElementById('r-al').textContent = `${a.length}자`;
+  document.getElementById('r-stat').innerHTML = `로마 숫자가 <b>${(r.length / a.length).toFixed(1)}배</b> 길이 · 자리값과 0이 없어 덧셈·곱셈도 어려움`;
+}
+rIn.oninput = drawR;
+addEventListener('resize', drawB);
+document.fonts.ready.then(drawB);
+drawB(); drawName(); drawR();
+</script>
+</body>
+</html>

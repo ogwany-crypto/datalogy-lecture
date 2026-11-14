@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>7강 한 컷 놀이터</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="../assets/page.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="badge">7강</span><h1>한 컷 놀이터</h1>
+    <nav><a href="index.html#1">슬라이드</a><a href="quiz.html">퀴즈</a><a href="../index.html">목록</a></nav>
+  </header>
+  <p class="lede">슬라이드의 manim 장면(SnowMap, RoseDiagram)을 직접 조작하는 공간 · 원본 장면 코드: scripts/07_animations.py</p>
+
+  <!-- 1 펌프 찾기 -->
+  <section class="card" id="s1">
+    <h2><span class="n">01</span>존 스노우처럼: 원인 펌프 찾기</h2>
+    <p class="muted">펌프(□)를 클릭 → 그 펌프가 가장 가까운 사망자 집이 빨갛게 표시 · 점·좌표는 단순화한 예시, 실제 1854년 데이터 아님 · 관련 장면: SnowMap</p>
+    <div class="controls"><label><input type="checkbox" id="s-dots" checked> 지도에 점 표시</label></div>
+    <canvas id="s-cv" aria-label="거리 지도 위 펌프와 사망자 점, 펌프를 클릭해 선택"></canvas>
+    <p class="stat" id="s-stat" aria-live="polite"></p>
+  </section>
+
+  <!-- 2 로즈 다이어그램 -->
+  <section class="card" id="s2">
+    <h2><span class="n">02</span>로즈 다이어그램: 반지름 vs 면적</h2>
+    <p class="muted">한 달(빨간 꽃잎)의 값을 바꿔 보기 · 왼쪽 = 반지름이 값에 비례, 오른쪽 = 면적이 값에 비례 · 값은 예시 · 관련 장면: RoseDiagram</p>
+    <div class="controls"><label>빨간 꽃잎의 값 <input type="range" id="r-v" min="10" max="400" value="200"> <b id="r-vv"></b> (나머지 달 = 100)</label></div>
+    <canvas id="r-cv" aria-label="같은 값을 반지름과 면적으로 그린 두 로즈 다이어그램"></canvas>
+    <p class="stat" id="r-stat" aria-live="polite"></p>
+  </section>
+</div>
+
+<script>
+const RED = '#E22B2D', RED_L = '#F6C4C5', GRAY = '#8C8C8C', INK = '#3F3F3F', GRAY_L = '#D9D9D9';
+function setup(cv, h) {   // 고해상도 캔버스
+  const dpr = window.devicePixelRatio || 1, w = cv.clientWidth;
+  cv.width = w * dpr; cv.height = h * dpr; cv.style.height = h + 'px';
+  const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.font = '14px "Noto Sans KR", sans-serif'; return [g, w, h];
+}
+
+// ---------- 1 펌프 찾기 (좌표는 0~1 비율) ----------
+const PUMPS = [[0.46, 0.5, '브로드가'], [0.16, 0.25, 'A'], [0.8, 0.75, 'B'], [0.78, 0.18, 'C'], [0.2, 0.82, 'D']];
+let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const gauss = () => Math.sqrt(-2 * Math.log(rnd())) * Math.cos(2 * Math.PI * rnd());
+const DEATHS = [];
+for (let i = 0; i < 120; i++) DEATHS.push([0.46 + gauss() * 0.09, 0.5 + gauss() * 0.11]);
+for (let i = 0; i < 18; i++) DEATHS.push([0.05 + rnd() * 0.9, 0.05 + rnd() * 0.9]);
+const nearest = d => PUMPS.reduce((b, p, i) => Math.hypot(d[0] - p[0], d[1] - p[1]) < Math.hypot(d[0] - PUMPS[b][0], d[1] - PUMPS[b][1]) ? i : b, 0);
+const NEAR = DEATHS.map(nearest);
+let sel = -1;
+const sCv = document.getElementById('s-cv'), showDots = document.getElementById('s-dots');
+function drawS() {
+  const [g, W, H] = setup(sCv, 380), X = x => 20 + x * (W - 40), Y = y => 20 + y * (H - 40);
+  g.strokeStyle = GRAY_L; g.lineWidth = 8;
+  [0.15, 0.4, 0.65, 0.9].forEach(y => { g.beginPath(); g.moveTo(X(0), Y(y)); g.lineTo(X(1), Y(y)); g.stroke(); });
+  [0.1, 0.3, 0.55, 0.7, 0.9].forEach(x => { g.beginPath(); g.moveTo(X(x), Y(0)); g.lineTo(X(x), Y(1)); g.stroke(); });
+  if (showDots.checked) DEATHS.forEach((d, i) => { g.fillStyle = NEAR[i] === sel ? RED : INK; g.beginPath(); g.arc(X(d[0]), Y(d[1]), 3.5, 0, 7); g.fill(); });
+  PUMPS.forEach((p, i) => {
+    g.lineWidth = 3; g.strokeStyle = i === sel ? RED : INK; g.fillStyle = i === sel ? RED : '#fff';
+    g.fillRect(X(p[0]) - 9, Y(p[1]) - 9, 18, 18); g.strokeRect(X(p[0]) - 9, Y(p[1]) - 9, 18, 18);
+    g.textAlign = 'left'; g.font = 'bold 14px "Noto Sans KR", sans-serif';
+    const t = i ? `펌프 ${p[2]}` : '펌프 ?', tw = g.measureText(t).width;
+    g.fillStyle = 'rgba(255,255,255,.9)'; g.fillRect(X(p[0]) + 12, Y(p[1]) - 10, tw + 6, 20);
+    g.fillStyle = i === sel ? RED : INK; g.fillText(t, X(p[0]) + 15, Y(p[1]) + 5);
+  });
+  const cnt = PUMPS.map((_, i) => NEAR.filter(n => n === i).length);
+  document.getElementById('s-stat').innerHTML = sel < 0
+    ? `펌프를 클릭해 보기 · 사망자 ${DEATHS.length}명`
+    : `선택한 펌프가 가장 가까운 사망자 <b>${cnt[sel]}명</b> / ${DEATHS.length}명` + (cnt[sel] === Math.max(...cnt)
+      ? ' — <span class="ok">가장 많음 → 원인 후보 (브로드가 펌프)</span>' : ' — 다른 펌프와 비교해 보기');
+  if (!showDots.checked) document.getElementById('s-stat').innerHTML += ' · 점을 숨기면 원인이 보이지 않음 = 시각화의 힘';
+}
+sCv.onclick = e => {
+  const r = sCv.getBoundingClientRect(), W = r.width, H = r.height;
+  const x = (e.clientX - r.left - 20) / (W - 40), y = (e.clientY - r.top - 20) / (H - 40);
+  const i = PUMPS.findIndex(p => Math.abs(p[0] - x) * (W - 40) < 22 && Math.abs(p[1] - y) * (H - 40) < 22);
+  if (i >= 0) { sel = i; drawS(); }
+};
+showDots.onchange = drawS;
+
+// ---------- 2 로즈 ----------
+const rIn = document.getElementById('r-v'), rCv = document.getElementById('r-cv');
+function drawR() {
+  const v = +rIn.value; document.getElementById('r-vv').textContent = v;
+  const vals = Array(12).fill(100); vals[3] = v;
+  const [g, W, H] = setup(rCv, 340), step = Math.PI * 2 / 12;
+  const R = Math.min(W / 4 - 20, 130);
+  [[W / 4, x => x / 400 * R, '반지름 = 값'], [W * 3 / 4, x => Math.sqrt(x / 400) * R, '면적 = 값']].forEach(([cx, rad, t]) => {
+    const cy = 170;
+    vals.forEach((x, i) => {
+      g.fillStyle = i === 3 ? RED : GRAY_L; g.strokeStyle = '#fff'; g.lineWidth = 2;
+      g.beginPath(); g.moveTo(cx, cy); g.arc(cx, cy, rad(x), -Math.PI / 2 + i * step, -Math.PI / 2 + (i + 1) * step); g.closePath(); g.fill(); g.stroke();
+    });
+    g.fillStyle = INK; g.textAlign = 'center'; g.font = 'bold 15px "Noto Sans KR", sans-serif'; g.fillText(t, cx, 24);
+  });
+  const ratio = v / 100;
+  document.getElementById('r-stat').innerHTML = `값의 비율 <b>${ratio.toFixed(2)}배</b> · 왼쪽 그림의 면적 비율 <b>${(ratio * ratio).toFixed(2)}배</b> (과장) · 오른쪽 그림의 면적 비율 <b>${ratio.toFixed(2)}배</b> (정확)`;
+}
+rIn.oninput = drawR;
+
+addEventListener('resize', () => { drawS(); drawR(); });
+document.fonts.ready.then(() => { drawS(); drawR(); });
+drawS(); drawR();
+</script>
+</body>
+</html>

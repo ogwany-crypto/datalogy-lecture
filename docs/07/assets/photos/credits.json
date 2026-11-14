@@ -1,0 +1,38 @@
+{
+  "athens": {
+    "title": "Plato and Aristotle",
+    "creator": "Image Editor",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/11304375@N07/2769553173",
+    "provider": "flickr"
+  },
+  "pump": {
+    "title": "John Snow's pump restored",
+    "creator": "Matt From London",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/57868312@N00/29859398308",
+    "provider": "flickr"
+  },
+  "rose": {
+    "title": "Red Rose Flower",
+    "creator": "rvsarathi",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/10809195@N02/3692488513",
+    "provider": "flickr"
+  },
+  "river": {
+    "title": "Mississippi River Aerial Photo",
+    "creator": "MPLSArchives",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/133378306@N02/20121416245",
+    "provider": "flickr"
+  }
+}

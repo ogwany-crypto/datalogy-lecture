@@ -1,0 +1,38 @@
+{
+  "lego": {
+    "title": "Lego Bricks Yard Sale",
+    "creator": "JeepersMedia",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/39160147@N03/12722868335",
+    "provider": "flickr"
+  },
+  "parking": {
+    "title": "Grand Canyon National Park: Tusayan Parking Area 0766",
+    "creator": "Grand Canyon NPS",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/50693818@N08/8033698652",
+    "provider": "flickr"
+  },
+  "caravan": {
+    "title": "sudan - the black pharaohs",
+    "creator": "Retlaw Snellac Photography",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/74089637@N00/3465645595",
+    "provider": "flickr"
+  },
+  "switches": {
+    "title": "Old Light Switches",
+    "creator": "Orange Steeler",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/19362029@N00/4333070249",
+    "provider": "flickr"
+  }
+}

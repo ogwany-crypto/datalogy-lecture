@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>15강 공존 놀이터</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="../assets/page.css">
+<style>
+  .sl { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 8px 16px; margin: 12px 0; }
+  .sl label { display: flex; gap: 8px; align-items: center; font-size: 15px; }
+  .sl input { width: 100px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="badge">15강</span><h1>공존 놀이터</h1>
+    <nav><a href="index.html#1">슬라이드</a><a href="quiz.html">퀴즈</a><a href="../index.html">목록</a></nav>
+  </header>
+  <p class="lede">슬라이드의 manim 장면(GriefCurves)을 직접 조작하고, 기말 프로젝트를 스스로 점검하는 공간 · 원본 장면 코드: scripts/15_animations.py</p>
+
+  <!-- 1 평균 슬픔 -->
+  <section class="card" id="s1">
+    <h2><span class="n">01</span>같은 장례식, 다른 슬픔</h2>
+    <p class="muted">다섯 남매의 슬픔 깊이(가상의 값 0~10)를 바꾸면 평균선이 움직임 · 평균과 ±0.5 이내인 사람 수 확인 · 관련 장면: GriefCurves</p>
+    <div class="sl" id="g-sl"></div>
+    <div class="controls"><button id="g-same">모두 같게</button><button id="g-reset" class="solid">처음 값</button></div>
+    <canvas id="g-cv" aria-label="다섯 남매의 슬픔 막대와 평균선"></canvas>
+    <p class="stat" id="g-stat" aria-live="polite"></p>
+  </section>
+
+  <!-- 2 루브릭 -->
+  <section class="card" id="s2">
+    <h2><span class="n">02</span>기말 프로젝트 자기 점검</h2>
+    <p class="muted">평가 기준 네 항목에 대해 우리 팀 수준을 0~100%로 → 예상 점수와 가장 보완할 항목 · 실제 채점과 다를 수 있음</p>
+    <div class="sl" id="p-sl"></div>
+    <canvas id="p-cv" aria-label="평가 기준별 예상 점수 막대"></canvas>
+    <p class="stat" id="p-stat" aria-live="polite"></p>
+  </section>
+</div>
+
+<script>
+const RED = '#E22B2D', RED_L = '#F6C4C5', GRAY = '#8C8C8C', INK = '#3F3F3F', GRAY_L = '#D9D9D9';
+function setup(cv, h) {
+  const dpr = window.devicePixelRatio || 1, w = cv.clientWidth;
+  cv.width = w * dpr; cv.height = h * dpr; cv.style.height = h + 'px';
+  const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.font = '15px "Noto Sans KR", sans-serif'; return [g, w, h];
+}
+function sliders(box, items, max, step) {
+  box.innerHTML = items.map(([n, v], i) => `<label>${n} <input type="range" min="0" max="${max}" step="${step}" value="${v}" data-i="${i}" aria-label="${n}"> <b>${v}</b></label>`).join('');
+  const ins = [...box.querySelectorAll('input')];
+  ins.forEach(s => s.addEventListener('input', () => s.nextElementSibling.textContent = s.value));
+  return ins;
+}
+
+// ---------- 1 평균 슬픔 ----------
+const START = [9, 4.5, 7.5, 2.5, 7], WHO = ['첫째', '둘째', '셋째', '넷째', '막내'];
+const gIn = sliders(document.getElementById('g-sl'), WHO.map((n, i) => [n, START[i]]), 10, 0.5);
+function drawG() {
+  const v = gIn.map(s => +s.value), avg = v.reduce((a, b) => a + b, 0) / v.length;
+  const [g, w, h] = setup(document.getElementById('g-cv'), 300);
+  const x0 = 50, base = 260, top = 30, Y = t => base - (base - top) * t / 10, bw = (w - x0 - 40) / 5;
+  g.strokeStyle = INK; g.lineWidth = 2; g.beginPath(); g.moveTo(x0, top); g.lineTo(x0, base); g.lineTo(w - 20, base); g.stroke();
+  const near = v.map(x => Math.abs(x - avg) <= 0.5);
+  v.forEach((x, i) => {
+    g.fillStyle = near[i] ? RED_L : GRAY_L; g.fillRect(x0 + 10 + i * bw, Y(x), bw - 20, base - Y(x));
+    g.fillStyle = INK; g.textAlign = 'center'; g.fillText(WHO[i], x0 + i * bw + bw / 2, base + 22);
+  });
+  g.strokeStyle = RED; g.setLineDash([8, 6]); g.lineWidth = 3; g.beginPath(); g.moveTo(x0, Y(avg)); g.lineTo(w - 30, Y(avg)); g.stroke(); g.setLineDash([]);
+  g.fillStyle = RED; g.textAlign = 'right'; g.font = 'bold 15px "Noto Sans KR"'; g.fillText(`평균 ${avg.toFixed(1)}`, w - 30, Y(avg) - 8);
+  const n = near.filter(Boolean).length;
+  document.getElementById('g-stat').innerHTML = `평균 <b>${avg.toFixed(1)}</b> · 평균과 ±0.5 이내 <b>${n}명</b> — ` +
+    (n === 5 ? '모두 같은 슬픔? 현실에서는 드문 경우 → 그래도 “깊이”가 같다고 “슬픔의 내용”까지 같을까?'
+             : '평균 하나로는 다섯 사람의 슬픔을 대표 불가 → 평균을 배운 AI의 위로가 누구에게 맞을까?');
+}
+gIn.forEach(s => s.addEventListener('input', drawG));
+document.getElementById('g-same').onclick = () => { gIn.forEach(s => { s.value = 6; s.nextElementSibling.textContent = 6; }); drawG(); };
+document.getElementById('g-reset').onclick = () => { gIn.forEach((s, i) => { s.value = START[i]; s.nextElementSibling.textContent = START[i]; }); drawG(); };
+
+// ---------- 2 루브릭 ----------
+const RUB = [['개념 적용', 30], ['데이터 근거', 25], ['비판적 균형', 25], ['전달력', 20]];
+const pIn = sliders(document.getElementById('p-sl'), RUB.map(([n]) => [n, 70]), 100, 5);
+function drawP() {
+  const v = pIn.map(s => +s.value), pts = RUB.map(([, m], i) => m * v[i] / 100), tot = pts.reduce((a, b) => a + b, 0);
+  const [g, w, h] = setup(document.getElementById('p-cv'), 220);
+  const x0 = 120, bh = 34, gap = RUB.map(([, m], i) => m - pts[i]), worst = gap.indexOf(Math.max(...gap));
+  RUB.forEach(([n, m], i) => {
+    const y = 20 + i * 48, full = (w - x0 - 80) * m / 30;
+    g.fillStyle = GRAY_L; g.fillRect(x0, y, full, bh);
+    g.fillStyle = i === worst ? RED : INK;
+    g.fillRect(x0, y, full * v[i] / 100, bh);
+    g.fillStyle = INK; g.textAlign = 'right'; g.fillText(n, x0 - 10, y + 23);
+    g.textAlign = 'left'; g.fillText(`${pts[i].toFixed(1)} / ${m}`, x0 + full + 8, y + 23);
+  });
+  document.getElementById('p-stat').innerHTML = `예상 점수 <b>${tot.toFixed(1)} / 100</b> (성적의 35% 반영 시 <b>${(tot * 0.35).toFixed(1)}</b>점) · 가장 큰 감점 항목: <b>${RUB[worst][0]}</b>`;
+}
+pIn.forEach(s => s.addEventListener('input', drawP));
+addEventListener('resize', () => { drawG(); drawP(); });
+document.fonts.ready.then(() => { drawG(); drawP(); });
+drawG(); drawP();
+</script>
+</body>
+</html>

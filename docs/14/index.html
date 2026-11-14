@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>14강 딥러닝에서 딥필링으로</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="../assets/deck.css">
+<style>
+  .cover { flex-direction: row !important; align-items: center; justify-content: space-between; padding: 128px !important; }
+  .cover::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 24px; background: var(--red); }
+  .toc-item { display: flex; align-items: center; gap: 40px; padding: 30px 0; border-bottom: 2px solid var(--red-l); }
+  .toc-item:last-child { border-bottom: none; }
+  .toc-item b { font-size: 56px; font-weight: 900; color: var(--red); width: 100px; }
+  .toc-item span { font-size: 44px; font-weight: 500; }
+  .tri { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; flex: 1; align-items: stretch; }
+  .tri .card h3 { font-size: 40px; }
+  .tri .card .k { font-size: 26px; font-weight: 700; color: var(--gray); letter-spacing: 2px; }
+  .tri .card { justify-content: center; gap: 20px; }
+  .tri .card ul.b { font-size: 32px; line-height: 1.6; }
+  .quote { font-size: 44px; font-weight: 700; line-height: 1.5; }
+  .quote small { display: block; font-size: 26px; font-weight: 500; color: var(--gray); padding-top: 12px; }
+  table.t { border-collapse: collapse; font-size: 30px; width: 100%; background: #fff; }
+  table.t th, table.t td { border-bottom: 2px solid var(--line); padding: 16px 24px; text-align: left; }
+  table.t th { color: var(--red); font-weight: 700; white-space: nowrap; }
+</style>
+</head>
+<body>
+<div class="progress"></div>
+<div class="stage">
+
+<!-- 1 표지 -->
+<section class="slide cover">
+  <div style="display:flex;flex-direction:column;gap:32px;width:1000px">
+    <p style="font-size:120px;font-weight:900;color:var(--red);line-height:1">14</p>
+    <p style="font-size:36px;font-weight:500;color:var(--gray)">데이톨로지 — 데이터로 읽는 인간과 사회</p>
+    <h1 style="font-size:96px;font-weight:900;line-height:1.15">딥러닝에서<br>딥필링으로</h1>
+    <hr style="width:160px;border:none;border-top:6px solid var(--red)">
+    <p style="font-size:32px;color:var(--gray)">주교재: 김성태, 『데이톨로지』 3부 · 강사 : ○○○</p>
+  </div>
+  <img class="fig" src="assets/cover.png" alt="물 위는 작고 물 아래가 큰 빙산 그림" style="width:600px;height:796px">
+  <aside class="note">14주차. 강의안 3장 14주차. 사전 읽기: 연재 ⑫ 「‘딥러닝’에서 ‘딥필링’ 시대로」(2021.09.27), 책 3부 전반.</aside>
+</section>
+
+<!-- 2 목차 -->
+<section class="slide" style="flex-direction:row;align-items:center;gap:96px;padding:128px">
+  <div style="display:flex;flex-direction:column;gap:24px;width:520px">
+    <p style="font-size:32px;font-weight:700;color:var(--red);letter-spacing:4px">CONTENTS</p>
+    <h2 style="font-size:72px;font-weight:900;line-height:1.15">딥러닝에서<br>딥필링으로</h2>
+    <hr style="width:120px;border:none;border-top:6px solid var(--red)">
+  </div>
+  <div style="flex:1">
+    <div class="toc-item"><b>01</b><span>지능에서 감정으로</span></div>
+    <div class="toc-item"><b>02</b><span>감정을 둘러싼 사상사</span></div>
+    <div class="toc-item"><b>03</b><span>기계는 이해할 수 있는가</span></div>
+    <div class="toc-item"><b>04</b><span>딥필링의 정의</span></div>
+    <div class="toc-item"><b>05</b><span>정리 및 확인 문제</span></div>
+  </div>
+</section>
+
+<!-- 3 학습 목표 -->
+<section class="slide" style="flex-direction:row;align-items:center;gap:80px;padding:128px">
+  <img class="fig" src="assets/goal.png" alt="세 계단 막대 그림, 마지막 계단만 빨강" style="width:760px;height:568px">
+  <div class="col" style="gap:40px">
+    <h2 style="font-size:72px;font-weight:900">학습 목표</h2>
+    <div class="card"><p style="font-size:28px;font-weight:700;color:var(--red)">목표 1</p><p style="font-size:36px;font-weight:500">철학과 과학이 감정을 정의해 온 흐름 개괄</p></div>
+    <div class="card"><p style="font-size:28px;font-weight:700;color:var(--red)">목표 2</p><p style="font-size:36px;font-weight:500">딥필링·인공감정지능의 정의와 중국어 방 논증으로 본 가능성 검토</p></div>
+  </div>
+</section>
+
+<!-- 4 오늘의 질문 -->
+<section class="slide" style="justify-content:center;align-items:center;gap:56px">
+  <p style="font-size:36px;font-weight:700;color:var(--red);letter-spacing:4px">오늘의 질문</p>
+  <p style="font-size:64px;font-weight:900;line-height:1.4;text-align:center">어머니 장례식에서<br>다섯 남매의 슬픔은 모두 같을까?<br><span style="color:var(--red)">로봇은 누구의 슬픔을 배워야 할까?</span></p>
+  <aside class="note">출처: 연재 ⑫(2021.09.27)의 어머니 장례식 사례. 답은 열어 두고 15주 ‘개별성’ 과제에서 다시 회수.</aside>
+</section>
+
+<!-- 5 14-1 비유: 계단 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">14-1</span><h2>지능에서 감정으로</h2></div><p class="sub">[비유] 계단</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/stairs.jpg" alt="위로 이어지는 나무 계단" style="width:760px;height:570px"><p class="credit">사진: Gareth1953 All Right Now / CC BY 2.0</p></div>
+    <div class="col">
+      <h3>계단 = AI 발전 단계</h3>
+      <ul class="b">
+        <li>한 칸씩 올라야 닿는 위층</li>
+        <li>첫 칸 = 딥러닝 (외면 인식)</li>
+        <li>둘째 칸 = 딥언더스탠딩 (맥락 이해)</li>
+        <li>맨 위 = 딥필링 (감정 메커니즘)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 6 14-1 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">14-1</span><h2>지능에서 감정으로</h2></div><p class="sub">딥러닝 → 딥언더스탠딩 → 딥필링</p></div>
+  <video class="anim" src="assets/anim/ThreeSteps.mp4" poster="assets/anim/ThreeSteps_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">manim: 저자가 연재 ⑪(2021.08.18)에서 제안한 AI 발전 3단계. 딥러닝 = 외면(이미지 인식 등), 딥언더스탠딩 = 사회적 맥락, 딥필링 = 감정 메커니즘 학습.</aside>
+</section>
+
+<!-- 7 14-1 왜 감정인가 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">14-1</span><h2>지능에서 감정으로</h2></div><p class="sub">왜 감정인가</p></div>
+  <div class="row" style="gap:64px">
+    <div class="col">
+      <div class="card">
+        <p class="quote" style="font-size:38px">“미래사회의 인공지능 기술은 인간의 복잡한 감정을 이해하고, 그 작동 메커니즘을 얼마나 완벽하게 구현하느냐에 달려 있다.”<small>김성태, 『데이톨로지』 p.223</small></p>
+      </div>
+    </div>
+    <div class="col">
+      <h3>영화로 본 변화</h3>
+      <ul class="b" style="font-size:30px">
+        <li>「터미네이터」: 감정 없는 기계의 공포</li>
+        <li>「그녀(Her)」: 감정을 나누는 기계와의 사랑</li>
+        <li>AI의 목표: 지능 이식 → 감정 주입</li>
+        <li>딥러닝 AI의 한계: 결과는 내지만 감정 이해·반응 부족</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="note">출처: 예스24 책 소개 발췌(p.223), 브레인미디어 책 소개(터미네이터·그녀), 연재 ⑫.</aside>
+</section>
+
+<!-- 8 14-2 비유: 마차 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">14-2</span><h2>감정을 둘러싼 사상사</h2></div><p class="sub">[비유] 마차와 마부</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/carriage.jpg" alt="두 마리 말이 끄는 마차" style="width:760px;height:570px"><p class="credit">사진: archer10 (Dennis) / CC BY-SA 2.0</p></div>
+    <div class="col">
+      <h3>마부 = 이성, 말 = 감정</h3>
+      <ul class="b">
+        <li>플라톤의 오래된 그림: 마부가 말을 다스리는 마차</li>
+        <li>이성 우위 전통의 출발점</li>
+        <li>질문: 말 없이 마차가 움직일 수 있을까?</li>
+        <li>근대 이후: 말(감정)이 마차를 움직이는 힘이라는 발견</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="note">[보충] 플라톤 『파이드로스』의 마부 비유는 강의자 보충(책 본문 확인 필요). 책은 소크라테스·데카르트·니체·다마지오 등을 다룸(지디넷 출간 기사, 브레인미디어).</aside>
+</section>
+
+<!-- 9 14-2 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">14-2</span><h2>감정을 둘러싼 사상사</h2></div><p class="sub">“이성이 감정을 다스림” → “감정이 이성의 토대”</p></div>
+  <video class="anim" src="assets/anim/ReasonEmotion.mp4" poster="assets/anim/ReasonEmotion_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">manim: 사상가를 시간순으로 놓고 무게중심이 이성 → 감정으로 이동. 흐름 요약은 강의자 [보충].</aside>
+</section>
+
+<!-- 10 14-2 사상가 표 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">14-2</span><h2>감정을 둘러싼 사상사</h2></div><p class="sub">사상가별 감정관 (요지)</p></div>
+  <table class="t">
+    <tr><th>소크라테스·플라톤</th><td>이성이 감정(욕구·기개)을 다스려야 함 — 이성 우위의 전통</td></tr>
+    <tr><th>데카르트</th><td>『정념론』: 정념 = 몸과 마음의 상호작용 · 무의식의 기억이 불쑥 떠오르는 ‘상기’</td></tr>
+    <tr><th>니체</th><td>이성 중심 철학 비판 · 충동·정동이 사유의 바탕</td></tr>
+    <tr><th>프로이트</th><td>무의식이 정신의 90% 이상 · 자각하지 못하는 영역이 감정을 만듦</td></tr>
+    <tr><th>다마지오</th><td>『데카르트의 오류』 신체 표지 가설 · 감정 없이는 합리적 판단도 불가</td></tr>
+  </table>
+  <aside class="note">[보충] 인물 목록은 원전(출간 기사·연재 ⑫), 각 요지는 강의자 정리. 데카르트의 ‘상기’, 프로이트 90%는 연재 ⑫·⑪에서 인용. 책 3부 본문과 대조 필요.</aside>
+</section>
+
+<!-- 11 14-3 비유: 앵무새 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">14-3</span><h2>기계는 이해할 수 있는가</h2></div><p class="sub">[비유] 말하는 앵무새</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/parrot.jpg" alt="회색 앵무새" style="width:760px;height:570px"><p class="credit">사진: Charles Patrick Ewing / CC BY 2.0</p></div>
+    <div class="col">
+      <h3>앵무새 = 흉내 내는 AI</h3>
+      <ul class="b">
+        <li>“안녕하세요”를 정확히 따라 하는 새</li>
+        <li>소리는 같아도 뜻을 아는지는 미지수</li>
+        <li>타인의 말·행동을 학습해 마음을 흉내 내는 AI</li>
+        <li>흉내 ≠ 자의식으로 느끼고 행동하는 인간</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="note">앵무새 비유는 강의자 구성. 저자 입장(흉내 내는 AI ≠ 자의식의 인간): 지디넷 출간 인터뷰(2022.08.29).</aside>
+</section>
+
+<!-- 12 14-3 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">14-3</span><h2>기계는 이해할 수 있는가</h2></div><p class="sub">중국어 방(Chinese Room) 논증: 규칙 따른 기호 조작 ≠ 이해</p></div>
+  <video class="anim" src="assets/anim/ChineseRoom.mp4" poster="assets/anim/ChineseRoom_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">manim: 중국어를 모르는 사람이 규칙서만 보고 올바른 답을 내보냄 → 밖에서는 이해하는 것처럼 보임. 존 설(1980). 연재 ⑫에서 인용.</aside>
+</section>
+
+<!-- 13 14-3 논쟁과 기술 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">14-3</span><h2>기계는 이해할 수 있는가</h2></div><p class="sub">논쟁과 기술의 현재</p></div>
+  <div class="tri">
+    <div class="card"><p class="k">논쟁</p><h3>중국어 방 이후</h3>
+      <ul class="b"><li>커즈와일: 시스템 반론</li><li>래퍼포트: ‘한국어 방’(1988)</li><li>데닛: 완벽한 시스템 가정</li></ul></div>
+    <div class="card"><p class="k">기술</p><h3>뇌를 닮으려는 시도</h3>
+      <ul class="b"><li>뉴로모픽 반도체 (삼성전자·하버드)</li><li>뉴럴링크 시연 (2020.8)</li><li>베리칩 논쟁</li></ul></div>
+    <div class="card"><p class="k">경고</p><h3>마음의 자살?</h3>
+      <ul class="b"><li>수전 슈나이더: 뇌-컴퓨터 결합 = 마음의 자살 가능성</li><li>사랑에 빠지는 순간 = 학습 너머의 본능</li></ul></div>
+  </div>
+  <aside class="note">출처: 연재 ⑫(2021.09.27) — 커즈와일·래퍼포트·데닛, 뉴로모픽, 뉴럴링크, 베리칩. 출간 인터뷰(2022.08.29) — 슈나이더, 사랑에 빠지는 순간.</aside>
+</section>
+
+<!-- 14 14-4 비유: 빙산 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">14-4</span><h2>딥필링의 정의</h2></div><p class="sub">[비유] 빙산</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/iceberg.jpg" alt="바다 위 빙산, 물 아래 부분이 비치는 모습" style="width:760px;height:570px"><p class="credit">사진: NOAA's National Ocean Service / CC BY 2.0</p></div>
+    <div class="col">
+      <h3>빙산 = 인간의 마음</h3>
+      <ul class="b">
+        <li>물 위 = 의식 (약 10%)</li>
+        <li>물 아래 = 무의식 (약 90%, 프로이트)</li>
+        <li>감정은 물 아래에서 먼저 움직임</li>
+        <li>물 위만 보는 AI = 감정의 일부만 학습</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="note">프로이트의 빙산(의식 10% : 무의식 90%)은 연재 ⑪(2021.08.18)에서 저자가 인용.</aside>
+</section>
+
+<!-- 15 14-4 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">14-4</span><h2>딥필링의 정의</h2></div><p class="sub">잠재 기억 · 지능 · 감정 · 외부 상황의 순간 결합</p></div>
+  <video class="anim" src="assets/anim/DeepFeeling.mp4" poster="assets/anim/DeepFeeling_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">manim: 의식·무의식 선 위아래의 네 요소가 한 점에서 결합 = 딥필링. 정의는 연재 ⑫(2021.09.27).</aside>
+</section>
+
+<!-- 16 14-4 정의 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">14-4</span><h2>딥필링의 정의</h2></div><p class="sub">딥필링 · 인공감정지능</p></div>
+  <div class="col" style="gap:32px">
+    <div class="card">
+      <h3>딥필링(Deep Feeling)</h3>
+      <p style="font-size:32px;line-height:1.55">무의식의 감정이 기억으로 소환되거나 생각할 틈 없이 본능적 ‘촉’이 먼저 작동하는 순간, <b style="color:var(--red)">잠재 기억 · 지능 · 감정 · 외부 상황이 순간적으로 결합해 만드는 감정의 메커니즘</b></p>
+    </div>
+    <div class="card">
+      <h3>인공감정지능(Artificial Emotional Intelligence)</h3>
+      <p style="font-size:32px;line-height:1.55">감정을 이해하고 반응하며 사람과 감정적으로 교류하는 인공 시스템</p>
+    </div>
+    <p style="font-size:30px;font-weight:700;color:var(--red)">기존 측정의 한계: 자기보고식 설문·뇌파 같은 생리 측정만으로는 설명 불가</p>
+  </div>
+  <aside class="note">출처: 연재 ⑫(2021.09.27). 책 3부에서 딥필링의 작동 원리와 구현 이론을 더 다루므로 본문 확인 필요.</aside>
+</section>
+
+<!-- 17 활동 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">14-5</span><h2>정리 및 확인 문제</h2></div><p class="sub">활동 (60분): 감정은 학습 가능한가 — 소크라테스 대화</p></div>
+  <div class="tri">
+    <div class="card"><p class="k">STEP 1 · 개인 10분</p><h3>나의 ‘촉’</h3>
+      <ul class="b"><li>이유 없이 끌렸던 경험 하나 적기</li><li>결합한 것: 기억·지식·감정·상황</li></ul></div>
+    <div class="card"><p class="k">STEP 2 · 소그룹 30분</p><h3>문답법</h3>
+      <ul class="b"><li>한 명: “AI도 할 수 있음” 주장</li><li>나머지: 질문만으로 검토</li></ul></div>
+    <div class="card"><p class="k">STEP 3 · 실험 20분</p><h3>챗봇 공감 실험</h3>
+      <ul class="b"><li>같은 슬픈 사연, 다른 말투로 입력</li><li>공감인가, 공감의 시뮬레이션인가</li></ul></div>
+  </div>
+  <aside class="note">강의안 14주차 활동. STEP 3은 11주 보드리야르의 시뮬라시옹과 연결.</aside>
+</section>
+
+<!-- 18 정리 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">14-5</span><h2>정리 및 확인 문제</h2></div><p class="sub">오늘의 핵심 4줄</p></div>
+  <div class="col" style="gap:24px">
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">AI 3단계</b> = 딥러닝 → 딥언더스탠딩 → 딥필링</p></div>
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">사상사</b> = 이성 우위 → 감정이 판단의 토대</p></div>
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">중국어 방</b> = 기호 조작 ≠ 이해, 흉내 ≠ 느낌</p></div>
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">딥필링</b> = 잠재 기억·지능·감정·상황의 순간 결합</p></div>
+  </div>
+</section>
+
+<!-- 19 확인 문제 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">14-5</span><h2>정리 및 확인 문제</h2></div><p class="sub">확인 문제</p></div>
+  <div class="row" style="gap:64px;align-items:stretch">
+    <div class="col" style="gap:18px">
+      <h3 style="font-size:36px">문제 1</h3>
+      <p style="font-size:32px;line-height:1.45">저자가 제안한 AI 발전 3단계와 각 단계가 다루는 것</p>
+      <h3 style="font-size:36px;padding-top:20px">문제 2</h3>
+      <p style="font-size:32px;line-height:1.45">중국어 방 논증이 보여 주려는 것</p>
+      <h3 style="font-size:36px;padding-top:20px">문제 3</h3>
+      <p style="font-size:32px;line-height:1.45">딥필링을 이루는 네 요소와, 설문·뇌파만으로 설명하기 어려운 이유</p>
+      <button class="reveal">정답 보기</button>
+      <div class="answer">문제 1: 딥러닝(외면 인식) → 딥언더스탠딩(사회적 맥락 이해) → 딥필링(감정 메커니즘 학습)<br>문제 2: 규칙에 따라 기호를 조작해 올바른 답을 내도, 그것이 이해는 아님<br>문제 3: 잠재 기억·지능·감정·외부 상황 / 무의식과 ‘촉’이 생각할 틈 없이 순간적으로 결합하기 때문</div>
+    </div>
+    <img class="fig" src="assets/cover.png" alt="빙산 그림" style="width:420px;height:557px;align-self:center">
+  </div>
+  <aside class="note">정답 — 1: 연재 ⑪. 2: 존 설(1980), 연재 ⑫. 3: 연재 ⑫.</aside>
+</section>
+
+<!-- 20 마무리 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">14-5</span><h2>정리 및 확인 문제</h2></div><p class="sub">마무리</p></div>
+  <div class="row" style="gap:80px">
+    <div class="col" style="gap:20px">
+      <h3 style="font-size:36px">이번 주 과제</h3>
+      <ul class="b" style="font-size:30px">
+        <li>기말 프로젝트 최종 준비 (다음 주 발표)</li>
+        <li>책 3부 후반·에필로그 읽기</li>
+        <li>데이톨로지 저널: 챗봇 공감 실험 기록</li>
+      </ul>
+      <h3 style="font-size:36px;padding-top:24px">다음 시간</h3>
+      <p style="font-size:30px">딥필링의 과제와 인간-기술의 공존 + 기말 프로젝트 발표</p>
+      <p style="font-size:26px;padding-top:24px"><a href="quiz.html" style="color:var(--red);font-weight:700">▶ 웹 퀴즈</a>&nbsp;&nbsp;&nbsp;<a href="playground.html" style="color:var(--red);font-weight:700">▶ 딥필링 놀이터</a></p>
+    </div>
+    <img class="fig" src="assets/goal.png" alt="세 계단 막대 그림" style="width:640px;height:478px">
+  </div>
+</section>
+
+<!-- 21 이미지 출처 -->
+<section class="slide">
+  <div class="head"><h2>이미지 출처</h2><p class="sub">사진 (Openverse 검색, CC 라이선스)</p></div>
+  <ul class="b" style="font-size:24px;line-height:1.7">
+    <li>Edwardian Hallway in Redhill - The Naked Staircase — Gareth1953 All Right Now, CC BY 2.0, <a href="https://www.flickr.com/photos/40837632@N05/11351510713">flickr</a></li>
+    <li>DSC08741 - Horse &amp; Carriage Ride — archer10 (Dennis), CC BY-SA 2.0, <a href="https://www.flickr.com/photos/22490717@N02/37078396381">flickr</a></li>
+    <li>African Grey Parrot — Charles Patrick Ewing, CC BY 2.0, <a href="https://www.flickr.com/photos/132033298@N04/27365716724">flickr</a></li>
+    <li>Iceberg — NOAA's National Ocean Service, CC BY 2.0, <a href="https://www.flickr.com/photos/40322276@N04/8290528771">flickr</a></li>
+    <li>애니메이션·그림 — manim, matplotlib으로 직접 제작</li>
+    <li>인용 — 김성태, 『데이톨로지』(이른비, 2022); 지디넷코리아 연재 ⑪·⑫(2021), 출간 기사(2022.08.29)</li>
+  </ul>
+</section>
+
+</div>
+<div class="notes"></div>
+<div class="bar">
+  <a href="../index.html">← 목록</a>
+  <button data-act="prev">◀</button><span class="count"></span><button data-act="next">▶</button>
+  <span class="grow">← → 이동 · F 전체 화면 · N 노트</span>
+  <a href="quiz.html">퀴즈</a><a href="playground.html">놀이터</a>
+  <button data-act="notes">노트</button><button data-act="full">전체 화면</button>
+</div>
+<script src="../assets/deck.js"></script>
+</body>
+</html>

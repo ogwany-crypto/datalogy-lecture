@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>10강 황소 무게 놀이터</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="../assets/page.css">
+<style>
+  .legend { display: flex; gap: 18px; font-size: 14px; color: #666; margin-top: 8px; flex-wrap: wrap; }
+  .legend i { display: inline-block; width: 14px; height: 14px; vertical-align: -2px; margin-right: 6px; border-radius: 3px; }
+  .stars { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 10px 0; }
+  .stars label { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 15px; }
+  .stars input { width: 100%; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="badge">10강</span><h1>황소 무게 놀이터</h1>
+    <nav><a href="index.html#1">슬라이드</a><a href="quiz.html">퀴즈</a><a href="../index.html">목록</a></nav>
+  </header>
+  <p class="lede">슬라이드의 manim 장면(GaltonOx, Herding, OutlierTrim)을 직접 조작하는 공간 · 원본 장면 코드: scripts/10_animations.py · 개인 추정의 흩어짐(표준편차 75파운드)은 가정값</p>
+
+  <!-- 1 황소 무게 -->
+  <section class="card" id="s1">
+    <h2><span class="n">01</span>군중의 지혜 vs 군중의 쏠림</h2>
+    <p class="muted">참가자 수와 동조 강도를 바꿔 군중 평균이 실제 무게(1,198)에 얼마나 가까운지 확인 · 동조 = 앞사람들 평균을 보고 내 추정을 끌어당기는 정도 · 관련 장면: GaltonOx, Herding</p>
+    <div class="controls">
+      <label>참가자 수 <input type="range" id="g-n" min="5" max="800" value="787"> <b id="g-nv"></b>명</label>
+      <label>동조 강도 <input type="range" id="g-w" min="0" max="90" value="0" step="5"> <b id="g-wv"></b>%</label>
+      <label>첫 사람의 추정 <input type="range" id="g-f" min="900" max="1500" value="1360" step="10"> <b id="g-fv"></b></label>
+    </div>
+    <div class="controls"><button class="solid" id="g-new">새 장터 (다시 추첨)</button><button id="g-ind">독립으로</button><button id="g-her">강한 동조로</button></div>
+    <canvas id="g-cv" aria-label="추정값 점 히스토그램, 실제 무게와 군중 평균 선"></canvas>
+    <div class="legend"><span><i style="background:#8C8C8C"></i>개인 추정</span><span><i style="background:#E22B2D"></i>실제 1,198</span><span><i style="border:2px dashed #3F3F3F"></i>군중 평균</span></div>
+    <p class="stat" id="g-stat" aria-live="polite"></p>
+  </section>
+
+  <!-- 2 별점 보정 -->
+  <section class="card" id="s2">
+    <h2><span class="n">02</span>별점 보정 실험</h2>
+    <p class="muted">별점별 인원을 조절 → 평균 하나 vs 참여자 수 · 분포 · 양끝 제외 평균 비교 · 관련 장면: OutlierTrim</p>
+    <div class="stars" id="r-in"></div>
+    <div class="controls">
+      <label>양끝에서 각각 제외 <input type="range" id="r-t" min="0" max="30" value="10" step="5"> <b id="r-tv"></b>%</label>
+      <label>최소 공개 인원 <input type="range" id="r-m" min="1" max="30" value="10"> <b id="r-mv"></b>명</label>
+    </div>
+    <div class="controls"><button class="solid" id="r-ex1">예: 진짜 8명</button><button id="r-ex2">예: + 별점 테러 3개</button><button id="r-ex3">예: U자 분포</button></div>
+    <canvas id="r-cv" aria-label="별점 1~5 인원 막대그래프와 평균 표시"></canvas>
+    <p class="stat" id="r-stat" aria-live="polite"></p>
+  </section>
+</div>
+
+<script>
+const RED = '#E22B2D', RED_L = '#F6C4C5', GRAY = '#8C8C8C', INK = '#3F3F3F', GRAY_L = '#D9D9D9', TRUE_W = 1198;
+function setup(cv, h) {
+  const dpr = window.devicePixelRatio || 1, w = cv.clientWidth;
+  cv.width = w * dpr; cv.height = h * dpr; cv.style.height = h + 'px';
+  const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.font = '14px "Noto Sans KR", sans-serif'; return [g, w, h];
+}
+const $ = id => document.getElementById(id);
+
+// ---------- 1 황소 ----------
+let seed = 7;
+function rand() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
+function normal() { let u = 0, v = 0; while (!u) u = rand(); while (!v) v = rand(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+let own = [];
+function draw() { const s0 = seed; own = Array.from({ length: 800 }, () => TRUE_W + 75 * normal()); seed = s0 + 1; }
+draw();
+function guesses() {
+  const n = +$('g-n').value, w = +$('g-w').value / 100, out = [+$('g-f').value];
+  let sum = out[0];
+  for (let i = 1; i < n; i++) { const v = (1 - w) * own[i] + w * (sum / i); out.push(v); sum += v; }
+  return out;
+}
+function drawG() {
+  $('g-nv').textContent = $('g-n').value; $('g-wv').textContent = $('g-w').value; $('g-fv').textContent = $('g-f').value;
+  const gs = guesses(), n = gs.length, mean = gs.reduce((a, b) => a + b, 0) / n;
+  const [g, w, h] = setup($('g-cv'), 320), x0 = 30, x1 = w - 30, base = h - 40;
+  const X = v => x0 + (x1 - x0) * (v - 900) / 600;
+  g.strokeStyle = INK; g.lineWidth = 2; g.beginPath(); g.moveTo(x0, base); g.lineTo(x1, base); g.stroke();
+  g.fillStyle = GRAY; g.textAlign = 'center';
+  for (let v = 900; v <= 1500; v += 100) g.fillText(v, X(v), base + 22);
+  const bins = {}, step = 10, r = Math.max(1.5, Math.min(4, 600 / n));
+  gs.forEach(v => {
+    const b = Math.round(Math.min(Math.max(v, 900), 1500) / step) * step; bins[b] = (bins[b] || 0) + 1;
+  });
+  const maxC = Math.max(...Object.values(bins)), dy = Math.min(2 * r + 1, (base - 40) / maxC);
+  Object.entries(bins).forEach(([b, c]) => { g.fillStyle = GRAY; for (let k = 0; k < c; k++) { g.beginPath(); g.arc(X(+b), base - 4 - k * dy, r, 0, 7); g.fill(); } });
+  g.strokeStyle = RED; g.lineWidth = 3; g.beginPath(); g.moveTo(X(TRUE_W), base); g.lineTo(X(TRUE_W), 26); g.stroke();
+  g.strokeStyle = INK; g.setLineDash([6, 5]); g.beginPath(); g.moveTo(X(mean), base); g.lineTo(X(mean), 26); g.stroke(); g.setLineDash([]);
+  g.font = 'bold 14px "Noto Sans KR", sans-serif';
+  g.fillStyle = RED; g.textAlign = mean < TRUE_W ? 'left' : 'right'; g.fillText('실제 1,198', X(TRUE_W) + (mean < TRUE_W ? 6 : -6), 20);
+  g.fillStyle = INK; g.textAlign = mean < TRUE_W ? 'right' : 'left'; g.fillText(`평균 ${Math.round(mean).toLocaleString()}`, X(mean) + (mean < TRUE_W ? -6 : 6), 40);
+  const indivErr = gs.reduce((a, v) => a + Math.abs(v - TRUE_W), 0) / n, crowdErr = Math.abs(mean - TRUE_W);
+  $('g-stat').innerHTML = `군중 평균 <b>${Math.round(mean).toLocaleString()}</b> · 실제와의 차이 <b>${crowdErr.toFixed(1)}</b>파운드 · 개인 추정의 평균 오차 ${indivErr.toFixed(1)}파운드 — ` +
+    (crowdErr < indivErr / 3 ? '<span class="ok">군중의 지혜</span>' : '<span class="bad">군중의 쏠림 (독립성 붕괴)</span>');
+}
+['g-n', 'g-w', 'g-f'].forEach(id => $(id).oninput = drawG);
+$('g-new').onclick = () => { seed = Math.floor(Math.random() * 1e6) + 1; draw(); drawG(); };
+$('g-ind').onclick = () => { $('g-w').value = 0; drawG(); };
+$('g-her').onclick = () => { $('g-w').value = 80; drawG(); };
+
+// ---------- 2 별점 ----------
+const rIn = $('r-in');
+rIn.innerHTML = [1, 2, 3, 4, 5].map(k => `<label>★${k}<input type="range" min="0" max="40" value="0" data-k="${k}" aria-label="별점 ${k}점 인원"><b id="r-c${k}">0</b></label>`).join('');
+const sliders = [...rIn.querySelectorAll('input')];
+function setCounts(cs) { sliders.forEach((s, i) => s.value = cs[i]); drawR(); }
+function drawR() {
+  const cs = sliders.map(s => +s.value); cs.forEach((c, i) => $('r-c' + (i + 1)).textContent = c);
+  $('r-tv').textContent = $('r-t').value; $('r-mv').textContent = $('r-m').value;
+  const all = cs.flatMap((c, i) => Array(c).fill(i + 1)), n = all.length;
+  const [g, w, h] = setup($('r-cv'), 240), base = h - 34, bw = Math.min(90, (w - 80) / 5 - 20), maxC = Math.max(4, ...cs);
+  cs.forEach((c, i) => {
+    const x = 40 + i * ((w - 80) / 5) + 10, bh = (base - 30) * c / maxC;
+    g.fillStyle = i === 0 ? RED : GRAY; g.fillRect(x, base - bh, bw, bh);
+    g.fillStyle = INK; g.textAlign = 'center'; g.fillText(`★${i + 1}`, x + bw / 2, base + 20); if (c) g.fillText(c, x + bw / 2, base - bh - 6);
+  });
+  if (!n) { $('r-stat').textContent = '별점 인원을 정해 보기'; return; }
+  const mean = all.reduce((a, b) => a + b, 0) / n, cut = Math.floor(n * +$('r-t').value / 100);
+  const kept = all.slice(cut, n - cut); console.assert(kept.length > 0, 'trim removed all ratings'); const tm = kept.reduce((a, b) => a + b, 0) / kept.length;
+  const sd = Math.sqrt(all.reduce((a, v) => a + (v - mean) ** 2, 0) / n);
+  const shown = n >= +$('r-m').value;
+  $('r-stat').innerHTML = `참여자 n = <b>${n}</b> · 평균 <b>${mean.toFixed(2)}</b> · 양끝 ${cut}명씩 제외 평균 <b>${tm.toFixed(2)}</b> · 표준편차 ${sd.toFixed(2)}` +
+    (sd > 1.5 ? ' · <span class="bad">양극단에 몰린 분포 (평균의 대표성 약함)</span>' : '') +
+    ` · ${shown ? '<span class="ok">공개 기준 충족</span>' : '<span class="bad">최소 인원 미달 → 비공개</span>'}`;
+}
+sliders.forEach(s => s.oninput = drawR); $('r-t').oninput = drawR; $('r-m').oninput = drawR;
+$('r-ex1').onclick = () => setCounts([0, 0, 0, 4, 4]);
+$('r-ex2').onclick = () => setCounts([3, 0, 0, 4, 4]);
+$('r-ex3').onclick = () => setCounts([14, 2, 1, 2, 16]);
+addEventListener('resize', () => { drawG(); drawR(); });
+document.fonts.ready.then(() => { drawG(); drawR(); });
+setCounts([3, 0, 0, 4, 4]);
+drawG();
+</script>
+</body>
+</html>

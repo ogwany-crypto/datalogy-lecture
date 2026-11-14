@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>9강 별점의 함정</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="../assets/deck.css">
+<style>
+  .cover { flex-direction: row !important; align-items: center; justify-content: space-between; padding: 128px !important; }
+  .cover::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 24px; background: var(--red); }
+  .toc-item { display: flex; align-items: center; gap: 40px; padding: 30px 0; border-bottom: 2px solid var(--red-l); }
+  .toc-item:last-child { border-bottom: none; }
+  .toc-item b { font-size: 56px; font-weight: 900; color: var(--red); width: 100px; }
+  .toc-item span { font-size: 44px; font-weight: 500; }
+  .tri { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; flex: 1; align-items: stretch; }
+  .quad { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px 40px; flex: 1; }
+  .tri .card, .quad .card { justify-content: center; gap: 16px; }
+  .tri .card h3, .quad .card h3 { font-size: 40px; }
+  .tri .card .k, .quad .card .k { font-size: 26px; font-weight: 700; color: var(--gray); letter-spacing: 2px; }
+  .tri .card ul.b { font-size: 32px; line-height: 1.6; }
+  .quad .card p { font-size: 30px; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="progress"></div>
+<div class="stage">
+
+<!-- 1 표지 -->
+<section class="slide cover">
+  <div style="display:flex;flex-direction:column;gap:32px;width:1000px">
+    <p style="font-size:120px;font-weight:900;color:var(--red);line-height:1">09</p>
+    <p style="font-size:36px;font-weight:500;color:var(--gray)">데이톨로지 — 데이터로 읽는 인간과 사회</p>
+    <h1 style="font-size:96px;font-weight:900;line-height:1.15">별점의 함정<br>무엇이 문제인가</h1>
+    <hr style="width:160px;border:none;border-top:6px solid var(--red)">
+    <p style="font-size:32px;color:var(--gray)">주교재: 김성태, 『데이톨로지』, 이른비, 2022 · 강사 : ○○○</p>
+  </div>
+  <img class="fig" src="assets/cover.png" alt="별 다섯 개 아래 양 끝이 높은 U자형 막대그래프" style="width:600px;height:796px">
+  <aside class="note">9주차, 2부 시작. 원전: 연재 ③ 「‘별점’의 함정, 무엇이 문제인가」(별점의 딜레마 1, 2021.05.24). 강의안 3장 9주차.</aside>
+</section>
+
+<!-- 2 목차 -->
+<section class="slide" style="flex-direction:row;align-items:center;gap:96px;padding:128px">
+  <div style="display:flex;flex-direction:column;gap:24px;width:520px">
+    <p style="font-size:32px;font-weight:700;color:var(--red);letter-spacing:4px">CONTENTS</p>
+    <h2 style="font-size:72px;font-weight:900;line-height:1.15">별점의<br>함정</h2>
+    <hr style="width:120px;border:none;border-top:6px solid var(--red)">
+  </div>
+  <div style="flex:1">
+    <div class="toc-item"><b>01</b><span>별점의 역사와 힘</span></div>
+    <div class="toc-item"><b>02</b><span>누가 별점을 남기나</span></div>
+    <div class="toc-item"><b>03</b><span>같은 평균, 다른 분포</span></div>
+    <div class="toc-item"><b>04</b><span>별점의 편익과 비용</span></div>
+    <div class="toc-item"><b>05</b><span>활동 · 정리 및 확인 문제</span></div>
+  </div>
+</section>
+
+<!-- 3 학습 목표 -->
+<section class="slide" style="flex-direction:row;align-items:center;gap:80px;padding:128px">
+  <img class="fig" src="assets/goal.png" alt="평균은 같고 분포가 다른 두 막대그래프" style="width:760px;height:568px">
+  <div class="col" style="gap:40px">
+    <h2 style="font-size:72px;font-weight:900">학습 목표</h2>
+    <div class="card"><p style="font-size:28px;font-weight:700;color:var(--red)">목표 1</p><p style="font-size:36px;font-weight:500">별점의 역사와 경제적·사회적 영향 설명</p></div>
+    <div class="card"><p style="font-size:28px;font-weight:700;color:var(--red)">목표 2</p><p style="font-size:36px;font-weight:500">원점수·표본 대표성·분포·아웃라이어로 별점의 착시 진단</p></div>
+  </div>
+</section>
+
+<!-- 4 오늘의 질문 -->
+<section class="slide" style="justify-content:center;align-items:center;gap:56px">
+  <p style="font-size:36px;font-weight:700;color:var(--red);letter-spacing:4px">오늘의 질문</p>
+  <p style="font-size:60px;font-weight:900;line-height:1.45;text-align:center">A 식당 ★4.2 (리뷰 1,200개)<br>B 식당 ★4.6 (리뷰 9개)<br><span style="color:var(--red)">어디로 가겠는가?</span></p>
+  <aside class="note">손 들기 투표 후 이유 2~3명. 리뷰 수(표본 크기)를 본 학생과 평균만 본 학생을 구분해 두고 9-2·9-3에서 회수. 수치는 수업용 가상 예시.</aside>
+</section>
+
+<!-- 5 9-1 비유: 트로피 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">9-1</span><h2>별점의 역사와 힘</h2></div><p class="sub">[비유] 별 다섯 개 트로피</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/trophy.jpg" alt="트로피와 별 다섯 개" style="width:760px;height:570px"><p class="credit">사진: rawpixel / CC0</p></div>
+    <div class="col">
+      <h3>트로피 = 별점</h3>
+      <ul class="b">
+        <li>받으면 영광, 못 받으면 낙인</li>
+        <li>심사위원 = 익명의 손님들</li>
+        <li>심사 기준·심사위원 수 비공개</li>
+        <li>그런데도 매출을 좌우하는 상</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 6 9-1 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">9-1</span><h2>별점의 역사와 힘</h2></div><p class="sub">여행 안내서의 별 → 매출을 움직이는 별</p></div>
+  <video class="anim" src="assets/anim/StarHistory.mp4" poster="assets/anim/StarHistory_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">manim. 연재 ③(2021.05.24): 1820년경 마리아나 스타크 여행 안내서(피에르 제나마 2004 인용), 1900 미쉐린 가이드(타이어 판매용), 1930년대 초 리커트 5점 척도, 하버드 마이클 루카(2011) 평점 1점 ↑ → 매출 5~9% ↑, 네이버 2019.11 별점 도입 → 2021.3.17 폐지 발표.</aside>
+</section>
+
+<!-- 7 9-1 힘과 비용 사례 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">9-1</span><h2>별점의 역사와 힘</h2></div><p class="sub">별점이 움직이는 것: 매출과 생계</p></div>
+  <div class="row" style="gap:56px;align-items:stretch">
+    <div class="card" style="flex:1;justify-content:center">
+      <h3>경제적 힘</h3>
+      <ul class="b" style="font-size:30px">
+        <li>루카(2011): 평점 +1 → 매출 +5~9%</li>
+        <li>닐슨(2012, 56개국): 신뢰 1위 지인 추천, 2위 온라인 평가</li>
+        <li>닐슨(2016): 온라인 평가 비중 증가</li>
+      </ul>
+    </div>
+    <div class="card" style="flex:1;justify-content:center">
+      <h3>사회적 비용</h3>
+      <ul class="b" style="font-size:30px">
+        <li>별점 테러·조작 → 네이버 별점 폐지 발표</li>
+        <li>넷플릭스: 5점 별점 → ‘좋아요’</li>
+        <li>별점 1개로 자영업 폐업 위기</li>
+        <li>사건과 무관한 병원에 별점 테러</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="note">모두 연재 ③(2021.05.24). 언론 사례: 중앙선데이(2021.1.2) 별점 1개와 폐업, 머니투데이(2021.5.11) 병원 별점 테러, MBC(2021.3.18) 배달앱 별점 비판. 닐슨 2016 재조사는 칼럼 기준 “4년 전보다 15% 증가”.</aside>
+</section>
+
+<!-- 8 9-2 비유: 확성기 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">9-2</span><h2>누가 별점을 남기나</h2></div><p class="sub">[비유] 확성기</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/megaphone.jpg" alt="확성기를 든 사람" style="width:760px;height:570px"><p class="credit">사진: garryknight / CC BY 2.0</p></div>
+    <div class="col">
+      <h3>확성기 = 별점 작성자</h3>
+      <ul class="b">
+        <li>광장의 소리 = 확성기 든 몇 사람</li>
+        <li>조용히 지나간 다수는 기록 없음</li>
+        <li>별점 = 아주 만족·아주 화난 손님의 목소리</li>
+        <li>무작위 표본 아님 → 일반화 곤란</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 9 9-2 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">9-2</span><h2>누가 별점을 남기나</h2></div><p class="sub">표본 대표성(representativeness): 별점 참여자 ≠ 전체 손님</p></div>
+  <video class="anim" src="assets/anim/SampleBias.mp4" poster="assets/anim/SampleBias_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">manim. 원전(연재 ③): 별점 참여자는 무작위 표본이 아니므로 전체 이용자의 평가로 일반화 곤란, 참여 조건·인원·평균 정보 부족. 손님 100명의 만족도와 작성 확률은 수업용 가상 수치 [보충].</aside>
+</section>
+
+<!-- 10 9-3 비유: U자 계곡 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">9-3</span><h2>같은 평균, 다른 분포</h2></div><p class="sub">[비유] U자 계곡</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/valley.jpg" alt="양쪽 산이 높고 가운데가 낮은 U자 계곡" style="width:760px;height:570px"><p class="credit">사진: theslowlane / CC BY 2.0</p></div>
+    <div class="col">
+      <h3>U자 계곡 = U자형 분포</h3>
+      <ul class="b">
+        <li>양쪽 산 = ★1과 ★5에 몰린 평가</li>
+        <li>계곡 바닥 = 비어 있는 중간 점수</li>
+        <li>평균 높이 = 아무도 서 있지 않은 자리</li>
+        <li>평균 3.0이 “무난함”이 아닐 가능성</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 11 9-3 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">9-3</span><h2>같은 평균, 다른 분포</h2></div><p class="sub">분포(distribution): 정상분포 vs U자형 분포</p></div>
+  <video class="anim" src="assets/anim/SameMeanDiffDist.mp4" poster="assets/anim/SameMeanDiffDist_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">manim. 원전(연재 ③): 정상분포와 U자형 분포는 같은 평균이어도 의미가 다름, 분포를 모르면 잘못된 추론. 막대 수치(5·20·50·20·5 vs 40·8·4·8·40)는 수업용 가상 예시.</aside>
+</section>
+
+<!-- 12 9-3 원점수 vs 표준점수 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">9-3</span><h2>같은 평균, 다른 분포</h2></div><p class="sub">원점수(raw score) vs 표준점수(standard score)</p></div>
+  <div class="row" style="gap:56px">
+    <img class="fig" src="assets/raw_vs_z.png" alt="업종 A와 B의 분포에서 4.5점의 위치 비교" style="width:900px;height:545px">
+    <div class="col">
+      <h3>같은 4.5점, 다른 의미</h3>
+      <ul class="b" style="font-size:30px">
+        <li>별점 = 원점수, 상대 위치 정보 없음</li>
+        <li>수능 등급 = 표준점수로 결정</li>
+        <li>z = (내 점수 − 평균) ÷ 표준편차</li>
+        <li>업종 평균·분포를 함께 보여 주기</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="note">원전(연재 ③): 별점은 원점수 방식이라 상대적 위치를 알기 어려움, 수능처럼 평균과 분포를 함께 보여 줘야 함. 업종 A·B 수치와 z 계산은 수업용 가상 예시 [보충]: A (4.5−4.6)/0.2 = −0.5, B (4.5−3.8)/0.4 = +1.75.</aside>
+</section>
+
+<!-- 13 9-3 4가지 함정 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">9-3</span><h2>같은 평균, 다른 분포</h2></div><p class="sub">데이톨로지 진단: 별점의 4가지 함정</p></div>
+  <div class="quad">
+    <div class="card"><p class="k">01</p><h3>원점수</h3><p>4.5점이 업종 안에서 높은지 모름</p></div>
+    <div class="card"><p class="k">02</p><h3>표본 대표성</h3><p>극단의 손님만 남기는 별점</p></div>
+    <div class="card"><p class="k">03</p><h3>분포 형태</h3><p>같은 평균, 정상형 vs U자형</p></div>
+    <div class="card"><p class="k">04</p><h3>척도와 아웃라이어</h3><p>리커트 5점 척도, 극단값 하나의 큰 영향</p></div>
+  </div>
+  <aside class="note">연재 ③: 리커트 스케일(1930년대 초 렌시스 리커트), 대학 강의평가의 극단 점수(아웃라이어) = 별점 테러와 유사한 구조. 네 가지로 묶은 것은 강의안 9주차 정리.</aside>
+</section>
+
+<!-- 14 9-4 비유: 저울 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">9-4</span><h2>별점의 편익과 비용</h2></div><p class="sub">[비유] 저울</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/scale.jpg" alt="양팔 저울" style="width:760px;height:570px"><p class="credit">사진: Mad Mod Smith / CC BY-SA 2.0</p></div>
+    <div class="col">
+      <h3>저울 = 별점 제도의 형량</h3>
+      <ul class="b">
+        <li>왼쪽 접시 = 사회적 편익(GSB)</li>
+        <li>오른쪽 접시 = 사회적 비용(GSC)</li>
+        <li>질문: 없앨 것인가가 아닌 어느 쪽이 무거운가</li>
+        <li>목표: 편익 쪽으로 기울게 설계</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 15 9-4 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">9-4</span><h2>별점의 편익과 비용</h2></div><p class="sub">GSB vs GSC: 폐지보다 형량</p></div>
+  <video class="anim" src="assets/anim/GsbGsc.mp4" poster="assets/anim/GsbGsc_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">manim. 연재 ③: GDP에 빗대어 별점의 사회적 이익(GSB)과 비용(GSC)을 비교, 폐지보다 최적의 해법. 약어의 풀이(Gross Star Benefit/Cost)는 강의안의 추정, 원문 확인 필요. 편익·비용 항목은 칼럼 사례 요약.</aside>
+</section>
+
+<!-- 16 9-4 오컴의 면도날 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">9-4</span><h2>별점의 편익과 비용</h2></div><p class="sub">오컴의 면도날(Occam’s razor)의 함정</p></div>
+  <div class="row" style="gap:56px;align-items:stretch">
+    <div class="card" style="flex:1;justify-content:center">
+      <h3>단순함의 원리</h3>
+      <p style="font-size:32px;line-height:1.55">14세기 영국 논리학자 오컴의 윌리엄<br>→ 같은 설명이면 더 단순한 쪽 선택</p>
+    </div>
+    <div class="card" style="flex:1;justify-content:center">
+      <h3>별점에 적용하면</h3>
+      <p style="font-size:32px;line-height:1.55">숫자 하나로 가게를 판단하는 편리함<br>→ 진위 판단의 근거로 쓰면 오류</p>
+    </div>
+  </div>
+  <p style="font-size:34px;font-weight:700;color:var(--red);text-align:center">단순한 숫자 뒤의 표본 · 분포 · 맥락 묻기 = 데이터 리터러시</p>
+  <aside class="note">연재 ③: 오컴의 면도날은 단순함의 원리지만, 진실과 거짓을 가르는 판단 근거로 쓰면 오류 가능. 다음 주(연재 ④): 집단지성과 해법.</aside>
+</section>
+
+<!-- 17 활동 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">9-5</span><h2>활동</h2></div><p class="sub">활동 (60분): 같은 평균, 다른 분포</p></div>
+  <div class="tri">
+    <div class="card"><p class="k">STEP 1 · 25분</p><h3>시뮬레이션</h3>
+      <ul class="b"><li>평균 3.8로 같은 분포 3종</li><li>정상형 · U자형 · 소수 표본(n=5)</li><li>놀이터 또는 스프레드시트</li></ul></div>
+    <div class="card"><p class="k">STEP 2 · 15분</p><h3>결정 실험</h3>
+      <ul class="b"><li>다른 팀에 평균만 보여 주기</li><li>이어서 분포까지 공개</li><li>선택이 바뀐 인원 세기</li></ul></div>
+    <div class="card"><p class="k">STEP 3 · 20분</p><h3>실태 조사</h3>
+      <ul class="b"><li>배달·지도·쇼핑 앱 별점 캡처</li><li>참여자 수 · 분포 · 작성자 · 상대 순위</li><li>공개 여부 체크</li></ul></div>
+  </div>
+  <aside class="note">강의안 3장 9주차 활동. 체크리스트 4항목은 10주 연재 ④의 개선 제안(참여자 수 공개, 상대 랭킹, 작성자 정보 시각화)과 연결.</aside>
+</section>
+
+<!-- 18 정리 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">9-6</span><h2>정리 및 확인 문제</h2></div><p class="sub">오늘의 핵심 4줄</p></div>
+  <div class="col" style="gap:24px;justify-content:center;flex:1">
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">별점</b> = 1820년경 안내서의 별 → 매출을 움직이는 권력</p></div>
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">표본</b> = 극단의 손님만 남기는 목소리, 무작위 아님</p></div>
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">분포</b> = 같은 평균도 정상형·U자형은 다른 정보</p></div>
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">해법</b> = 폐지보다 편익(GSB)과 비용(GSC)의 형량</p></div>
+  </div>
+</section>
+
+<!-- 19 확인 문제 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">9-6</span><h2>정리 및 확인 문제</h2></div><p class="sub">확인 문제</p></div>
+  <div class="row" style="gap:64px;align-items:stretch">
+    <div class="col" style="gap:18px">
+      <h3 style="font-size:36px">문제 1</h3>
+      <p style="font-size:32px;line-height:1.45">평균 3.0점인 두 가게 중 한 곳은 ★1과 ★5에만 평가가 몰린 경우, 이 분포의 이름과 평균의 문제</p>
+      <h3 style="font-size:36px;padding-top:20px">문제 2</h3>
+      <p style="font-size:32px;line-height:1.45">업종 평균 3.8, 표준편차 0.4일 때 별점 4.6인 가게의 표준점수 z</p>
+      <h3 style="font-size:36px;padding-top:20px">문제 3</h3>
+      <p style="font-size:32px;line-height:1.45">별점 참여자를 전체 손님의 의견으로 일반화하기 어려운 이유</p>
+      <button class="reveal">정답 보기</button>
+      <div class="answer">문제 1: U자형 분포 → 평균 3.0 근처에 실제 평가가 거의 없음, 평균이 대표성 상실<br>문제 2: z = (4.6 − 3.8) ÷ 0.4 = 2<br>문제 3: 무작위 표본이 아님 — 아주 만족하거나 아주 화난 사람이 주로 참여 (표본 대표성 문제)</div>
+    </div>
+    <img class="fig" src="assets/goal.png" alt="같은 평균 다른 분포 그림" style="width:600px;height:449px;align-self:center">
+  </div>
+  <aside class="note">정답 — 1·3: 연재 ③. 2: 표준점수 계산 연습(수치는 가상 예시).</aside>
+</section>
+
+<!-- 20 마무리 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">9-6</span><h2>정리 및 확인 문제</h2></div><p class="sub">마무리</p></div>
+  <div class="row" style="gap:80px">
+    <div class="col" style="gap:20px">
+      <h3 style="font-size:36px">이번 주 과제</h3>
+      <ul class="b" style="font-size:30px">
+        <li>연재 ④ 「‘별점’의 해결책」 읽기</li>
+        <li>사전 질문 1개 LMS에 올리기</li>
+        <li>저널: “내가 속았던 별점” 1건</li>
+      </ul>
+      <h3 style="font-size:36px;padding-top:24px">다음 시간</h3>
+      <p style="font-size:30px">집단지성과 별점의 해법</p>
+      <p style="font-size:26px;padding-top:24px"><a href="quiz.html" style="color:var(--red);font-weight:700">▶ 웹 퀴즈</a>&nbsp;&nbsp;&nbsp;<a href="playground.html" style="color:var(--red);font-weight:700">▶ 별점 분포 놀이터</a></p>
+    </div>
+    <img class="fig" src="assets/cover.png" alt="별 다섯 개와 U자형 막대 그림" style="width:420px;height:557px">
+  </div>
+</section>
+
+<!-- 21 이미지 출처 -->
+<section class="slide">
+  <div class="head"><h2>이미지 출처</h2><p class="sub">사진 (Openverse 검색, CC 라이선스)</p></div>
+  <ul class="b" style="font-size:24px;line-height:1.7">
+    <li>Golden trophy, five stars rating — rawpixel, CC0 1.0, <a href="https://www.rawpixel.com/image/11189198/golden-trophy-five-stars-rating">rawpixel</a></li>
+    <li>With A Megaphone By A Wall — garryknight, CC BY 2.0, <a href="https://www.flickr.com/photos/8176740@N05/5542172347">flickr</a></li>
+    <li>Classic U shaped Valley on east side of Chinook Pass — theslowlane, CC BY 2.0, <a href="https://www.flickr.com/photos/90536753@N00/1456234727">flickr</a></li>
+    <li>Vintage balance scale — Mad Mod Smith, CC BY-SA 2.0, <a href="https://www.flickr.com/photos/47036348@N02/6369680607">flickr</a></li>
+    <li>애니메이션·그림 — manim, matplotlib으로 직접 제작</li>
+    <li>인용 — 김성태, 『데이톨로지』(이른비, 2022); 지디넷코리아 연재 「김성태의 데이톨로지」 ③ (2021.05.24)</li>
+  </ul>
+</section>
+
+</div>
+<div class="notes"></div>
+<div class="bar">
+  <a href="../index.html">← 목록</a>
+  <button data-act="prev">◀</button><span class="count"></span><button data-act="next">▶</button>
+  <span class="grow">← → 이동 · F 전체 화면 · N 노트</span>
+  <a href="quiz.html">퀴즈</a><a href="playground.html">놀이터</a>
+  <button data-act="notes">노트</button><button data-act="full">전체 화면</button>
+</div>
+<script src="../assets/deck.js"></script>
+</body>
+</html>

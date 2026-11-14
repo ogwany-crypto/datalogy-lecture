@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5강 웹 퀴즈 · 숫자로 된 일상의 법칙</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="../assets/page.css">
+<style>
+  .q { font-size: 18px; font-weight: 500; margin-bottom: 14px; white-space: pre-line; }
+  .opts { display: grid; gap: 10px; }
+  .opt { display: flex; gap: 12px; align-items: center; text-align: left; border: 2px solid var(--line); border-radius: 12px;
+    padding: 12px 16px; background: #fff; color: var(--ink); font-weight: 500; }
+  .opt:hover:not(:disabled) { border-color: var(--red-l); }
+  .opt:disabled { opacity: 1; }
+  .opt.sel { border-color: var(--red); background: var(--red-bg); }
+  .opt.right { border-color: var(--ok); background: var(--ok-bg); }
+  .opt.wrong { border-color: var(--red); background: var(--red-bg); text-decoration: line-through; }
+  .opt .k { width: 28px; height: 28px; flex: none; border-radius: 50%; border: 2px solid currentColor; display: grid; place-items: center; font-size: 14px; }
+  .fb { margin-top: 14px; padding: 12px 16px; border-radius: 10px; display: none; }
+  .fb.show { display: block; }
+  .fb.good { background: var(--ok-bg); }
+  .fb.no { background: var(--red-bg); }
+  table.dist { border-collapse: collapse; margin: 8px 0 14px; font-size: 17px; }
+  table.dist td, table.dist th { border: 1px solid #ccc; padding: 6px 16px; text-align: center; }
+  table.dist th { background: #f4f1ee; }
+  .progress { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; margin-bottom: 24px; }
+  .progress i { display: block; height: 100%; width: 0; background: var(--red); transition: width .3s; }
+  .result { text-align: center; padding: 40px 24px; }
+  .result .big { font-size: 64px; font-weight: 900; color: var(--red); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="badge">5강</span><h1>웹 퀴즈 · 숫자로 된 일상의 법칙</h1>
+    <nav><a href="index.html#1">슬라이드</a><a href="playground.html">놀이터</a><a href="../index.html">목록</a></nav>
+  </header>
+  <p class="lede">9문제 · 고르거나 답을 입력한 뒤 “확인” · 수 입력은 소수도 가능</p>
+  <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+  <div id="app"></div>
+</div>
+
+<script>
+// type: choice(하나 고르기) | multi(모두 고르기) | num(수 입력, 분수 가능)
+const QUIZ = [
+  { type: 'choice', q: '자연에서 모은 큰 데이터(인구, 주가 등)의 첫 자리 숫자로 가장 흔한 것',
+    opts: ['1', '5', '9', '모두 같음'], ans: 0, why: '벤포드 법칙: 1이 약 30.1%, 9는 약 4.6%.' },
+  { type: 'num', q: '벤포드 법칙에서 첫 자리가 1일 비율 log₁₀(2)를 퍼센트로 (소수 첫째 자리까지)',
+    ans: 30.1, why: 'log₁₀(1 + 1/1) = log₁₀2 ≈ 0.301 → 약 30.1%.' },
+  { type: 'choice', q: '벤포드 법칙이 잘 맞지 않는 데이터',
+    opts: ['국가별 인구', '상장사 시가총액', '성인 남성의 키(cm)', '도시별 면적'], ans: 2,
+    why: '키는 좁은 범위(대부분 150~190)에 몰림 → 첫 자리가 1에 집중. 여러 자릿수에 걸쳐 퍼진 데이터에만 적용.' },
+  { type: 'choice', q: '하인리히 법칙의 비율',
+    opts: ['1 : 10 : 100', '1 : 29 : 300', '20 : 80', '1 : 1 : 1'], ans: 1,
+    why: '중대 사고 1 : 경미한 사고 29 : 징후 300 (1931년, 허버트 하인리히).' },
+  { type: 'choice', q: '‘롱테일’ 개념을 2004년 『와이어드』에서 소개한 사람',
+    opts: ['크리스 앤더슨', '빌프레도 파레토', '말콤 글래드웰', '프랭크 벤포드'], ans: 0,
+    why: '크리스 앤더슨. 아마존 비인기 서적 매출 합이 소수 베스트셀러를 넘는다는 분석.' },
+  { type: 'choice', q: '파레토 법칙을 ‘20:80’ 법칙으로 정리해 널리 알린 사람',
+    opts: ['조셉 주란', '테일러', '케틀레', '에릭슨'], ans: 0, why: '조셉 주란 (연재 ⑨).' },
+  { type: 'num', q: '하루 8시간씩 4년(365일 × 4) 연습한 총 시간',
+    ans: 11680, why: '8 × 365 × 4 = 11,680시간 ≈ 1만 시간.' },
+  { type: 'choice', q: '먼저 들어온 정보가 나중 정보보다 평가에 더 큰 영향을 주는 현상',
+    opts: ['초두효과', '점화효과', '롱테일', '필터버블'], ans: 0,
+    why: '초두효과(솔로몬 애쉬 실험). 점화효과는 가장 최근 정보가 평가를 좌우하는 현상.' },
+  { type: 'choice', q: '“인간의 집중 시간은 8초” 같은 인용 통계를 만났을 때 데이터 리터러시의 첫걸음',
+    opts: ['많이 인용됐으니 믿기', '원 데이터와 조사 방법의 출처 확인', '무조건 거짓으로 보기', '숫자를 반올림하기'], ans: 1,
+    why: '8초 통계는 원 데이터가 불분명하다는 지적 → 출처를 끝까지 추적.' },
+];
+
+const app = document.getElementById('app');
+const bar = document.getElementById('bar');
+let idx = 0, score = 0, picked = new Set(), done = false;
+
+function parseNum(s) {
+  s = s.trim().replace(/\s/g, '').replace('−', '-');
+  const m = s.match(/^(-?\d*\.?\d+)\/(\d*\.?\d+)$/);
+  if (m) return parseFloat(m[1]) / parseFloat(m[2]);
+  return s === '' ? NaN : Number(s);
+}
+
+function render() {
+  bar.style.width = `${idx / QUIZ.length * 100}%`;
+  if (idx >= QUIZ.length) return renderResult();
+  const it = QUIZ[idx];
+  picked = new Set(); done = false;
+  const table = it.table ? `<table class="dist">${it.table.map((r, i) =>
+    `<tr>${r.map(c => i === 0 ? `<th>${c}</th>` : `<td>${c}</td>`).join('')}</tr>`).join('')}</table>` : '';
+  const body = it.type === 'num'
+    ? `<div class="controls"><label>답 <input type="text" id="num" inputmode="decimal" placeholder="예: 3/8 또는 0.375" autocomplete="off"></label></div>`
+    : `<div class="opts">${it.opts.map((o, i) =>
+        `<button class="opt" data-i="${i}"><span class="k">${it.type === 'multi' ? '✓' : i + 1}</span><span>${o}</span></button>`).join('')}</div>`;
+  app.innerHTML = `<div class="card">
+    <p class="muted">문제 ${idx + 1} / ${QUIZ.length}${it.type === 'multi' ? ' · 모두 고르기' : ''}</p>
+    <p class="q">${it.q}</p>${table}${body}
+    <div class="controls"><button class="solid" id="check">확인</button><button id="next" hidden>${idx + 1 < QUIZ.length ? '다음 문제 →' : '결과 보기'}</button></div>
+    <div class="fb" id="fb" role="status"></div></div>`;
+  app.querySelectorAll('.opt').forEach(b => b.onclick = () => {
+    if (done) return;
+    const i = +b.dataset.i;
+    if (it.type === 'choice') { picked = new Set([i]); app.querySelectorAll('.opt').forEach(x => x.classList.toggle('sel', +x.dataset.i === i)); }
+    else { picked.has(i) ? picked.delete(i) : picked.add(i); b.classList.toggle('sel'); }
+  });
+  const num = document.getElementById('num');
+  if (num) { num.focus(); num.onkeydown = e => { if (e.key === 'Enter') check(); }; }
+  document.getElementById('check').onclick = check;
+  document.getElementById('next').onclick = () => { idx++; render(); };
+}
+
+function check() {
+  if (done) return;
+  const it = QUIZ[idx], fb = document.getElementById('fb');
+  let ok;
+  if (it.type === 'num') {
+    const v = parseNum(document.getElementById('num').value);
+    if (isNaN(v)) { fb.className = 'fb show no'; fb.textContent = '수를 입력 (분수 3/8 또는 소수 0.375)'; return; }
+    ok = Math.abs(v - it.ans) < 1e-3;
+  } else {
+    if (!picked.size) { fb.className = 'fb show no'; fb.textContent = '보기 선택 필요'; return; }
+    const ans = new Set([].concat(it.ans));
+    ok = picked.size === ans.size && [...picked].every(i => ans.has(i));
+    app.querySelectorAll('.opt').forEach(b => {
+      const i = +b.dataset.i; b.disabled = true;
+      if (ans.has(i)) b.classList.add('right'); else if (picked.has(i)) b.classList.add('wrong');
+    });
+  }
+  done = true;
+  if (ok) score++;
+  fb.className = `fb show ${ok ? 'good' : 'no'}`;
+  fb.innerHTML = `<b class="${ok ? 'ok' : 'bad'}">${ok ? '정답' : '오답'}</b>${it.type === 'num' && !ok ? ` · 정답 ${fmt(it.ans)}` : ''}<br>${it.why}`;
+  document.getElementById('check').hidden = true;
+  const next = document.getElementById('next'); next.hidden = false; next.focus();
+}
+
+function fmt(v) {
+  for (let d = 1; d <= 20; d++) { const n = Math.round(v * d); if (Math.abs(n / d - v) < 1e-9) return d === 1 ? `${n}` : `${n}/${d}`; }
+  return v.toFixed(3);
+}
+
+function renderResult() {
+  bar.style.width = '100%';
+  const msg = score === QUIZ.length ? '만점! 5강 핵심 완벽 이해' : score >= 7 ? '거의 완벽. 틀린 문제만 슬라이드로 복습' : '슬라이드와 놀이터로 복습 후 재도전';
+  app.innerHTML = `<div class="card result"><p class="muted">결과</p><p class="big">${score} / ${QUIZ.length}</p><p style="margin:8px 0 24px">${msg}</p>
+    <div class="controls" style="justify-content:center"><button class="solid" id="again">다시 풀기</button><a class="btn" href="playground.html">놀이터 가기</a><a class="btn" href="index.html#1">슬라이드 복습</a></div></div>`;
+  document.getElementById('again').onclick = () => { idx = 0; score = 0; render(); };
+}
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+{
+  "vr": {
+    "title": "Young man wearing a HTC VIVE VR headset",
+    "creator": "Ivan Radic",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/26344495@N05/48543133436",
+    "provider": "flickr"
+  },
+  "reflection": {
+    "title": "Wallowa Lake reflection in winter, Oregon .",
+    "creator": "Bonnie Moreland (free images)",
+    "license": "pdm",
+    "license_version": "1.0",
+    "license_url": "https://creativecommons.org/publicdomain/mark/1.0/",
+    "source": "https://www.flickr.com/photos/66741228@N05/40771854161",
+    "provider": "flickr"
+  },
+  "fork": {
+    "title": "Fork in the road, decision tree, September, Discovery Park, Seattle, Washington, USA",
+    "creator": "Wonderlane",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/71401718@N00/13067014944",
+    "provider": "flickr"
+  },
+  "worldmap": {
+    "title": "A new and accurat map of the world",
+    "creator": "Norman B. Leventhal Map Center at the BPL",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/24528911@N05/2674855383",
+    "provider": "flickr"
+  }
+}

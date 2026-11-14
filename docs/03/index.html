@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3강 시간을 가로지르는 데이터</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="../assets/deck.css">
+<style>
+  .cover { flex-direction: row !important; align-items: center; justify-content: space-between; padding: 128px !important; }
+  .cover::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 24px; background: var(--red); }
+  .toc-item { display: flex; align-items: center; gap: 40px; padding: 30px 0; border-bottom: 2px solid var(--red-l); }
+  .toc-item:last-child { border-bottom: none; }
+  .toc-item b { font-size: 56px; font-weight: 900; color: var(--red); width: 100px; }
+  .toc-item span { font-size: 44px; font-weight: 500; }
+  .tri { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; flex: 1; align-items: stretch; }
+  .tri .card h3 { font-size: 40px; }
+  .tri .card .k { font-size: 26px; font-weight: 700; color: var(--gray); letter-spacing: 2px; }
+  .tri .card { justify-content: center; gap: 20px; }
+  .tri .card ul.b { font-size: 32px; line-height: 1.6; }
+  .quote { font-size: 44px; font-weight: 700; line-height: 1.5; }
+  .quote small { display: block; font-size: 26px; font-weight: 500; color: var(--gray); padding-top: 12px; }
+</style>
+</head>
+<body>
+<div class="progress"></div>
+<div class="stage">
+
+<!-- 1 표지 -->
+<section class="slide cover">
+  <div style="display:flex;flex-direction:column;gap:32px;width:1000px">
+    <p style="font-size:120px;font-weight:900;color:var(--red);line-height:1">03</p>
+    <p style="font-size:36px;font-weight:500;color:var(--gray)">데이톨로지 — 데이터로 읽는 인간과 사회</p>
+    <h1 style="font-size:96px;font-weight:900;line-height:1.15">시간을 가로지르는<br>데이터</h1>
+    <hr style="width:160px;border:none;border-top:6px solid var(--red)">
+    <p style="font-size:32px;color:var(--gray)">코호트 · 태아 프로그래밍 · 팬데믹의 히든 이펙트</p>
+  </div>
+  <img class="fig" src="assets/cover.png" alt="한 점에서 출발해 퍼져 나가는 궤적들" style="width:600px;height:796px">
+  <aside class="note">3주차. 원전 확인 범위: 책 1부 1장 소제목(「20세기의 위대한 코호트 연구」, 「데이비드 바커와 태아 프로그래밍 이론」, 「팬데믹이 가져오는 히든 이펙트」)만. 세부 내용은 강의안 [보충] — 수업 전 책 본문 대조 필요.</aside>
+</section>
+
+<!-- 2 목차 -->
+<section class="slide" style="flex-direction:row;align-items:center;gap:96px;padding:128px">
+  <div style="display:flex;flex-direction:column;gap:24px;width:520px">
+    <p style="font-size:32px;font-weight:700;color:var(--red);letter-spacing:4px">CONTENTS</p>
+    <h2 style="font-size:72px;font-weight:900;line-height:1.15">시간을<br>가로지르는<br>데이터</h2>
+    <hr style="width:120px;border:none;border-top:6px solid var(--red)">
+  </div>
+  <div style="flex:1">
+    <div class="toc-item"><b>01</b><span>코호트 연구</span></div>
+    <div class="toc-item"><b>02</b><span>바커와 태아 프로그래밍</span></div>
+    <div class="toc-item"><b>03</b><span>팬데믹의 히든 이펙트</span></div>
+    <div class="toc-item"><b>04</b><span>활동 · 정리 및 확인 문제</span></div>
+  </div>
+</section>
+
+<!-- 3 학습 목표 -->
+<section class="slide" style="flex-direction:row;align-items:center;gap:80px;padding:128px">
+  <img class="fig" src="assets/goal.png" alt="스냅숏과 추적의 비교" style="width:760px;height:568px">
+  <div class="col" style="gap:40px">
+    <h2 style="font-size:72px;font-weight:900">학습 목표</h2>
+    <div class="card"><p style="font-size:28px;font-weight:700;color:var(--red)">목표 1</p><p style="font-size:36px;font-weight:500">코호트 연구와 횡단 조사의 차이 설명</p></div>
+    <div class="card"><p style="font-size:28px;font-weight:700;color:var(--red)">목표 2</p><p style="font-size:36px;font-weight:500">“지금의 데이터가 수십 년 뒤를 예고”하는 관점으로 팬데믹의 장기 영향 추론</p></div>
+  </div>
+</section>
+
+<!-- 4 오늘의 질문 -->
+<section class="slide" style="justify-content:center;align-items:center;gap:56px">
+  <p style="font-size:36px;font-weight:700;color:var(--red);letter-spacing:4px">오늘의 질문</p>
+  <p style="font-size:64px;font-weight:900;line-height:1.4;text-align:center">엄마 배 속에 있던 9개월이<br><span style="color:var(--red)">60년 뒤 심장병 위험</span>을<br>결정할 수 있을까?</p>
+  <aside class="note">손들기 투표(예/아니오/모름). 3-2에서 바커 가설로 회수.</aside>
+</section>
+
+<!-- 5 3-1 비유: 묘목 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">3-1</span><h2>코호트 연구</h2></div><p class="sub">[비유] 같은 해 심은 묘목</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/seedlings.jpg" alt="줄지어 자라는 나무 묘목" style="width:760px;height:570px"><p class="credit">사진: The Alliance of Religions and Conservation / CC BY 2.0</p></div>
+    <div class="col">
+      <h3>같은 해 심은 묘목 = 코호트</h3>
+      <ul class="b">
+        <li>같은 시기에 출발한 한 집단</li>
+        <li>해마다 같은 나무를 다시 재기</li>
+        <li>어떤 묘목이 왜 다르게 자랐는지 추적</li>
+        <li>한 번 재고 끝 = 횡단 조사</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 6 3-1 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">3-1</span><h2>코호트 연구</h2></div><p class="sub">코호트(cohort): 같은 경험을 한 집단을 오래 추적</p></div>
+  <video class="anim" src="assets/anim/CohortVsCross.mp4" poster="assets/anim/CohortVsCross_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">manim: 한 시점의 세로선(횡단) → 같은 출발점에서 60년 추적(코호트), 일부 집단의 차이가 시간이 지나야 드러남. 궤적은 개념도(실제 데이터 아님).</aside>
+</section>
+
+<!-- 7 3-1 대표 사례 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">3-1</span><h2>코호트 연구</h2></div><p class="sub">20세기의 대표 코호트</p></div>
+  <div class="tri">
+    <div class="card"><p class="k">영국 · 1946</p><h3>출생 코호트</h3>
+      <ul class="b"><li>1946년 3월 한 주에 태어난 아이들</li><li>세계 최장기 출생 코호트 중 하나</li></ul></div>
+    <div class="card"><p class="k">미국 · 1948~</p><h3>프레이밍햄 심장 연구</h3>
+      <ul class="b"><li>한 마을 주민의 장기 추적</li><li>심혈관 질환 위험 요인 연구의 출발점</li></ul></div>
+    <div class="card"><p class="k">영국 · 1958, 1970</p><h3>후속 출생 코호트</h3>
+      <ul class="b"><li>세대별 비교 가능</li><li>교육·건강·소득의 생애 경로</li></ul></div>
+  </div>
+  <p style="font-size:32px;font-weight:700;color:var(--red);text-align:center">횡단 조사로는 볼 수 없는 것 = 원인과 결과 사이의 시간</p>
+  <aside class="note">[보충] 사례는 일반 학술 지식(강의안 3주차). 책이 어떤 코호트를 “위대한 코호트 연구”로 소개하는지 본문 대조 필요.</aside>
+</section>
+
+<!-- 8 3-2 비유: 나이테 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">3-2</span><h2>바커와 태아 프로그래밍</h2></div><p class="sub">[비유] 나이테</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/rings.jpg" alt="붉은 통나무 단면의 나이테" style="width:760px;height:570px"><p class="credit">사진: Out of the Fire Blog / CC BY 2.0</p></div>
+    <div class="col">
+      <h3>나이테 = 초기 환경의 흔적</h3>
+      <ul class="b">
+        <li>가장 안쪽 고리 = 어린 시절의 환경</li>
+        <li>그 위로 평생의 고리가 쌓이는 구조</li>
+        <li>태아기 영양 = 몸의 가장 안쪽 고리</li>
+        <li>오래된 기록 속에서 다시 읽기</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 9 3-2 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">3-2</span><h2>바커와 태아 프로그래밍</h2></div><p class="sub">출생 기록 × 수십 년 뒤 건강 = DOHaD 가설</p></div>
+  <video class="anim" src="assets/anim/BarkerTrace.mp4" poster="assets/anim/BarkerTrace_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">[보충] 1980년대 데이비드 바커: 영국 지역별 출생 기록과 성인 사망 통계 대조 → 저체중 출생과 성인기 심혈관 질환 위험의 상관. 막대 높이는 경향 개념도(실제 수치 아님). DOHaD = 건강과 질병의 발달 기원.</aside>
+</section>
+
+<!-- 10 3-2 굶주림의 겨울 + 상관과 인과 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">3-2</span><h2>바커와 태아 프로그래밍</h2></div><p class="sub">가설을 단단하게 만든 데이터</p></div>
+  <div class="row" style="gap:56px;align-items:stretch">
+    <div class="card" style="flex:1;justify-content:center">
+      <h3>네덜란드 굶주림의 겨울</h3>
+      <p style="font-size:32px;line-height:1.55">1944~45 기근 시기에 태아였던 사람들<br>→ 출생 코호트로 수십 년 추적<br>→ 성인기 건강 차이 연구</p>
+    </div>
+    <div class="card" style="flex:1;justify-content:center">
+      <h3>상관 ≠ 인과</h3>
+      <p style="font-size:32px;line-height:1.55">출생 체중과 질병의 동행만으로는 원인 단정 불가<br>→ 여러 코호트·자연 실험의 반복 확인</p>
+    </div>
+  </div>
+  <p style="font-size:32px;font-weight:700;color:var(--red);text-align:center">교훈: 평범한 출생 기록부가 수십 년 뒤 혁신적 가설의 재료</p>
+  <aside class="note">[보충] 강의안 3주차. 토론 연결: “상관관계가 인과를 말하지 않는다면 바커의 발견은 어떻게 설득력을 얻었을까?”</aside>
+</section>
+
+<!-- 11 3-3 비유: 빙산 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">3-3</span><h2>팬데믹의 히든 이펙트</h2></div><p class="sub">[비유] 빙산</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/iceberg.jpg" alt="물 아래 부분이 비치는 빙산" style="width:760px;height:570px"><p class="credit">사진: NOAA's National Ocean Service / CC BY 2.0</p></div>
+    <div class="col">
+      <h3>빙산 = 팬데믹의 효과</h3>
+      <ul class="b">
+        <li>물 위 = 확진·사망 같은 직접 효과</li>
+        <li>물 아래 = 늦게 드러나는 효과</li>
+        <li>보이지 않는 부분이 더 큰 구조</li>
+        <li>물 아래를 보는 도구 = 장기 추적 데이터</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 12 3-3 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">3-3</span><h2>팬데믹의 히든 이펙트</h2></div><p class="sub">히든 이펙트(hidden effect): 시간이 지나 드러나는 효과</p></div>
+  <video class="anim" src="assets/anim/HiddenIceberg.mp4" poster="assets/anim/HiddenIceberg_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">manim: 연도가 2020 → 2040으로 흐르며 물 아래 항목이 하나씩 등장. 항목과 시점은 [보충] 예시(강의안 3주차), 실제 연구 결과의 시점 아님.</aside>
+</section>
+
+<!-- 13 3-3 영역 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">3-3</span><h2>팬데믹의 히든 이펙트</h2></div><p class="sub">“코로나 세대”를 지금부터 추적해야 하는 이유</p></div>
+  <div class="tri">
+    <div class="card"><p class="k">태아·영유아</p><h3>출발점</h3>
+      <ul class="b"><li>출생률 변화</li><li>태아기 스트레스</li><li>사회성 발달</li></ul></div>
+    <div class="card"><p class="k">학생</p><h3>배움</h3>
+      <ul class="b"><li>학습 결손</li><li>원격 수업 경험</li><li>또래 관계</li></ul></div>
+    <div class="card"><p class="k">청년·성인</p><h3>삶</h3>
+      <ul class="b"><li>정신건강</li><li>일자리 출발</li><li>생활 습관 변화</li></ul></div>
+  </div>
+  <aside class="note">[보충] 강의안 3주차의 히든 이펙트 예시를 대상별로 배치. 책이 말하는 “히든 이펙트”의 구체 사례는 본문 대조 필요.</aside>
+</section>
+
+<!-- 14 활동 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">3-4</span><h2>활동 · 정리 및 확인 문제</h2></div><p class="sub">활동 (60분): 코로나 세대의 히든 이펙트 가설 세우기</p></div>
+  <div class="tri">
+    <div class="card"><p class="k">STEP 1 · 10분</p><h3>집단 고르기</h3>
+      <ul class="b"><li>2020~22년 출생아</li><li>초등 입학생 · 대학 신입생</li><li>신입 직장인</li></ul></div>
+    <div class="card"><p class="k">STEP 2 · 30분</p><h3>가설·설계</h3>
+      <ul class="b"><li>“20년 뒤 어떤 차이?” 가설 2개</li><li>변수, 추적 주기, 비교집단</li></ul></div>
+    <div class="card"><p class="k">STEP 3 · 20분</p><h3>윤리 체크·발표</h3>
+      <ul class="b"><li>이 데이터를 모을 때의 프라이버시 문제</li><li>팀별 3분 발표</li></ul></div>
+  </div>
+  <aside class="note">놀이터의 코호트 시뮬레이터로 “차이가 몇 년 뒤에야 보이는지” 먼저 체험 후 설계하면 효과적.</aside>
+</section>
+
+<!-- 15 토론 -->
+<section class="slide" style="justify-content:center;gap:48px">
+  <div class="head"><div class="t"><span class="badge">3-4</span><h2>활동 · 정리 및 확인 문제</h2></div><p class="sub">토론 질문</p></div>
+  <div class="card"><p style="font-size:40px;font-weight:700;line-height:1.5">① 상관관계가 인과를 말하지 않는다면, 바커의 발견은 어떻게 설득력을 얻었을까?</p></div>
+  <div class="card"><p style="font-size:40px;font-weight:700;line-height:1.5">② 지금 기록하지 않아서 30년 뒤 후회할 데이터</p></div>
+</section>
+
+<!-- 16 정리 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">3-4</span><h2>활동 · 정리 및 확인 문제</h2></div><p class="sub">오늘의 핵심 4줄</p></div>
+  <div class="col" style="gap:24px">
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">코호트</b> = 같은 출발 집단을 오래 추적, 횡단 조사 = 한 시점 스냅숏</p></div>
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">바커</b> = 출생 기록 × 성인 건강 → 태아 프로그래밍(DOHaD) 가설</p></div>
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">히든 이펙트</b> = 늦게, 물 아래에서 드러나는 효과</p></div>
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">메시지</b> = 시간이 데이터를 완성, 지금의 기록 = 미래의 근거</p></div>
+  </div>
+</section>
+
+<!-- 17 확인 문제 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">3-4</span><h2>활동 · 정리 및 확인 문제</h2></div><p class="sub">확인 문제</p></div>
+  <div class="row" style="gap:64px;align-items:stretch">
+    <div class="col" style="gap:18px">
+      <h3 style="font-size:36px">문제 1</h3>
+      <p style="font-size:32px;line-height:1.45">코호트 연구와 횡단 조사의 차이 한 문장</p>
+      <h3 style="font-size:36px;padding-top:20px">문제 2</h3>
+      <p style="font-size:32px;line-height:1.45">바커가 태아 프로그래밍 가설을 세울 때 대조한 두 종류의 데이터</p>
+      <h3 style="font-size:36px;padding-top:20px">문제 3</h3>
+      <p style="font-size:32px;line-height:1.45">팬데믹의 “히든 이펙트” 예 두 가지와 이를 확인하는 데 필요한 연구 방식</p>
+      <button class="reveal">정답 보기</button>
+      <div class="answer">문제 1: 횡단 조사 = 한 시점에 한 번 측정, 코호트 = 같은 집단을 오랜 기간 반복 추적<br>문제 2: 지역별 출생 기록(출생 체중) + 성인 사망·질병 통계<br>문제 3: 학습 결손, 출생률 변화, 정신건강, 사회성 발달, 태아기 스트레스 중 둘 → 코호트(장기 추적) 연구</div>
+    </div>
+    <img class="fig" src="assets/goal.png" alt="스냅숏과 추적" style="width:560px;height:420px;align-self:center">
+  </div>
+  <aside class="note">정답 근거: 강의안 3주차 [보충].</aside>
+</section>
+
+<!-- 18 마무리 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">3-4</span><h2>활동 · 정리 및 확인 문제</h2></div><p class="sub">마무리</p></div>
+  <div class="row" style="gap:80px">
+    <div class="col" style="gap:20px">
+      <h3 style="font-size:36px">이번 주 과제</h3>
+      <ul class="b" style="font-size:30px">
+        <li>연재 ⑩ 「데이터 혁명의 보편언어 ‘0’·‘1’을 찾아서」 읽기</li>
+        <li>사전 질문 1개 LMS에 올리기</li>
+        <li>데이톨로지 저널: 내가 오래 기록해 온 데이터 1건</li>
+      </ul>
+      <h3 style="font-size:36px;padding-top:24px">다음 시간</h3>
+      <p style="font-size:30px">3차 데이터 혁명과 0·1 — 아라비아 숫자, 인쇄술, 디지털 코드</p>
+      <p style="font-size:26px;padding-top:24px"><a href="quiz.html" style="color:var(--red);font-weight:700">▶ 웹 퀴즈</a>&nbsp;&nbsp;&nbsp;<a href="playground.html" style="color:var(--red);font-weight:700">▶ 코호트 시뮬레이터</a></p>
+    </div>
+    <img class="fig" src="assets/cover.png" alt="퍼져 나가는 궤적들" style="width:420px;height:557px">
+  </div>
+</section>
+
+<!-- 19 이미지 출처 -->
+<section class="slide">
+  <div class="head"><h2>이미지 출처</h2><p class="sub">사진 (Openverse 검색, CC 라이선스)</p></div>
+  <ul class="b" style="font-size:24px;line-height:1.7">
+    <li>Ghana - tree seedlings — The Alliance of Religions and Conservation, CC BY 2.0, <a href="https://www.flickr.com/photos/53990852@N05/5689979575">flickr</a></li>
+    <li>Vivid red tree rings — Out of the Fire Blog, CC BY 2.0, <a href="https://www.flickr.com/photos/46409044@N03/4516082082">flickr</a></li>
+    <li>Iceberg — NOAA's National Ocean Service, CC BY 2.0, <a href="https://www.flickr.com/photos/40322276@N04/8290528771">flickr</a></li>
+    <li>애니메이션·그림 — manim, matplotlib으로 직접 제작 (궤적·막대는 개념도, 실제 수치 아님)</li>
+    <li>내용 — 김성태, 『데이톨로지』 1부 1장 소제목 기반, 세부는 일반 학술 지식으로 보충</li>
+  </ul>
+</section>
+
+</div>
+<div class="notes"></div>
+<div class="bar">
+  <a href="../index.html">← 목록</a>
+  <button data-act="prev">◀</button><span class="count"></span><button data-act="next">▶</button>
+  <span class="grow">← → 이동 · F 전체 화면 · N 노트</span>
+  <a href="quiz.html">퀴즈</a><a href="playground.html">놀이터</a>
+  <button data-act="notes">노트</button><button data-act="full">전체 화면</button>
+</div>
+<script src="../assets/deck.js"></script>
+</body>
+</html>

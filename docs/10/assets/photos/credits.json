@@ -1,0 +1,29 @@
+{
+  "steers": {
+    "title": "Staring steers.",
+    "creator": "Bernard Spragg",
+    "license": "pdm",
+    "license_version": "1.0",
+    "license_url": "https://creativecommons.org/publicdomain/mark/1.0/",
+    "source": "https://www.flickr.com/photos/88123769@N02/51857282513",
+    "provider": "flickr"
+  },
+  "anthill": {
+    "title": "Ant colony",
+    "creator": "Klearchos Kapoutsis",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/8383084@N06/2821230516",
+    "provider": "flickr"
+  },
+  "judge": {
+    "title": "Gymnastics Judging Course",
+    "creator": "Rick McCharles",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/71035721@N00/8378099583",
+    "provider": "flickr"
+  }
+}

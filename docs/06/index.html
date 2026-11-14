@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>6강 평균의 종말</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="../assets/deck.css">
+<style>
+  .cover { flex-direction: row !important; align-items: center; justify-content: space-between; padding: 128px !important; }
+  .cover::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 24px; background: var(--red); }
+  .toc-item { display: flex; align-items: center; gap: 40px; padding: 30px 0; border-bottom: 2px solid var(--red-l); }
+  .toc-item:last-child { border-bottom: none; }
+  .toc-item b { font-size: 56px; font-weight: 900; color: var(--red); width: 100px; }
+  .toc-item span { font-size: 44px; font-weight: 500; }
+  .tri { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; flex: 1; align-items: stretch; }
+  .tri .card h3 { font-size: 40px; }
+  .tri .card .k { font-size: 26px; font-weight: 700; color: var(--gray); letter-spacing: 2px; }
+  .tri .card { justify-content: center; gap: 20px; }
+  .tri .card ul.b { font-size: 32px; line-height: 1.6; }
+  .quote { font-size: 44px; font-weight: 700; line-height: 1.5; }
+  .quote small { display: block; font-size: 26px; font-weight: 500; color: var(--gray); padding-top: 12px; }
+</style>
+</head>
+<body>
+<div class="progress"></div>
+<div class="stage">
+
+<!-- 1 표지 -->
+<section class="slide cover">
+  <div style="display:flex;flex-direction:column;gap:32px;width:1000px">
+    <p style="font-size:120px;font-weight:900;color:var(--red);line-height:1">06</p>
+    <p style="font-size:36px;font-weight:500;color:var(--gray)">데이톨로지 — 데이터로 읽는 인간과 사회</p>
+    <h1 style="font-size:96px;font-weight:900;line-height:1.15">평균의<br>종말</h1>
+    <hr style="width:160px;border:none;border-top:6px solid var(--red)">
+    <p style="font-size:32px;color:var(--gray)">'평균 인간'의 사상적 연원 · 강사 : ○○○</p>
+  </div>
+  <img class="fig" src="assets/cover.png" alt="키가 제각각인 사람들과 평균선 하나" style="width:600px;height:796px">
+  <aside class="note">6주차. 사전 읽기: 연재 ⑧ 「'평균의 종말'과 역사적 '연결고리'」(2021.06.28), 토드 로즈 『평균의 종말』 1장(선택).</aside>
+</section>
+
+<!-- 2 목차 -->
+<section class="slide" style="flex-direction:row;align-items:center;gap:96px;padding:128px">
+  <div style="display:flex;flex-direction:column;gap:24px;width:520px">
+    <p style="font-size:32px;font-weight:700;color:var(--red);letter-spacing:4px">CONTENTS</p>
+    <h2 style="font-size:72px;font-weight:900;line-height:1.15">평균의<br>종말</h2>
+    <hr style="width:120px;border:none;border-top:6px solid var(--red)">
+  </div>
+  <div style="flex:1">
+    <div class="toc-item"><b>01</b><span>평균 조종사는 없다</span></div>
+    <div class="toc-item"><b>02</b><span>평균 인간의 탄생: 케틀레</span></div>
+    <div class="toc-item"><b>03</b><span>연결고리: 테일러주의와 표준화 교육</span></div>
+    <div class="toc-item"><b>04</b><span>탈평균: 기준을 사람에 맞추기</span></div>
+    <div class="toc-item"><b>05</b><span>활동 · 정리 및 확인 문제</span></div>
+  </div>
+</section>
+
+<!-- 3 학습 목표 -->
+<section class="slide" style="flex-direction:row;align-items:center;gap:80px;padding:128px">
+  <img class="fig" src="assets/goal.png" alt="정상분포와 양 끝의 다른 사람들" style="width:760px;height:568px">
+  <div class="col" style="gap:40px">
+    <h2 style="font-size:72px;font-weight:900">학습 목표</h2>
+    <div class="card"><p style="font-size:28px;font-weight:700;color:var(--red)">목표 1</p><p style="font-size:36px;font-weight:500">케틀레 → 테일러 → 표준화 교육으로 이어지는 평균 중심주의의 '연결고리' 설명</p></div>
+    <div class="card"><p style="font-size:28px;font-weight:700;color:var(--red)">목표 2</p><p style="font-size:36px;font-weight:500">평균이 개인을 가리는 사례 찾기와 탈평균적 설계 제안</p></div>
+  </div>
+</section>
+
+<!-- 4 오늘의 질문 -->
+<section class="slide" style="justify-content:center;align-items:center;gap:56px">
+  <p style="font-size:36px;font-weight:700;color:var(--red);letter-spacing:4px">오늘의 질문</p>
+  <p style="font-size:60px;font-weight:900;line-height:1.4;text-align:center">1950년경 미 공군, 조종사 4,000여 명을<br>신체 10개 항목으로 측정<br><span style="color:var(--red)">10개 모두 '평균'인 조종사는 몇 명?</span></p>
+  <aside class="note">손을 들어 예상치를 받음 (100명? 10명?). 정답 0명은 다음 애니메이션에서 공개. 출처: 연재 ⑧, 토드 로즈 『평균의 종말』. [검증 노트] 측정은 길버트 대니얼스의 1950년 연구로 알려짐(로즈 책 기준).</aside>
+</section>
+
+<!-- 5 6-1 비유: 조종석 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">6-1</span><h2>평균 조종사는 없다</h2></div><p class="sub">[비유] 비행기 조종석</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/cockpit.jpg" alt="비행기 조종석" style="width:760px;height:570px"><p class="credit">사진: rxb / CC BY-SA 2.0</p></div>
+    <div class="col">
+      <h3>고정 조종석 = 평균에 맞춘 설계</h3>
+      <ul class="b">
+        <li>평균 체격에 맞춰 고정된 좌석·페달·조종간</li>
+        <li>평균과 다른 조종사 = 손이 닿지 않는 장치</li>
+        <li>사고 원인을 '조종사 실수'로만 보던 시선</li>
+        <li>문제는 사람이 아니라 기준</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 6 6-1 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">6-1</span><h2>평균 조종사는 없다</h2></div><p class="sub">항목을 하나씩 더할수록 사라지는 '평균인'</p></div>
+  <video class="anim" src="assets/anim/PilotFilter.mp4" poster="assets/anim/PilotFilter_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">결과(0명)는 원전(연재 ⑧). 중간 단계 수치(1,200 → 360 → …)는 강의자 시뮬레이션: 항목끼리 독립, 항목마다 '평균 범위' 통과 30% 가정. 실제 연구의 단계별 수치 아님. 항목 이름도 예시.</aside>
+</section>
+
+<!-- 7 6-2 비유: 종 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">6-2</span><h2>평균 인간의 탄생: 케틀레</h2></div><p class="sub">[비유] 종(bell)</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/bell.jpg" alt="청동 종" style="width:480px;height:640px"><p class="credit">사진: Carlo Raso / Public Domain Mark</p></div>
+    <div class="col">
+      <h3>종의 실루엣 = 정상분포곡선</h3>
+      <ul class="b">
+        <li>키·몸무게·소득 → 가운데가 높은 종 모양</li>
+        <li>종의 꼭대기 = 평균</li>
+        <li>많이 모을수록 또렷해지는 모양</li>
+        <li>표본 추론의 기본 전제</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 8 6-2 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">6-2</span><h2>평균 인간의 탄생: 케틀레</h2></div><p class="sub">많이 모으면 보이는 규칙성 → '평균 인간'</p></div>
+  <video class="anim" src="assets/anim/CoinAverage.mp4" poster="assets/anim/CoinAverage_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">동전 예시는 원전(연재 ⑧: 100번은 50:50이 아니어도 무한히 던지면 이론 확률에 가까워짐). 오른쪽 키 분포 막대는 모양을 보여 주는 예시 값.</aside>
+</section>
+
+<!-- 9 6-2 케틀레 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">6-2</span><h2>평균 인간의 탄생: 케틀레</h2></div><p class="sub">아돌프 케틀레 (1796~1874)</p></div>
+  <div class="row" style="gap:56px;align-items:stretch">
+    <div class="card" style="flex:1;justify-content:center">
+      <h3>평균의 쓸모</h3>
+      <ul class="b"><li>집단을 대표하는 값</li><li>확률적 기대치</li><li>시험 점수, 연봉, 야구 타율</li></ul>
+    </div>
+    <div class="card" style="flex:1;justify-content:center">
+      <h3>케틀레의 시도</h3>
+      <ul class="b"><li>인구·범죄 통계로 사회의 규칙성 실증</li><li>1835년 '평균 인간(average man)' 개념</li><li>평균 = 이상형이라는 생각의 출발</li></ul>
+    </div>
+  </div>
+  <aside class="note">출처: 연재 ⑧. [검증 노트] 칼럼 일부에 케틀레를 "18세기 중반 인물"로 적었으나 실제 1796~1874년, 19세기 활동. 1835년 저작은 『인간에 대하여』로 알려짐(칼럼은 「인간의 능력 개발에 대하여」로 소개).</aside>
+</section>
+
+<!-- 10 6-3 비유: 조립 라인 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">6-3</span><h2>연결고리: 테일러주의와 표준화 교육</h2></div><p class="sub">[비유] 자동차 조립 라인</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/assembly.jpg" alt="자동차 조립 라인" style="width:760px;height:570px"><p class="credit">사진: aldenjewell / CC BY 2.0</p></div>
+    <div class="col">
+      <h3>조립 라인 = 테일러주의</h3>
+      <ul class="b">
+        <li>정해진 위치, 정해진 동작, 정해진 시간</li>
+        <li>표준 작업량·표준 시간·평균 임금</li>
+        <li>효율 ↑, 사람은 기준에 맞춰야 하는 부품</li>
+        <li>같은 논리가 학교로: 표준화 교육</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 11 6-3 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">6-3</span><h2>연결고리: 테일러주의와 표준화 교육</h2></div><p class="sub">케틀레 → 테일러 → 표준화 교육 → 오늘</p></div>
+  <video class="anim" src="assets/anim/AverageChain.mp4" poster="assets/anim/AverageChain_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">저자의 논지(연재 ⑧): 케틀레의 사회통계, 테일러의 표준화, 4차 산업혁명기의 종말론 논의 모두 근대화 과정에서 작동해 온 '평균 중심적' 패러다임.</aside>
+</section>
+
+<!-- 12 6-3 세 고리 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">6-3</span><h2>연결고리: 테일러주의와 표준화 교육</h2></div><p class="sub">평균에서 벗어나면 '비정상'</p></div>
+  <div class="tri">
+    <div class="card"><p class="k">공장</p><h3>테일러</h3>
+      <ul class="b"><li>1874년 필라델피아 기계공장</li><li>과학적 관리법</li><li>사람을 기준에 맞춤</li></ul></div>
+    <div class="card"><p class="k">학교</p><h3>맹켄의 비판</h3>
+      <ul class="b"><li>표준화된 시민 양성</li><li>반대 의견·독창성 억압</li><li>학력고사·수능 = '평균 인간' 양성 체제?</li></ul></div>
+    <div class="card"><p class="k">사회</p><h3>세스 고딘</h3>
+      <ul class="b"><li>『이상한 놈들이 온다』(2011)</li><li>평균 밖 집단 = 비정상 분류</li><li>히피·마니아 …</li></ul></div>
+  </div>
+  <aside class="note">출처: 연재 ⑧. 수능 성찰은 저자 자신의 문제 제기 — 정답을 정하지 말고 토론으로.</aside>
+</section>
+
+<!-- 13 6-4 비유: 의자 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">6-4</span><h2>탈평균: 기준을 사람에 맞추기</h2></div><p class="sub">[비유] 높이 조절 의자</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/chair.jpg" alt="높이 조절 사무용 의자" style="width:760px;height:570px"><p class="credit">사진: SafeTinspector / CC BY-SA 2.0</p></div>
+    <div class="col">
+      <h3>조절 의자 = 탈평균 설계</h3>
+      <ul class="b">
+        <li>레버 하나로 높이·등받이 조절</li>
+        <li>평균 한 명이 아니라 모든 사람에게 맞춤</li>
+        <li>미 공군의 해법 = 조절 가능한 조종석</li>
+        <li>오늘날 자동차 시트 조절의 계기</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 14 6-4 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">6-4</span><h2>탈평균: 기준을 사람에 맞추기</h2></div><p class="sub">고정 좌석 vs 조절 가능한 좌석</p></div>
+  <video class="anim" src="assets/anim/AdjustableSeat.mp4" poster="assets/anim/AdjustableSeat_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">조절 조종석 → 자동차 운전석 조절 시스템의 계기: 연재 ⑧. 사람 그림은 개념 도식.</aside>
+</section>
+
+<!-- 15 6-4 다름 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">6-4</span><h2>탈평균: 기준을 사람에 맞추기</h2></div><p class="sub">저자의 결론</p></div>
+  <div class="row" style="gap:64px">
+    <div class="col">
+      <div class="card"><p class="quote">차이 = '틀림'이 아니라 '다름'<small>연재 ⑧ 결론 요약</small></p></div>
+      <ul class="b" style="font-size:32px">
+        <li>평균 = 효율적인 해석 도구, 그러나 개인의 특별함을 가림</li>
+        <li>다양성이 공존하는 시대의 인식 전환</li>
+        <li>미래를 이끌 사람 = 남과 다른 생각</li>
+      </ul>
+    </div>
+    <img class="fig" src="assets/goal.png" alt="정상분포와 양 끝의 다른 사람들" style="width:640px;height:478px">
+  </div>
+</section>
+
+<!-- 16 활동 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">6-5</span><h2>활동</h2></div><p class="sub">활동 (60분): 우리 반 '평균인'은 존재하는가</p></div>
+  <div class="tri">
+    <div class="card"><p class="k">STEP 1 · 10분</p><h3>익명 설문</h3>
+      <ul class="b"><li>키, 통학 시간, 수면 시간, 스마트폰 사용 시간, 형제 수 등 8개</li></ul></div>
+    <div class="card"><p class="k">STEP 2 · 25분</p><h3>분석</h3>
+      <ul class="b"><li>항목별 평균 ± 표준편차의 30% = '평균'</li><li>8개 모두 평균인 학생 수 세기</li></ul></div>
+    <div class="card"><p class="k">STEP 3 · 25분</p><h3>설계</h3>
+      <ul class="b"><li>강의실·수업 방식·앱 화면 중 하나</li><li>'조절 가능한 조종석' 원리로 재설계</li></ul></div>
+  </div>
+  <aside class="note">거의 항상 0명. 놀이터의 '평균인 필터'로 미리 시연 가능. 설문은 익명·선택 응답.</aside>
+</section>
+
+<!-- 17 토론 -->
+<section class="slide" style="justify-content:center;gap:48px">
+  <div class="head"><div class="t"><span class="badge">6-5</span><h2>토론 질문</h2></div><p class="sub">정답 없는 질문 2개</p></div>
+  <div class="card"><p style="font-size:40px;font-weight:700;line-height:1.5">개인 맞춤 알고리즘 = 탈평균의 실현? 아니면 새로운 평균화(군집화)?</p></div>
+  <div class="card"><p style="font-size:40px;font-weight:700;line-height:1.5">그래도 평균이 꼭 필요한 영역은? (공중보건, 정책 설계 …)</p></div>
+  <aside class="note">첫 질문은 11주 필터버블 예고.</aside>
+</section>
+
+<!-- 18 정리 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">6-6</span><h2>정리 및 확인 문제</h2></div><p class="sub">오늘의 핵심 4줄</p></div>
+  <div class="col" style="gap:24px">
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">평균 조종사</b> = 4,000여 명 중 0명</p></div>
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">케틀레</b> = 평균 인간(1835), 평균을 이상형으로</p></div>
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">연결고리</b> = 케틀레 → 테일러주의 → 표준화 교육</p></div>
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">탈평균</b> = 사람을 기준에 맞추기 → 기준을 사람에 맞추기</p></div>
+  </div>
+</section>
+
+<!-- 19 확인 문제 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">6-6</span><h2>정리 및 확인 문제</h2></div><p class="sub">확인 문제</p></div>
+  <div class="row" style="gap:64px;align-items:stretch">
+    <div class="col" style="gap:18px">
+      <h3 style="font-size:36px">문제 1</h3>
+      <p style="font-size:32px;line-height:1.45">미 공군 조종사 측정에서 10개 항목 모두 평균에 맞는 조종사 수와, 공군이 택한 해결책</p>
+      <h3 style="font-size:36px;padding-top:20px">문제 2</h3>
+      <p style="font-size:32px;line-height:1.45">'평균 인간' 개념을 제시한 인물과, 그 생각을 공장에 적용한 관리 방식</p>
+      <h3 style="font-size:36px;padding-top:20px">문제 3</h3>
+      <p style="font-size:32px;line-height:1.45">반 평균 점수가 같은 두 반 — 평균만으로 알 수 없는 것 한 가지</p>
+      <button class="reveal">정답 보기</button>
+      <div class="answer">문제 1: 0명 → 조절 가능한 조종석<br>문제 2: 아돌프 케틀레 → 테일러주의(과학적 관리법)<br>문제 3: 예) 개인별 차이·분포(고르게 퍼졌는지, 양 끝에 몰렸는지), 특정 학생의 위치</div>
+    </div>
+    <img class="fig" src="assets/cover.png" alt="키가 제각각인 사람들과 평균선" style="width:420px;height:557px;align-self:center">
+  </div>
+  <aside class="note">문제 3은 9주 '별점의 함정'(같은 평균, 다른 분포) 예고.</aside>
+</section>
+
+<!-- 20 마무리 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">6-6</span><h2>정리 및 확인 문제</h2></div><p class="sub">마무리</p></div>
+  <div class="row" style="gap:80px">
+    <div class="col" style="gap:20px">
+      <h3 style="font-size:36px">이번 주 과제</h3>
+      <ul class="b" style="font-size:30px">
+        <li>연재 ⑥ 「위대한 한 컷」 읽기 + 사전 질문 1개</li>
+        <li>중간 과제(한 컷 인포그래픽) 안내 예정 — 쓰고 싶은 공공데이터 생각해 오기</li>
+        <li>데이톨로지 저널: 내 주변의 '평균' 기준 1건</li>
+      </ul>
+      <h3 style="font-size:36px;padding-top:24px">다음 시간</h3>
+      <p style="font-size:30px">데이터의 미학 — 스토리텔링에서 데이터텔링으로</p>
+      <p style="font-size:26px;padding-top:24px"><a href="quiz.html" style="color:var(--red);font-weight:700">▶ 웹 퀴즈</a>&nbsp;&nbsp;&nbsp;<a href="playground.html" style="color:var(--red);font-weight:700">▶ 평균인 놀이터</a></p>
+    </div>
+    <img class="fig" src="assets/goal.png" alt="정상분포 그림" style="width:640px;height:478px">
+  </div>
+</section>
+
+<!-- 21 이미지 출처 -->
+<section class="slide">
+  <div class="head"><h2>이미지 출처</h2><p class="sub">사진 (Openverse 검색, CC 라이선스)</p></div>
+  <ul class="b" style="font-size:24px;line-height:1.7">
+    <li>Model airplane cockpit — rxb, CC BY-SA 2.0, <a href="https://www.flickr.com/photos/62303607@N00/4010715354">flickr</a></li>
+    <li>Volkswagen Beetle Assembly Line — aldenjewell, CC BY 2.0, <a href="https://www.flickr.com/photos/31411679@N08/32637661426">flickr</a></li>
+    <li>Bronze bell (after 1837) with portraits of the King Ferdinand II of Bourbon and his wife, the Queen Maria Teresa - Santa Maria delle Grazie a Toledo Church in Naples — Carlo Raso, Public Domain Mark, <a href="https://www.flickr.com/photos/70125105@N06/34656892904">flickr</a></li>
+    <li>my new office chair at work — SafeTinspector, CC BY-SA 2.0, <a href="https://www.flickr.com/photos/81981117@N00/6269216038">flickr</a></li>
+    <li>애니메이션·그림 — manim, matplotlib으로 직접 제작</li>
+    <li>인용 — 김성태, 연재 ⑧ 「'평균의 종말'과 역사적 '연결고리'」(지디넷코리아, 2021.06.28); 토드 로즈, 『평균의 종말』</li>
+  </ul>
+</section>
+
+</div>
+<div class="notes"></div>
+<div class="bar">
+  <a href="../index.html">← 목록</a>
+  <button data-act="prev">◀</button><span class="count"></span><button data-act="next">▶</button>
+  <span class="grow">← → 이동 · F 전체 화면 · N 노트</span>
+  <a href="quiz.html">퀴즈</a><a href="playground.html">놀이터</a>
+  <button data-act="notes">노트</button><button data-act="full">전체 화면</button>
+</div>
+<script src="../assets/deck.js"></script>
+</body>
+</html>

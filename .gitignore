@@ -1,0 +1,5 @@
+# GitHub Pages 배포용 저장소: docs/ (웹 결과물)만 올림
+/*
+!/docs/
+!/.gitignore
+.DS_Store

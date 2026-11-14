@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5강 벤포드 검사기 놀이터</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="../assets/page.css">
+<style>
+  textarea { width: 100%; min-height: 120px; font: 15px Menlo, monospace; padding: 10px; border: 1px solid #ccc; border-radius: 10px; }
+  .legend { display: flex; gap: 18px; font-size: 14px; color: #666; margin-top: 8px; flex-wrap: wrap; }
+  .legend i { display: inline-block; width: 14px; height: 14px; vertical-align: -2px; margin-right: 6px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="badge">5강</span><h1>벤포드 검사기 놀이터</h1>
+    <nav><a href="index.html#1">슬라이드</a><a href="quiz.html">퀴즈</a><a href="../index.html">목록</a></nav>
+  </header>
+  <p class="lede">슬라이드의 manim 장면(BenfordBars, ParetoLongTail)을 직접 조작하는 공간 · 원본 장면 코드: scripts/05_animations.py</p>
+
+  <!-- 1 벤포드 검사기 -->
+  <section class="card" id="s1">
+    <h2><span class="n">01</span>벤포드 검사기</h2>
+    <p class="muted">숫자를 붙여 넣기(엑셀 열 복사도 가능, 쉼표·줄바꿈·공백 구분) → 첫 자리 분포를 이론값과 비교 · 관련 장면: BenfordBars</p>
+    <textarea id="t-in" aria-label="검사할 숫자 목록" placeholder="예: 9,720,846  3,435,113  2,385,412 …"></textarea>
+    <div class="controls">
+      <button class="solid" id="t-run">검사</button>
+      <button id="t-grow">예: 불어나는 수 (시뮬레이션)</button>
+      <button id="t-fake">예: 고르게 지어낸 수 (시뮬레이션)</button>
+      <button id="t-height">예: 키(cm) (시뮬레이션)</button>
+    </div>
+    <canvas id="t-cv" aria-label="첫 자리 1~9의 관측 비율과 벤포드 이론 비율"></canvas>
+    <div class="legend"><span><i style="background:#E22B2D"></i>내 데이터</span><span><i style="border:2px dashed #3F3F3F"></i>벤포드 이론</span></div>
+    <p class="stat" id="t-stat" aria-live="polite"></p>
+  </section>
+
+  <!-- 2 파레토 -->
+  <section class="card" id="s2">
+    <h2><span class="n">02</span>머리와 꼬리: 쏠림 정도 바꾸기</h2>
+    <p class="muted">쏠림 지수(순위 k의 값 ∝ 1/kˢ)를 바꾸면 상위 20%의 몫이 변함 · 가상 데이터 · 관련 장면: ParetoLongTail</p>
+    <div class="controls">
+      <label>쏠림 지수 s <input type="range" id="p-s" min="0" max="25" value="14"> <b id="p-sv"></b></label>
+      <label>품목 수 <input type="range" id="p-n" min="10" max="200" value="40"> <b id="p-nv"></b></label>
+    </div>
+    <canvas id="p-cv" aria-label="순위별 값 막대, 상위 20% 빨강"></canvas>
+    <p class="stat" id="p-stat" aria-live="polite"></p>
+  </section>
+</div>
+
+<script>
+const RED = '#E22B2D', RED_L = '#F6C4C5', GRAY = '#8C8C8C', INK = '#3F3F3F', GRAY_L = '#D9D9D9';
+const BEN = [1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => Math.log10(1 + 1 / d));
+
+function setup(cv, h) {
+  const dpr = window.devicePixelRatio || 1, w = cv.clientWidth;
+  cv.width = w * dpr; cv.height = h * dpr; cv.style.height = h + 'px';
+  const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.font = '14px "Noto Sans KR", sans-serif'; return [g, w, h];
+}
+
+// 붙여 넣은 글에서 숫자를 뽑아 첫 유효 숫자(1~9)를 셈. 0은 첫 자리가 없어 제외.
+function firstDigits(text) {
+  const out = [];
+  for (const m of text.matchAll(/\d[\d,]*(?:\.\d+)?|\.\d+/g)) {
+    const x = Math.abs(parseFloat(m[0].replace(/,/g, '')));
+    if (x > 0 && isFinite(x)) out.push(+x.toExponential()[0]);
+  }
+  return out;
+}
+console.assert(JSON.stringify(firstDigits('1,234 0.0056 -78 0 9e')) === '[1,5,7,9]', 'firstDigits self-check');
+
+const tIn = document.getElementById('t-in'), tCv = document.getElementById('t-cv');
+function drawT() {
+  const ds = firstDigits(tIn.value), n = ds.length, cnt = Array(9).fill(0);
+  ds.forEach(d => cnt[d - 1]++);
+  const obs = cnt.map(c => n ? c / n : 0);
+  const [g, w, h] = setup(tCv, 280), x0 = 40, x1 = w - 16, yb = h - 34, yt = 20, ymax = Math.max(0.35, ...obs) * 1.08;
+  const bw = (x1 - x0) / 9, Y = v => yb - (yb - yt) * v / ymax;
+  g.strokeStyle = INK; g.lineWidth = 2; g.beginPath(); g.moveTo(x0, yb); g.lineTo(x1, yb); g.stroke();
+  g.textAlign = 'center';
+  for (let i = 0; i < 9; i++) {
+    const cx = x0 + bw * (i + .5);
+    if (n) { g.fillStyle = RED; g.fillRect(cx - bw * .3, Y(obs[i]), bw * .6, yb - Y(obs[i])); }
+    g.strokeStyle = INK; g.setLineDash([6, 4]); g.beginPath(); g.moveTo(cx - bw * .38, Y(BEN[i])); g.lineTo(cx + bw * .38, Y(BEN[i])); g.stroke(); g.setLineDash([]);
+    g.fillStyle = INK; g.fillText(i + 1, cx, yb + 20);
+    if (n) { g.fillStyle = GRAY; g.fillText(`${(obs[i] * 100).toFixed(0)}%`, cx, Math.min(Y(obs[i]), Y(BEN[i])) - 6); }
+  }
+  const mad = obs.reduce((a, o, i) => a + Math.abs(o - BEN[i]), 0) / 9;   // 평균 절대 편차
+  const st = document.getElementById('t-stat');
+  if (!n) { st.textContent = '숫자를 붙여 넣고 “검사”'; return; }
+  const verdict = mad < 0.015 ? '<span class="ok">벤포드와 가까움</span>' : mad < 0.03 ? '<b>조금 벗어남</b>' : '<span class="bad">크게 벗어남</span>';
+  st.innerHTML = `숫자 <b>${n}개</b> · 첫 자리 1의 비율 <b>${(obs[0] * 100).toFixed(1)}%</b> (이론 30.1%) · 평균 절대 편차 <b>${mad.toFixed(3)}</b> → ${verdict}`
+    + (n < 100 ? ' · <span class="muted">100개 미만이면 우연한 흔들림이 큼</span>' : '')
+    + '<br><span class="muted">벗어남 ≠ 조작의 증거. 좁은 범위·부여된 번호 데이터는 원래 안 맞음.</span>';
+}
+document.getElementById('t-run').onclick = drawT;
+const sim = f => { tIn.value = Array.from({ length: 500 }, f).join('\n'); drawT(); };
+document.getElementById('t-grow').onclick = () => sim(() => Math.round(100 * Math.exp(Math.random() * 9)));       // 여러 자릿수에 걸친 수
+document.getElementById('t-fake').onclick = () => sim(() => Math.floor(Math.random() * 9 + 1) * 1000 + Math.floor(Math.random() * 1000));
+document.getElementById('t-height').onclick = () => sim(() => (172 + 7 * (Math.random() + Math.random() + Math.random() - 1.5) * 2).toFixed(1));
+
+// 파레토
+const pCv = document.getElementById('p-cv'), pS = document.getElementById('p-s'), pN = document.getElementById('p-n');
+function drawP() {
+  const s = pS.value / 10, n = +pN.value, v = Array.from({ length: n }, (_, k) => 1 / Math.pow(k + 1, s));
+  const tot = v.reduce((a, b) => a + b, 0), head = Math.max(1, Math.round(n * .2)), share = v.slice(0, head).reduce((a, b) => a + b, 0) / tot;
+  document.getElementById('p-sv').textContent = s.toFixed(1); document.getElementById('p-nv').textContent = n;
+  const [g, w, h] = setup(pCv, 220), x0 = 20, x1 = w - 16, yb = h - 20, bw = (x1 - x0) / n;
+  v.forEach((x, k) => { g.fillStyle = k < head ? RED : GRAY_L; const bh = (yb - 16) * x / v[0]; g.fillRect(x0 + k * bw, yb - bh, Math.max(1, bw * .8), bh); });
+  document.getElementById('p-stat').innerHTML = `상위 20% (${head}개) = 전체의 <b>${(share * 100).toFixed(0)}%</b> · 나머지 80% 꼬리의 합 = <b>${((1 - share) * 100).toFixed(0)}%</b>`
+    + (s === 0 ? ' · s = 0이면 모두 같은 값 → 20:20' : '');
+}
+pS.oninput = drawP; pN.oninput = drawP;
+addEventListener('resize', () => { drawT(); drawP(); });
+document.fonts.ready.then(() => { drawT(); drawP(); });
+document.getElementById('t-grow').click();
+drawP();
+</script>
+</body>
+</html>

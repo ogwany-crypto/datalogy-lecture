@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1강 데이터 발자국 놀이터</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="../assets/page.css">
+<style>
+  .acts { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; margin: 12px 0; }
+  .acts label { display: flex; gap: 8px; align-items: center; font-size: 15px; border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; cursor: pointer; }
+  .acts input { accent-color: var(--red); }
+  .acts small { color: var(--gray); margin-left: auto; }
+  .legend { display: flex; gap: 18px; font-size: 14px; color: #666; margin-top: 8px; flex-wrap: wrap; }
+  .legend i { display: inline-block; width: 14px; height: 14px; vertical-align: -2px; margin-right: 6px; border-radius: 50%; }
+  .views { display: grid; gap: 10px; margin: 12px 0; }
+  .views label { display: grid; grid-template-columns: 1fr 200px; gap: 12px; align-items: center; font-size: 15px; }
+  .views input { width: 100%; }
+  .scale { display: flex; justify-content: space-between; font-size: 13px; color: var(--gray); padding-left: calc(100% - 200px); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="badge">1강</span><h1>데이터 발자국 놀이터</h1>
+    <nav><a href="index.html#1">슬라이드</a><a href="quiz.html">퀴즈</a><a href="../index.html">목록</a></nav>
+  </header>
+  <p class="lede">슬라이드의 manim 장면(DataFootprint, BalanceSeesaw)을 직접 조작하는 공간 · 원본 장면 코드: scripts/01_animations.py</p>
+
+  <!-- 1 데이터 발자국 -->
+  <section class="card" id="s1">
+    <h2><span class="n">01</span>나의 하루 데이터 발자국</h2>
+    <p class="muted">오늘 한 일을 체크 → 24시간 줄 위에 발자국이 찍히고 세 종류로 집계 · 관련 장면: DataFootprint · 항목·분류는 수업용 예시</p>
+    <div class="acts" id="f-acts"></div>
+    <div class="controls"><button class="solid" id="f-all">전부 체크</button><button id="f-none">모두 해제</button></div>
+    <canvas id="f-cv" aria-label="24시간 시간줄 위의 데이터 발자국과 종류별 개수"></canvas>
+    <div class="legend"><span><i style="background:#3F3F3F"></i>원해서 남긴 것</span><span><i style="background:#8C8C8C"></i>모르고 남긴 것</span><span><i style="background:#E22B2D"></i>나에게 돌아온 것</span></div>
+    <p class="stat" id="f-stat" aria-live="polite"></p>
+  </section>
+
+  <!-- 2 시소 -->
+  <section class="card" id="s2">
+    <h2><span class="n">02</span>기대와 불안의 시소</h2>
+    <p class="muted">각 문장에 대한 내 생각을 왼쪽(불안) ~ 오른쪽(기대)으로 · 시소가 어느 쪽으로 기우는지 확인 · 관련 장면: BalanceSeesaw</p>
+    <div class="scale"><span>← 불안</span><span>중립</span><span>기대 →</span></div>
+    <div class="views" id="v-list"></div>
+    <canvas id="v-cv" aria-label="기대와 불안 점수에 따라 기우는 시소"></canvas>
+    <p class="stat" id="v-stat" aria-live="polite"></p>
+  </section>
+</div>
+
+<script>
+const RED = '#E22B2D', RED_L = '#F6C4C5', GRAY = '#8C8C8C', INK = '#3F3F3F', GRAY_L = '#D9D9D9';
+const COLS = [INK, GRAY, RED], KINDS = ['원해서 남긴 것', '모르고 남긴 것', '나에게 돌아온 것'];
+
+function setup(cv, h) {   // 고해상도 캔버스
+  const dpr = window.devicePixelRatio || 1, w = cv.clientWidth;
+  cv.width = w * dpr; cv.height = h * dpr; cv.style.height = h + 'px';
+  const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.font = '14px "Noto Sans KR", sans-serif'; return [g, w, h];
+}
+
+// ---------- 1 데이터 발자국 ----------
+const ACTS = [
+  [7.0, '스마트폰 알람', 1], [7.5, '걸음 수 측정', 1], [8.2, '교통카드 탑승', 0], [9.0, '위치 기록', 1],
+  [10.5, '포털 검색', 0], [11.0, '검색어 기반 광고', 2], [12.3, '카드 결제', 0], [12.4, '맛집 별점 남기기', 0],
+  [13.0, '배달앱 추천 메뉴', 2], [15.5, '메신저 대화', 0], [16.0, '와이파이 접속 기록', 1], [18.0, '거리 CCTV', 1],
+  [19.0, 'SNS 게시물 올리기', 0], [20.5, '영상 시청', 0], [21.0, '다음 영상 자동 추천', 2], [23.0, '수면 앱 기록', 1],
+];
+const fBox = document.getElementById('f-acts');
+fBox.innerHTML = ACTS.map(([h, n, k], i) =>
+  `<label><input type="checkbox" data-i="${i}" checked>${n}<small>${Math.floor(h)}시</small></label>`).join('');
+const fCv = document.getElementById('f-cv');
+function drawF() {
+  const on = [...fBox.querySelectorAll('input')].filter(c => c.checked).map(c => ACTS[+c.dataset.i]);
+  const [g, w, h] = setup(fCv, 360);
+  const x0 = 30, x1 = w - 30, y = 70, X = t => x0 + (x1 - x0) * t / 24;
+  g.strokeStyle = INK; g.lineWidth = 2; g.beginPath(); g.moveTo(x0, y); g.lineTo(x1, y); g.stroke();
+  g.fillStyle = GRAY; g.textAlign = 'center';
+  for (let t = 0; t <= 24; t += 6) { g.fillText(`${t}시`, X(t), y - 16); g.fillRect(X(t) - 1, y - 5, 2, 10); }
+  on.forEach(([t, n, k], i) => {
+    g.fillStyle = COLS[k]; g.beginPath(); g.arc(X(t), y, 8, 0, 7); g.fill();
+    g.fillText(n, X(t), y + 30 + 20 * (i % 4));
+  });
+  const cnt = [0, 0, 0]; on.forEach(a => cnt[a[2]]++);
+  const by = 345, bw = Math.min(160, (w - 120) / 3), maxC = Math.max(4, ...cnt);
+  cnt.forEach((c, k) => {
+    const bx = 60 + k * (bw + 30), bh = 130 * c / maxC;
+    g.fillStyle = COLS[k]; g.fillRect(bx, by - bh, bw, bh);
+    g.fillStyle = INK; g.textAlign = 'left'; g.fillText(`${KINDS[k]} ${c}개`, bx, by - bh - 8);
+  });
+  const tot = on.length;
+  document.getElementById('f-stat').innerHTML = tot
+    ? `발자국 <b>${tot}개</b> · 모르고 남긴 것 비율 <b>${Math.round(cnt[1] / tot * 100)}%</b> · 나에게 돌아온 것 <b>${cnt[2]}개</b> — 돌아온 것은 앞의 발자국이 있어야 생기는 결과`
+    : '체크한 항목 없음 — 정말 하루 동안 아무 데이터도 남기지 않았을까?';
+}
+fBox.onchange = drawF;
+document.getElementById('f-all').onclick = () => { fBox.querySelectorAll('input').forEach(c => c.checked = true); drawF(); };
+document.getElementById('f-none').onclick = () => { fBox.querySelectorAll('input').forEach(c => c.checked = false); drawF(); };
+
+// ---------- 2 시소 ----------
+const VIEWS = ['AI가 질병과 재난을 미리 알려 줄 것', 'AI가 내 일자리를 바꾸거나 빼앗을 것',
+  '추천 알고리즘이 내 취향을 넓혀 줄 것', '데이터가 종교처럼 숭배될 것 (데이터교)', '메타버스가 새로운 자유 공간이 될 것'];
+const vBox = document.getElementById('v-list');
+vBox.innerHTML = VIEWS.map((v, i) => `<label>${v}<input type="range" min="-2" max="2" step="1" value="0" data-i="${i}" aria-label="${v}: 불안 -2 ~ 기대 +2"></label>`).join('');
+const vCv = document.getElementById('v-cv');
+function drawV() {
+  const vals = [...vBox.querySelectorAll('input')].map(r => +r.value), s = vals.reduce((a, b) => a + b, 0);
+  const [g, w, h] = setup(vCv, 260);
+  const cx = w / 2, cy = 170, L = Math.min(320, w / 2 - 70), a = Math.max(-0.35, Math.min(0.35, s * 0.035));
+  g.fillStyle = INK; g.beginPath(); g.moveTo(cx, cy); g.lineTo(cx - 28, cy + 50); g.lineTo(cx + 28, cy + 50); g.fill();
+  const dx = Math.cos(a) * L, dy = Math.sin(a) * L;
+  g.strokeStyle = INK; g.lineWidth = 10; g.lineCap = 'round'; g.beginPath(); g.moveTo(cx - dx, cy - dy); g.lineTo(cx + dx, cy + dy); g.stroke();
+  const box = (x, y, t, c) => { g.lineWidth = 3; g.strokeStyle = c; g.fillStyle = '#fff'; g.beginPath(); g.roundRect(x - 60, y - 52, 120, 36, 8); g.fill(); g.stroke();
+    g.fillStyle = c; g.textAlign = 'center'; g.font = 'bold 15px "Noto Sans KR", sans-serif'; g.fillText(t, x, y - 28); };
+  box(cx - dx * 0.85, cy - dy * 0.85, '불안 (비관)', RED);
+  box(cx + dx * 0.85, cy + dy * 0.85, '기대 (낙관)', INK);
+  const bal = Math.abs(s) <= 1;
+  g.fillStyle = bal ? RED : GRAY; g.font = 'bold 18px "Noto Sans KR", sans-serif'; g.fillText(bal ? '아름다운 거리' : '', cx, cy + 80);
+  document.getElementById('v-stat').innerHTML = `합계 <b>${s > 0 ? '+' : ''}${s}</b> · ` + (bal
+    ? '<span class="ok">균형</span> — 가능성과 문제를 함께 보는 자리'
+    : s > 0 ? '<span class="bad">기대 쪽으로 기울어짐</span> — 이 기술의 비용은 무엇일까?'
+            : '<span class="bad">불안 쪽으로 기울어짐</span> — 이 기술이 주는 편익은 무엇일까?');
+}
+vBox.oninput = drawV;
+addEventListener('resize', () => { drawF(); drawV(); });
+document.fonts.ready.then(() => { drawF(); drawV(); });
+drawF(); drawV();
+</script>
+</body>
+</html>

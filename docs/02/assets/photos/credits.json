@@ -1,0 +1,29 @@
+{
+  "puzzle": {
+    "title": "jigsaw puzzle pieces",
+    "creator": "Electric-Eye",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/35111587@N00/4054093512",
+    "provider": "flickr"
+  },
+  "chart": {
+    "title": "NOAA Nautical Chart: Tampa Bay, Florida",
+    "creator": "NOAA's National Ocean Service",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/40322276@N04/3903852519",
+    "provider": "flickr"
+  },
+  "mosaic": {
+    "title": "Dog Eye - Mosaic Tile",
+    "creator": "Scott 97006",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/29487672@N07/14684810795",
+    "provider": "flickr"
+  }
+}

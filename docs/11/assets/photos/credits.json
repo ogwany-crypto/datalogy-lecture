@@ -1,0 +1,38 @@
+{
+  "tunnel": {
+    "title": "Gotthard Road Tunnel - Göschenen",
+    "creator": "Kecko",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/70981241@N00/15608222292",
+    "provider": "flickr"
+  },
+  "cereal": {
+    "title": "Breakfast Cereal Aisle",
+    "creator": "JeepersMedia",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/39160147@N03/13976920190",
+    "provider": "flickr"
+  },
+  "bubble": {
+    "title": "Soap bubble",
+    "creator": "trindade.joao",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/11091003@N02/6899550685",
+    "provider": "flickr"
+  },
+  "cave": {
+    "title": "Cave Light",
+    "creator": "romainguy",
+    "license": "cc0",
+    "license_version": "1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "source": "https://www.flickr.com/photos/24046097@N00/6885444694",
+    "provider": "flickr"
+  }
+}

@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>7강 데이터의 미학</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="../assets/deck.css">
+<style>
+  .cover { flex-direction: row !important; align-items: center; justify-content: space-between; padding: 128px !important; }
+  .cover::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 24px; background: var(--red); }
+  .toc-item { display: flex; align-items: center; gap: 40px; padding: 30px 0; border-bottom: 2px solid var(--red-l); }
+  .toc-item:last-child { border-bottom: none; }
+  .toc-item b { font-size: 56px; font-weight: 900; color: var(--red); width: 100px; }
+  .toc-item span { font-size: 44px; font-weight: 500; }
+  .tri { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; flex: 1; align-items: stretch; }
+  .tri .card h3 { font-size: 40px; }
+  .tri .card .k { font-size: 26px; font-weight: 700; color: var(--gray); letter-spacing: 2px; }
+  .tri .card { justify-content: center; gap: 20px; }
+  .tri .card ul.b { font-size: 32px; line-height: 1.6; }
+  .quote { font-size: 44px; font-weight: 700; line-height: 1.5; }
+  .quote small { display: block; font-size: 26px; font-weight: 500; color: var(--gray); padding-top: 12px; }
+</style>
+</head>
+<body>
+<div class="progress"></div>
+<div class="stage">
+
+<!-- 1 표지 -->
+<section class="slide cover">
+  <div style="display:flex;flex-direction:column;gap:32px;width:1000px">
+    <p style="font-size:120px;font-weight:900;color:var(--red);line-height:1">07</p>
+    <p style="font-size:36px;font-weight:500;color:var(--gray)">데이톨로지 — 데이터로 읽는 인간과 사회</p>
+    <h1 style="font-size:96px;font-weight:900;line-height:1.15">데이터의<br>미학</h1>
+    <hr style="width:160px;border:none;border-top:6px solid var(--red)">
+    <p style="font-size:32px;color:var(--gray)">스토리텔링에서 데이터텔링으로 · 강사 : ○○○</p>
+  </div>
+  <img class="fig" src="assets/cover.png" alt="로즈 다이어그램 모양 그림" style="width:600px;height:796px">
+  <aside class="note">7주차. 사전 읽기: 연재 ⑥ 「위대한 한 컷… '스토리 텔링'에서 '데이터 텔링'시대로」(2021.06.14). 오늘 중간 과제 안내.</aside>
+</section>
+
+<!-- 2 목차 -->
+<section class="slide" style="flex-direction:row;align-items:center;gap:96px;padding:128px">
+  <div style="display:flex;flex-direction:column;gap:24px;width:520px">
+    <p style="font-size:32px;font-weight:700;color:var(--red);letter-spacing:4px">CONTENTS</p>
+    <h2 style="font-size:72px;font-weight:900;line-height:1.15">데이터의<br>미학</h2>
+    <hr style="width:120px;border:none;border-top:6px solid var(--red)">
+  </div>
+  <div style="flex:1">
+    <div class="toc-item"><b>01</b><span>한 컷의 힘, 인포그래픽</span></div>
+    <div class="toc-item"><b>02</b><span>존 스노우의 콜레라 지도</span></div>
+    <div class="toc-item"><b>03</b><span>나이팅게일의 로즈 다이어그램</span></div>
+    <div class="toc-item"><b>04</b><span>미나르와 데이터 텔러</span></div>
+    <div class="toc-item"><b>05</b><span>활동 · 중간 과제 · 정리</span></div>
+  </div>
+</section>
+
+<!-- 3 학습 목표 -->
+<section class="slide" style="flex-direction:row;align-items:center;gap:80px;padding:128px">
+  <img class="fig" src="assets/goal.png" alt="흩어진 점과 한 막대가 강조된 그래프" style="width:760px;height:568px">
+  <div class="col" style="gap:40px">
+    <h2 style="font-size:72px;font-weight:900">학습 목표</h2>
+    <div class="card"><p style="font-size:28px;font-weight:700;color:var(--red)">목표 1</p><p style="font-size:36px;font-weight:500">역사적 인포그래픽의 설계 원리 분석</p></div>
+    <div class="card"><p style="font-size:28px;font-weight:700;color:var(--red)">목표 2</p><p style="font-size:36px;font-weight:500">'데이터 텔러'의 역할 이해와 한 컷 인포그래픽 기획</p></div>
+  </div>
+</section>
+
+<!-- 4 오늘의 질문 -->
+<section class="slide" style="justify-content:center;align-items:center;gap:56px">
+  <p style="font-size:36px;font-weight:700;color:var(--red);letter-spacing:4px">오늘의 질문</p>
+  <p style="font-size:64px;font-weight:900;line-height:1.4;text-align:center">그림 한 장이<br><span style="color:var(--red)">정책을 바꾼 적이 있을까?</span></p>
+  <aside class="note">답: 있음 — 스노우의 지도(식수원), 나이팅게일의 다이어그램(병원 위생). 오늘 두 사례 확인.</aside>
+</section>
+
+<!-- 5 7-1 비유: 아테네 학당 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">7-1</span><h2>한 컷의 힘, 인포그래픽</h2></div><p class="sub">[비유] 라파엘로 「아테네 학당」</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/athens.jpg" alt="「아테네 학당」의 플라톤과 아리스토텔레스" style="width:480px;height:640px"><p class="credit">사진: Image Editor / CC BY 2.0</p></div>
+    <div class="col">
+      <h3>아테네 학당 = 개념 인포그래픽</h3>
+      <ul class="b">
+        <li>하늘을 가리키는 플라톤 = 관념론</li>
+        <li>손바닥을 땅으로 향한 아리스토텔레스 = 현실 중시</li>
+        <li>철학 논쟁 전체를 손짓 두 개로 압축</li>
+        <li>긴 설명 없이 한눈에 전달되는 한 컷</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="note">출처: 연재 ⑥. 르네상스(16세기) 작품.</aside>
+</section>
+
+<!-- 6 7-1 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">7-1</span><h2>한 컷의 힘, 인포그래픽</h2></div><p class="sub">인포그래픽 = Information + Graphics</p></div>
+  <video class="anim" src="assets/anim/TableToChart.mp4" poster="assets/anim/TableToChart_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">표의 숫자는 수업용 예시. 같은 데이터라도 표는 읽어야 보이고, 그래프는 보자마자 메시지 전달.</aside>
+</section>
+
+<!-- 7 7-1 시각적 정보 사회 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">7-1</span><h2>한 컷의 힘, 인포그래픽</h2></div><p class="sub">시각적 정보 사회</p></div>
+  <div class="row" style="gap:56px;align-items:stretch">
+    <div class="card" style="flex:1;justify-content:center">
+      <h3>텍스트 → 이미지·영상</h3>
+      <ul class="b"><li>정보 소비의 중심 이동</li><li>복잡한 분석 결과를 한 장으로 축약</li><li>저자: 우뇌 기능 활성화와 연결</li></ul>
+    </div>
+    <div class="card" style="flex:1;justify-content:center">
+      <h3>말로 그린 인포그래픽</h3>
+      <ul class="b"><li>다이아몬드 『총, 균, 쇠』</li><li>문명 진보의 세 동력 = 전쟁·유행병·과학기술</li><li>세 단어로 압축한 개념도</li></ul>
+    </div>
+  </div>
+  <aside class="note">출처: 연재 ⑥.</aside>
+</section>
+
+<!-- 8 7-2 비유: 펌프 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">7-2</span><h2>존 스노우의 콜레라 지도</h2></div><p class="sub">[비유] 브로드가(現 브로드윅가) 펌프</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/pump.jpg" alt="런던 브로드윅가의 존 스노우 펌프 복제품" style="width:760px;height:570px"><p class="credit">사진: Matt From London / CC BY 2.0</p></div>
+    <div class="col">
+      <h3>펌프 = 지도가 가리킨 원인</h3>
+      <ul class="b">
+        <li>1854년 런던 소호, 콜레라 대유행</li>
+        <li>사망자 집 위치를 지도에 점으로 표시</li>
+        <li>점이 몰린 한가운데 = 브로드가 펌프</li>
+        <li>원인 = 공기가 아니라 오염된 식수</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="note">출처: 연재 ⑥. 사진은 오늘날 런던 브로드윅가에 복원된 펌프. '역학(epidemiology)의 출발'로 불림.</aside>
+</section>
+
+<!-- 9 7-2 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">7-2</span><h2>존 스노우의 콜레라 지도</h2></div><p class="sub">점을 찍자 보인 원인</p></div>
+  <video class="anim" src="assets/anim/SnowMap.mp4" poster="assets/anim/SnowMap_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">단순화한 재현: 거리·펌프 위치·사망 점은 예시 좌표, 실제 1854년 지도 데이터 아님. 놀이터에서 펌프 후보를 직접 비교.</aside>
+</section>
+
+<!-- 10 7-3 비유: 장미 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">7-3</span><h2>나이팅게일의 로즈 다이어그램</h2></div><p class="sub">[비유] 장미 꽃잎</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/rose.jpg" alt="붉은 장미" style="width:760px;height:570px"><p class="credit">사진: rvsarathi / CC BY 2.0</p></div>
+    <div class="col">
+      <h3>꽃잎 = 한 달의 사망</h3>
+      <ul class="b">
+        <li>크림전쟁 시기 월별 사망 원인</li>
+        <li>꽃잎 크기 = 사망자 수</li>
+        <li>가장 큰 꽃잎 = 전투가 아닌 감염·질병</li>
+        <li>숫자 표보다 강한 설득력</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="note">출처: 연재 ⑥.</aside>
+</section>
+
+<!-- 11 7-3 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">7-3</span><h2>나이팅게일의 로즈 다이어그램</h2></div><p class="sub">무엇이 병사를 죽였나</p></div>
+  <video class="anim" src="assets/anim/RoseDiagram.mp4" poster="assets/anim/RoseDiagram_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">모양 재현, 월별 값은 예시. 사망률 42% → 2%는 원전(연재 ⑥). [검증 노트] 스쿠타리 병원 사례로 널리 인용되나 개선 요인(위생위원회 활동 등)의 기여도는 역사학계 논쟁.</aside>
+</section>
+
+<!-- 12 7-3 토론 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">7-3</span><h2>나이팅게일의 로즈 다이어그램</h2></div><p class="sub">정직한 그래프였나?</p></div>
+  <div class="row" style="gap:56px;align-items:stretch">
+    <div class="card" style="flex:1;justify-content:center">
+      <h3>면적 왜곡 논쟁</h3>
+      <ul class="b"><li>꽃잎 반지름 2배 → 면적 4배</li><li>반지름과 면적 중 무엇이 값인가</li><li>설계 선택이 인상을 바꿈</li></ul>
+    </div>
+    <div class="card" style="flex:1;justify-content:center">
+      <h3>아름다움의 함정</h3>
+      <ul class="b"><li>아름다운 그림 = 비판적 사고 마비?</li><li>출처·표본·척도 확인</li><li>설득과 왜곡 사이</li></ul>
+    </div>
+  </div>
+  <aside class="note">강의안 토론 질문. 놀이터 2번에서 '반지름 = 값' vs '면적 = 값' 직접 비교.</aside>
+</section>
+
+<!-- 13 7-4 비유: 강줄기 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">7-4</span><h2>미나르와 데이터 텔러</h2></div><p class="sub">[비유] 강줄기</p></div>
+  <div class="row">
+    <div class="photo"><img src="assets/photos/river.jpg" alt="위에서 내려다본 강줄기" style="width:760px;height:570px"><p class="credit">사진: MPLSArchives / CC BY 2.0</p></div>
+    <div class="col">
+      <h3>강폭 = 병력의 크기</h3>
+      <ul class="b">
+        <li>넓던 강이 점점 가늘어지는 모습</li>
+        <li>미나르: 병사 수를 띠의 폭으로 표현</li>
+        <li>지도 위 경로 + 시간 + 기온까지 한 장</li>
+        <li>숫자를 몰라도 느껴지는 비극</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="note">출처: 연재 ⑥ (샤를 미나르, 나폴레옹 러시아 원정 도표).</aside>
+</section>
+
+<!-- 14 7-4 애니메이션 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">7-4</span><h2>미나르와 데이터 텔러</h2></div><p class="sub">42만 명 출발, 1만 명 생환</p></div>
+  <video class="anim" src="assets/anim/MinardBand.mp4" poster="assets/anim/MinardBand_poster.png" muted playsinline preload="metadata" style="width:1360px;height:680px"></video>
+  <aside class="note">42만 → 1만은 원전(연재 ⑥). [보충] 모스크바 도착 약 10만 명, 중간 띠 폭, 영하 30도 이하 기온은 미나르 원도의 값을 단순화해 강의자가 추가(원전에 없음). 경로 모양은 도식.</aside>
+</section>
+
+<!-- 15 7-4 데이터 텔러 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">7-4</span><h2>미나르와 데이터 텔러</h2></div><p class="sub">데이터 텔러(Data-Teller)</p></div>
+  <div class="row" style="gap:64px">
+    <div class="col">
+      <div class="card"><p class="quote">데이터 분석 → 이미지 → 스토리<small>저자가 말하는 '데이터 텔러'의 역할 (연재 ⑥)</small></p></div>
+      <ul class="b" style="font-size:32px">
+        <li>2013 뉴욕타임스 방언 지도 = 온라인 최다 조회</li>
+        <li>AI 이미지 검색 시대: 좋은 한 장 = 비즈니스 성패</li>
+        <li>스토리텔링 → 데이터텔링</li>
+      </ul>
+    </div>
+    <img class="fig" src="assets/goal.png" alt="흩어진 점과 한 막대가 강조된 그래프" style="width:640px;height:478px">
+  </div>
+</section>
+
+<!-- 16 명작 비교 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">7-5</span><h2>명작 인포그래픽 한눈에</h2></div><p class="sub">무엇을 한 컷에 담았나</p></div>
+  <table style="border-collapse:collapse;font-size:30px;width:100%">
+    <tr style="background:var(--red);color:#fff"><th style="padding:14px;text-align:left">작품</th><th style="padding:14px">연도</th><th style="padding:14px;text-align:left">한 컷에 담은 것</th><th style="padding:14px;text-align:left">결과</th></tr>
+    <tr style="background:#fff"><td style="padding:14px">스노우 콜레라 지도</td><td style="padding:14px;text-align:center">1854</td><td style="padding:14px">펌프 주변 사망자 분포</td><td style="padding:14px">식수 오염 입증</td></tr>
+    <tr><td style="padding:14px">나이팅게일 로즈 다이어그램</td><td style="padding:14px;text-align:center">1858</td><td style="padding:14px">월별 사망 원인</td><td style="padding:14px">병원 위생 개혁</td></tr>
+    <tr style="background:#fff"><td style="padding:14px">미나르 원정도</td><td style="padding:14px;text-align:center">1869</td><td style="padding:14px">병력·경로·기온·시간</td><td style="padding:14px">전쟁의 비극 전달</td></tr>
+    <tr><td style="padding:14px">뉴욕타임스 방언 지도</td><td style="padding:14px;text-align:center">2013</td><td style="padding:14px">지역별 방언 분포</td><td style="padding:14px">온라인 최다 조회</td></tr>
+  </table>
+  <aside class="note">연도는 강의안 표 기준(원전 연재 ⑥은 시기만 표기한 항목 있음).</aside>
+</section>
+
+<!-- 17 활동 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">7-5</span><h2>활동</h2></div><p class="sub">활동 (30분): 명작 인포그래픽 해부</p></div>
+  <div class="tri">
+    <div class="card"><p class="k">질문 1</p><h3>변수</h3>
+      <ul class="b"><li>변수는 몇 개?</li><li>위치·크기·색·선 중 무엇으로?</li></ul></div>
+    <div class="card"><p class="k">질문 2</p><h3>메시지</h3>
+      <ul class="b"><li>설득하려는 단 하나의 메시지</li><li>한 문장으로 쓰기</li></ul></div>
+    <div class="card"><p class="k">질문 3</p><h3>잃은 것</h3>
+      <ul class="b"><li>표로 보여 줬다면?</li><li>이 그림이 숨기는 것은?</li></ul></div>
+  </div>
+  <aside class="note">팀별로 스노우·나이팅게일·미나르 중 하나 배정. 나머지 30분은 중간 과제 착수(데이터 고르기, 메시지 한 문장).</aside>
+</section>
+
+<!-- 18 중간 과제 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">7-5</span><h2>중간 과제 안내</h2></div><p class="sub">한 컷 인포그래픽 (8주 제출, 20%)</p></div>
+  <div class="row" style="gap:56px;align-items:stretch">
+    <div class="card" style="flex:1.2">
+      <h3>제출물</h3>
+      <ul class="b" style="font-size:30px">
+        <li>공공데이터(KOSIS, 공공데이터포털, 서울 열린데이터광장 등)로 인포그래픽 1장</li>
+        <li>해설 1쪽: ① 메시지 한 문장 ② 데이터 출처·표본 ③ 시각 설계 이유 ④ 이 그림이 숨기는 것</li>
+      </ul>
+    </div>
+    <div class="card" style="flex:1">
+      <h3>평가 기준</h3>
+      <ul class="b" style="font-size:30px">
+        <li>메시지 명확성 30</li>
+        <li>데이터 정확성 30</li>
+        <li>시각 설계 25</li>
+        <li>한계 성찰 15</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="note">강의안 7주차 중간 과제. 8주차에 갤러리 워크 + 동료 평가.</aside>
+</section>
+
+<!-- 19 정리 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">7-6</span><h2>정리 및 확인 문제</h2></div><p class="sub">오늘의 핵심 4줄</p></div>
+  <div class="col" style="gap:24px">
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">인포그래픽</b> = 복잡한 데이터를 한 컷으로, 메시지 한 문장</p></div>
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">스노우</b> = 점 지도로 오염된 식수 원인 입증 (1854)</p></div>
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">나이팅게일·미나르</b> = 꽃잎과 띠로 사망·비극 전달</p></div>
+    <div class="card"><p style="font-size:34px;font-weight:500"><b style="color:var(--red)">데이터 텔러</b> = 분석 → 이미지 → 스토리</p></div>
+  </div>
+</section>
+
+<!-- 20 확인 문제 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">7-6</span><h2>정리 및 확인 문제</h2></div><p class="sub">확인 문제</p></div>
+  <div class="row" style="gap:64px;align-items:stretch">
+    <div class="col" style="gap:18px">
+      <h3 style="font-size:36px">문제 1</h3>
+      <p style="font-size:32px;line-height:1.45">존 스노우의 1854년 지도가 밝혀낸 콜레라의 원인</p>
+      <h3 style="font-size:36px;padding-top:20px">문제 2</h3>
+      <p style="font-size:32px;line-height:1.45">미나르의 원정도에서 '띠의 폭'이 나타내는 것</p>
+      <h3 style="font-size:36px;padding-top:20px">문제 3</h3>
+      <p style="font-size:32px;line-height:1.45">로즈 다이어그램에서 꽃잎 반지름을 2배로 늘리면 면적은 몇 배?</p>
+      <button class="reveal">정답 보기</button>
+      <div class="answer">문제 1: 브로드가 펌프의 오염된 식수<br>문제 2: 병력(병사 수) — 42만 명 출발, 1만 명 생환<br>문제 3: 4배 → 반지름으로 값을 그리면 큰 값이 과장되어 보임</div>
+    </div>
+    <img class="fig" src="assets/cover.png" alt="로즈 다이어그램 모양 그림" style="width:420px;height:557px;align-self:center">
+  </div>
+</section>
+
+<!-- 21 마무리 -->
+<section class="slide">
+  <div class="head"><div class="t"><span class="badge">7-6</span><h2>정리 및 확인 문제</h2></div><p class="sub">마무리</p></div>
+  <div class="row" style="gap:80px">
+    <div class="col" style="gap:20px">
+      <h3 style="font-size:36px">이번 주 과제</h3>
+      <ul class="b" style="font-size:30px">
+        <li>중간 과제: 한 컷 인포그래픽 + 해설 1쪽 (8주 제출)</li>
+        <li>데이톨로지 저널: 최근 본 인포그래픽 1장 해부</li>
+      </ul>
+      <h3 style="font-size:36px;padding-top:24px">다음 시간</h3>
+      <p style="font-size:30px">중간 점검 — 인포그래픽 갤러리 워크 & 1부 종합</p>
+      <p style="font-size:26px;padding-top:24px"><a href="quiz.html" style="color:var(--red);font-weight:700">▶ 웹 퀴즈</a>&nbsp;&nbsp;&nbsp;<a href="playground.html" style="color:var(--red);font-weight:700">▶ 한 컷 놀이터</a></p>
+    </div>
+    <img class="fig" src="assets/goal.png" alt="흩어진 점과 한 막대가 강조된 그래프" style="width:640px;height:478px">
+  </div>
+</section>
+
+<!-- 22 이미지 출처 -->
+<section class="slide">
+  <div class="head"><h2>이미지 출처</h2><p class="sub">사진 (Openverse 검색, CC 라이선스)</p></div>
+  <ul class="b" style="font-size:24px;line-height:1.7">
+    <li>Plato and Aristotle — Image Editor, CC BY 2.0, <a href="https://www.flickr.com/photos/11304375@N07/2769553173">flickr</a></li>
+    <li>John Snow's pump restored — Matt From London, CC BY 2.0, <a href="https://www.flickr.com/photos/57868312@N00/29859398308">flickr</a></li>
+    <li>Red Rose Flower — rvsarathi, CC BY 2.0, <a href="https://www.flickr.com/photos/10809195@N02/3692488513">flickr</a></li>
+    <li>Mississippi River Aerial Photo — MPLSArchives, CC BY 2.0, <a href="https://www.flickr.com/photos/133378306@N02/20121416245">flickr</a></li>
+    <li>애니메이션·그림 — manim, matplotlib으로 직접 제작 (스노우·나이팅게일·미나르 도표는 단순화한 재현)</li>
+    <li>인용 — 김성태, 연재 ⑥ 「위대한 한 컷… '스토리 텔링'에서 '데이터 텔링'시대로」(지디넷코리아, 2021.06.14)</li>
+  </ul>
+</section>
+
+</div>
+<div class="notes"></div>
+<div class="bar">
+  <a href="../index.html">← 목록</a>
+  <button data-act="prev">◀</button><span class="count"></span><button data-act="next">▶</button>
+  <span class="grow">← → 이동 · F 전체 화면 · N 노트</span>
+  <a href="quiz.html">퀴즈</a><a href="playground.html">놀이터</a>
+  <button data-act="notes">노트</button><button data-act="full">전체 화면</button>
+</div>
+<script src="../assets/deck.js"></script>
+</body>
+</html>
